@@ -38,13 +38,13 @@ function activate_tidy_wp() {
 	Tidy_Wp_Activator::activate();
 }
 
-function deactivate_tidy_wp() {
-	require_once plugin_dir_path( __FILE__ ) . 'includes/class-tidy-wp-deactivator.php';
-	Tidy_Wp_Deactivator::deactivate();
+function uninstall_tidy_wp() {
+    require_once plugin_dir_path( __FILE__ ) . 'includes/class-tidy-wp-deactivator.php';
+    Tidy_Wp_Deactivator::deactivate();
 }
 
 register_activation_hook( __FILE__, 'activate_tidy_wp' );
-register_deactivation_hook( __FILE__, 'deactivate_tidy_wp' );
+register_uninstall_hook( __FILE__, 'uninstall_tidy_wp' );
 
 
 
