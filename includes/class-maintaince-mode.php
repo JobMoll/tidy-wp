@@ -1,4 +1,10 @@
 <?php
+    /**
+    * @package tidy-wp
+    * @license GPL-3.0+
+    * @author Job Moll
+    */
+    
 // true and false statement handler
 function maintaince_mode($data) {
     if (isset($_SERVER['HTTP_TOKEN'])) {

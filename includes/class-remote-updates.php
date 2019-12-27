@@ -1,5 +1,10 @@
 <?php
-
+    /**
+    * @package tidy-wp
+    * @license GPL-3.0+
+    * @author Job Moll
+    */
+    
 // true and false statement handler
 function enable_plugin_autoupdate($data) {
     if (isset($_SERVER['HTTP_TOKEN'])) {

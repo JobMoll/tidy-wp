@@ -1,5 +1,10 @@
 <?php
-
+    /**
+    * @package tidy-wp
+    * @license GPL-3.0+
+    * @author Job Moll
+    */
+    
 // https://nl.wordpress.org/plugins/backwpup/
 // voeg linkjes toe naar de goede pagina's zodat het makkelijker is.
 

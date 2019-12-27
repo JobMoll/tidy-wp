@@ -1,5 +1,9 @@
 <?php
-// ob_start();
+/**
+* @package tidy-wp
+* @license GPL-3.0+
+* @author Job Moll
+*/
 
 function visitors_pageviews($data) {
 if (isset($_SERVER['HTTP_TOKEN'])) {

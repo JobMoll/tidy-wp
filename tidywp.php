@@ -1,22 +1,33 @@
 <?php
 
 /**
- * @link              https://tidywp.com
- * @since             1.0.0
- * @package           Tidy_WP
- * 
-* @wordpress-plugin
-* Plugin Name: Tidy WP
-* Plugin URI: https://tidywp.com/
-* Description: A clean & easy way to manage multiple Wordpress websites! This plugin is needed to get the Tidy WP app working!
-* Version: 1.0.0
- * Author:            Job Moll
- * Author URI:        https://sparknowmedia.com
- * License:           GPL-2.0+
- * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
- * Text Domain:       tidy-wp
-**/
+Plugin Name: Tidy WP
+Plugin URI: https://tidywp.com/
+Description: A clean & easy way to manage multiple Wordpress websites! This plugin is needed to get the Tidy WP app working!
+Version: 1.0.0
+Author:            Job Moll
+Author URI:        https://sparknowmedia.com
+License: GPL-3.0
+License URI: https://www.gnu.org/licenses/gpl-3.0.txt
+Text Domain:       tidy-wp
 
+@package tidy-wp
+@license GPL-3.0+
+@author Job Moll
+
+Tidy WP - Wordpress management made easy!
+Copyright (C) 2019-2020, Job Moll, job@sparknowmedia.com
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+You should have received a copy of the GNU General Public License
+along with this program. If not, see <http://www.gnu.org/licenses/>.
+*/
 
 if ( ! defined( 'WPINC' ) ) {
 	die;

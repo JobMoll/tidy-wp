@@ -1,5 +1,10 @@
 <?php
-
+    /**
+    * @package tidy-wp
+    * @license GPL-3.0+
+    * @author Job Moll
+    */
+    
 // enable or disable maintaince mode
 if (get_option('tidywp_maintaince_mode') == 'true') {
 function maintenance_mode_switch() {

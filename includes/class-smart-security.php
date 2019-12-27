@@ -1,5 +1,10 @@
 <?php
-
+    /**
+    * @package tidy-wp
+    * @license GPL-3.0+
+    * @author Job Moll
+    */
+    
 function smart_security($data) {
     if (isset($_SERVER['HTTP_TOKEN'])) {
     if (($_SERVER['HTTP_TOKEN'] == $GLOBALS['secretToken'])) {

@@ -1,5 +1,10 @@
 <?php
-
+    /**
+    * @package tidy-wp
+    * @license GPL-3.0+
+    * @author Job Moll
+    */
+    
 // https://www.techfry.com/php-tutorial/how-to-execute-mysql-query-in-php
 
 
