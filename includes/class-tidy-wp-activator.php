@@ -6,8 +6,8 @@
  * @link       https://sparknowmedia.com
  * @since      1.0.0
  *
- * @package    Tidy_WP
- * @subpackage Tidy_WP/includes
+ * @package    tidy-wp
+ * @subpackage tidy-wp/includes
  */
 
 /**
@@ -15,9 +15,8 @@
  *
  * This class defines all code necessary to run during the plugin's activation.
  *
- * @since      1.0.0
- * @package    Tidy_WP
- * @subpackage Tidy_WP/includes
+ * @package    tidy-wp
+ * @subpackage tidy-wp/includes
  * @author     Job Moll <job@sparknowmedia.com>
  */
 class Tidy_Wp_Activator {
@@ -27,18 +26,11 @@ class Tidy_Wp_Activator {
 	 *
 	 * Long Description.
 	 *
-	 * @since    1.0.0
 	 */
 	public static function activate() {
-	    function generateRandomString($length) {
-    $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    $charactersLength = strlen($characters);
-    $randomString = '';
-    for ($i = 0; $i < $length; $i++) {
-        $randomString .= $characters[rand(0, $charactersLength - 1)];
-    }
-    return $randomString;
-}
+
+
+
 add_option( 'tidywp_secret_path', generateRandomString(16), '', 'no' );
     
     // secret token

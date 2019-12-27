@@ -5,10 +5,6 @@
     * @author Job Moll
     */
     
-// function change_secret_token() {
-//     update_option( 'tidywp_secret_token', substr(str_shuffle(MD5(microtime())), 0, 20), 'no' );    
-// }
-
 
 // create QRCode with data
 if (strpos($_SERVER["REQUEST_URI"], '/wp-admin') !== false) {

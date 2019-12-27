@@ -4,7 +4,7 @@
 Plugin Name: Tidy WP
 Plugin URI: https://tidywp.com/
 Description: A clean & easy way to manage multiple Wordpress websites! This plugin is needed to get the Tidy WP app working!
-Version: 1.0.0
+Version: 0.0.0001
 Author:            Job Moll
 Author URI:        https://sparknowmedia.com
 License: GPL-3.0
@@ -39,8 +39,8 @@ function activate_tidy_wp() {
 }
 
 function uninstall_tidy_wp() {
-    require_once plugin_dir_path( __FILE__ ) . 'includes/class-tidy-wp-deactivator.php';
-    Tidy_Wp_Deactivator::deactivate();
+	require_once plugin_dir_path( __FILE__ ) . 'includes/class-tidy-wp-deactivator.php';
+	Tidy_Wp_Deactivator::deactivate();
 }
 
 register_activation_hook( __FILE__, 'activate_tidy_wp' );
@@ -145,6 +145,7 @@ include 'plugin-page-index.php';
 }
 }
 
+
 function pair_with_app_link( $links ) {
 	$links = array_merge( array(
 		'<a href="' . esc_url( admin_url( '/admin.php?page=tidy-wp' ) ) . '">' . __( 'Pair with the app', 'textdomain' ) . '</a>'
@@ -152,3 +153,14 @@ function pair_with_app_link( $links ) {
 	return $links;
 }
 add_action( 'plugin_action_links_' . plugin_basename( __FILE__ ), 'pair_with_app_link' );
+
+
+
+
+require 'plugin-update-checker/plugin-update-checker.php';
+$myUpdateChecker = Puc_v4_Factory::buildUpdateChecker(
+	'https://github.com/JobMoll/tidy-wp-plugin',
+	__FILE__,
+	'tidy-wp'
+);
+$myUpdateChecker->getVcsApi()->enableReleaseAssets();
