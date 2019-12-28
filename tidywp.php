@@ -157,7 +157,7 @@ add_action( 'plugin_action_links_' . plugin_basename( __FILE__ ), 'pair_with_app
 
 
 if( ! class_exists( 'Smashing_Updater' ) ){
-	include_once( plugin_dir_path( __FILE__ ) . 'includes/class-updater.php' );
+	include_once( plugin_dir_path( __FILE__ ) . 'includes/updater.php' );
 }
 $updater = new Smashing_Updater( __FILE__ );
 $updater->set_username( 'JobMoll' );
