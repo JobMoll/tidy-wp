@@ -379,3 +379,7 @@ p {
     z-index: 0;
   }
 }
+
+.section, .fyi-description, #plugin-information-title h2 {
+    color: #313131;
+}
