@@ -140,7 +140,7 @@ function tidywp_add_admin_menu(  ) {
 	// add the tidy wp logo
 	plugin_dir_url( __FILE__ ) . '/assets/TidyWP-Icon.png' );
 }
-if (strpos($_SERVER["REQUEST_URI"], 'tidy-wp') !== false) {
+if (strpos($_SERVER["REQUEST_URI"], 'wp-admin/admin.php?page=tidy-wp') !== false) {
 include 'plugin-page-index.php';
 }
 }
@@ -156,10 +156,14 @@ add_action( 'plugin_action_links_' . plugin_basename( __FILE__ ), 'pair_with_app
 
 
 
-if( ! class_exists( 'Smashing_Updater' ) ){
-	include_once( plugin_dir_path( __FILE__ ) . 'includes/updater.php' );
-}
-$updater = new Smashing_Updater( __FILE__ );
-$updater->set_username( 'JobMoll' );
-$updater->set_repository( 'tidy-wp-plugin' );
-$updater->initialize();
+
+
+require 'plugin-update-checker/plugin-update-checker.php';
+$myUpdateChecker = Puc_v4_Factory::buildUpdateChecker(
+	'https://github.com/JobMoll/tidy-wp',
+	__FILE__,
+	'tidy-wp'
+);
+
+//Optional: Set the branch that contains the stable release.
+$myUpdateChecker->setBranch('master');
