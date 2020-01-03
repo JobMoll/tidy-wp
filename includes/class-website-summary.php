@@ -34,6 +34,10 @@ if (($_SERVER['HTTP_TOKEN'] == $GLOBALS['secretToken'])) {
 }
 
     
+// https://wordpress.stackexchange.com/questions/158285/displaying-the-number-of-updates-available-in-the-admin-area/158288
+// Get update data
+$update_data = wp_get_update_data();
+$totalUpdateCount = $update_data['counts']['total'];
         
         
     $dataArr = array(
@@ -41,13 +45,14 @@ if (($_SERVER['HTTP_TOKEN'] == $GLOBALS['secretToken'])) {
         'TotalNetSales' => $cashSign . strval(round($totalNetSales, 2)) ?: '0',
         'TotalPageviews' => strval(round($totalPageviews, 2)) ?: '0',
         'TotalVisitors' => strval(round($totalVisitors, 2)) ?: '0',
+        'TotalUpdateCount' => strval($totalUpdateCount) ?: '0',
     );
     
 
 echo json_encode($dataArr);
 
     
-      } 
+      }
 }
       else {
      echo 'Sorry... you are not allowed to view this data.';
