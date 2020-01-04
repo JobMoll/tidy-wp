@@ -9,9 +9,18 @@ function visitors_pageviews($data) {
 if (isset($_SERVER['HTTP_TOKEN'])) {
 if (($_SERVER['HTTP_TOKEN'] == $GLOBALS['secretToken'])) {
     
+    if (get_bloginfo('language') == 'en-US') {
+       $dateFormat = 'm-d-Y'; 
+    } else {
+       $dateFormat = 'd-m-Y'; 
+    }
+    
     if (!empty($data->get_param('inicialDateSelected')) && !empty($data->get_param('finalDateSelected'))) {
     $closestDate = $data->get_param('finalDateSelected');
     $furthestDate = $data->get_param('inicialDateSelected');
+    
+    $closestDateShowInApp  = date($dateFormat, strtotime($closestDate));
+    $furthestDateShowInApp = date($dateFormat, strtotime($furthestDate));
     
     //previous closest date - 1 day of from furthestdate
     $timestamp2 = strtotime($furthestDate);
@@ -26,9 +35,14 @@ if (($_SERVER['HTTP_TOKEN'] == $GLOBALS['secretToken'])) {
     $closestDate  = date("Y-m-d", strtotime("last day of this month"));
     $furthestDate = date("Y-m-d", strtotime("first day of this month"));
     
-      $previousClosestDate = date("Y-m-d", strtotime("last day of last month"));
-      $previousFurthestDate = date("Y-m-d", strtotime("first day of last month"));
+    $closestDateShowInApp  = date($dateFormat, strtotime("last day of this month"));
+    $furthestDateShowInApp = date($dateFormat, strtotime("first day of this month"));
+    
+    
+    $previousClosestDate = date("Y-m-d", strtotime("last day of last month"));
+    $previousFurthestDate = date("Y-m-d", strtotime("first day of last month"));
     }
+
     
     global $wpdb;
     
@@ -67,8 +81,8 @@ $percentageTotalPageviews = getPercentages($totalPageviews, $previousTotalPagevi
         'PreviousTotalPageviews' => strval(round($previousTotalPageviews, 2)) ?: '0',
         'PercentageTotalVisitors' => $percentageTotalVisitors ?: '0',
         'PercentageTotalPageviews' => $percentageTotalPageviews ?: '0',
-         'SelectionClosest' => strval($closestDate) ?: '0',
-          'SelectionFurthest' => strval($furthestDate) ?: '0'
+        'SelectionClosest' => strval($closestDateShowInApp) ?: '0',
+        'SelectionFurthest' => strval($furthestDateShowInApp) ?: '0'
     );
     
 
@@ -121,7 +135,7 @@ if (($_SERVER['HTTP_TOKEN'] == $GLOBALS['secretToken'])) {
     
     global $wpdb;
     
-    $topTenPosts = $wpdb->get_results($wpdb->prepare("SELECT  `id`, SUM(pageviews) AS pageviews, SUM(visitors) AS visitors FROM `{$wpdb->prefix}koko_analytics_post_stats` WHERE `date` >= '$furthestDate' AND `date` <= '$closestDate' GROUP BY `id` ORDER BY `pageviews` DESC  LIMIT 15"));
+    $topTenPosts = $wpdb->get_results($wpdb->prepare("SELECT  `id`, SUM(pageviews) AS pageviews, SUM(visitors) AS visitors FROM `{$wpdb->prefix}koko_analytics_post_stats` WHERE `date` >= '$furthestDate' AND `date` <= '$closestDate' GROUP BY `id` ORDER BY `pageviews` DESC  LIMIT 10"));
     
     
     $topTenPostsDone = array();

@@ -9,9 +9,18 @@ function woocommerce_data($data) {
     if (isset($_SERVER['HTTP_TOKEN'])) {
     if (($_SERVER['HTTP_TOKEN'] == $GLOBALS['secretToken'])) {
         
+    if (get_bloginfo('language') == 'en-US') {
+       $dateFormat = 'm-d-Y'; 
+    } else {
+       $dateFormat = 'd-m-Y'; 
+    }
+
     if (!empty($data->get_param('inicialDateSelected')) && !empty($data->get_param('finalDateSelected'))) {
     $closestDate = $data->get_param('finalDateSelected') . ' 23:59:59';
     $furthestDate = $data->get_param('inicialDateSelected') . ' 00:00:00';
+    
+    $closestDateShowInApp  = date($dateFormat, strtotime($closestDate));
+    $furthestDateShowInApp = date($dateFormat, strtotime($furthestDate));
     
     
         //previous closest date - 1 day of from furthestdate
@@ -27,6 +36,9 @@ function woocommerce_data($data) {
     } else {
     $closestDate  = date("Y-m-d", strtotime("last day of this month")) . ' 23:59:59';;
     $furthestDate = date("Y-m-d", strtotime("first day of this month")) . ' 00:00:00';
+    
+    $closestDateShowInApp  = date($dateFormat, strtotime("last day of this month"));
+    $furthestDateShowInApp = date($dateFormat, strtotime("first day of this month"));
     
     $previousClosestDate = date("Y-m-d", strtotime("last day of last month")) . ' 23:59:59';
     $previousFurthestDate = date("Y-m-d", strtotime("first day of last month")) . ' 00:00:00';
@@ -100,8 +112,8 @@ $percentageArr = array('TotalNetSalesPercentage' => $totalNetSalesPercentage ?: 
 
 
 
-$stringsArr = array( 'SelectionClosest' => strval(substr($closestDate, 0, 10))  ?: '0', 
-'SelectionFurthest' => strval(substr($furthestDate, 0, 10))  ?: '0');
+$stringsArr = array( 'SelectionClosest' => strval(substr($closestDateShowInApp, 0, 10))  ?: '0', 
+'SelectionFurthest' => strval(substr($furthestDateShowInApp, 0, 10))  ?: '0');
 
 
 
