@@ -135,7 +135,7 @@ if (($_SERVER['HTTP_TOKEN'] == $GLOBALS['secretToken'])) {
     
     global $wpdb;
     
-    $topTenPosts = $wpdb->get_results($wpdb->prepare("SELECT  `id`, SUM(pageviews) AS pageviews, SUM(visitors) AS visitors FROM `{$wpdb->prefix}koko_analytics_post_stats` WHERE `date` >= '$furthestDate' AND `date` <= '$closestDate' GROUP BY `id` ORDER BY `pageviews` DESC  LIMIT 10"));
+    $topTenPosts = $wpdb->get_results($wpdb->prepare("SELECT  `id`, SUM(pageviews) AS pageviews, SUM(visitors) AS visitors FROM `{$wpdb->prefix}koko_analytics_post_stats` WHERE `date` >= '$furthestDate' AND `date` <= '$closestDate' GROUP BY `id` ORDER BY `pageviews` DESC  LIMIT 15"));
     
     
     $topTenPostsDone = array();
