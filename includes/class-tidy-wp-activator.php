@@ -46,6 +46,7 @@ add_option( 'tidywp_secret_path', generateRandomString(16), '', 'no' );
     // custom wordpress login and wp-admin
     add_option( 'tidywp_hide_login', 'false', '', 'no' );
     add_option( 'tidywp_smart_security', 'false', '', 'no' );
+    add_option( 'tidywp_last_backup_date', '', '', 'no' );
 	}
 
 }

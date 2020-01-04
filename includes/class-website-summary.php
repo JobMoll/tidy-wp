@@ -52,7 +52,7 @@ $totalUpdateCount = $update_data['counts']['total'];
 echo json_encode($dataArr);
 
     
-      }
+      } 
 }
       else {
      echo 'Sorry... you are not allowed to view this data.';

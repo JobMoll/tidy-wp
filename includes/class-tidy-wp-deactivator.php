@@ -46,6 +46,9 @@ class Tidy_Wp_Deactivator {
     // custom wordpress login and wp-admin
     delete_option( 'tidywp_hide_login');
     delete_option( 'tidywp_smart_security');
+    
+    // backup last date
+    delete_option( 'tidywp_last_backup_date');
 	}
 
 }
