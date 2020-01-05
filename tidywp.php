@@ -58,7 +58,7 @@ $baseURL = get_bloginfo('wpurl') . '/wp-json/' . get_option('tidywp_secret_path'
 $actualURL = $_SERVER['REQUEST_SCHEME'] .'://'. $_SERVER['HTTP_HOST'] 
      . explode('?', $_SERVER['REQUEST_URI'], 2)[0];
 
-if ($baseURL . '/exclude_new_plugin_from_autoupdate' == $actualURL || $baseURL . '/get_installed_plugins_info_summary' == $actualURL || $baseURL . '/enable_plugin_autoupdate' == $actualURL || $baseURL . '/get_installed_plugins_info' == $actualURL {
+if ($baseURL . '/exclude_new_plugin_from_autoupdate' == $actualURL || $baseURL . '/get_installed_plugins_info_summary' == $actualURL || $baseURL . '/enable_plugin_autoupdate' == $actualURL || $baseURL . '/get_installed_plugins_info' == $actualURL) {
 include 'includes/class-remote-updates.php';
 }
 
