@@ -4,7 +4,7 @@
 Plugin Name: Tidy WP
 Plugin URI: https://tidywp.com/
 Description: A clean & easy way to manage multiple Wordpress websites! This plugin is needed to get the Tidy WP app working!
-Version: 0.0.1
+Version: 0.0.2
 Author:            Job Moll
 Author URI:        https://sparknowmedia.com
 License: GPL-3.0
@@ -58,7 +58,7 @@ $baseURL = get_bloginfo('wpurl') . '/wp-json/' . get_option('tidywp_secret_path'
 $actualURL = $_SERVER['REQUEST_SCHEME'] .'://'. $_SERVER['HTTP_HOST'] 
      . explode('?', $_SERVER['REQUEST_URI'], 2)[0];
 
-if ($baseURL . '/exclude_new_plugin_from_autoupdate' == $actualURL || $baseURL . '/get_installed_plugins_info_summary' == $actualURL || $baseURL . '/enable_plugin_autoupdate' == $actualURL || $baseURL . '/get_installed_plugins_info' == $actualURL || $baseURL . '/update_wp_core' == $actualURL) {
+if ($baseURL . '/exclude_new_plugin_from_autoupdate' == $actualURL || $baseURL . '/get_installed_plugins_info_summary' == $actualURL || $baseURL . '/enable_plugin_autoupdate' == $actualURL || $baseURL . '/get_installed_plugins_info' == $actualURL {
 include 'includes/class-remote-updates.php';
 }
 
@@ -108,34 +108,6 @@ function generateRandomString($length) {
     }
     return $randomString;
 }
-
-
-// autoupdate plugins or not and exclude some
-function filter_autoupdate_plugins($update, $plugin)
-{
-    $pluginsNotToUpdate = [];
-               
-    $pluginsNotToUpdate  =  is_array(get_option('tidywp_exclude_plugin_from_autoupdate')) ? get_option('tidywp_exclude_plugin_from_autoupdate') : [];
-
-    if (is_object($plugin))
-    {
-        $pluginName = $plugin->plugin;
-    }
-    else // compatible with earlier versions of wordpress
-    {
-        $pluginName = $plugin;
-    }
-
-    // Allow all plugins except the ones listed above to be updated
-    if (!in_array(trim($pluginName),$pluginsNotToUpdate))
-    {
-       
-        return get_option( 'tidywp_enable_plugin_autoupdate'); // return true to allow update to go ahead
-    }
-
-    return false;
-}
-add_filter( 'auto_update_plugin', 'filter_autoupdate_plugins' ,20  /* priority  */,2 /* argument count passed to filter function  */);
 
 
 

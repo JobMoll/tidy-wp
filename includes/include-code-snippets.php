@@ -5,7 +5,10 @@
     * @author Job Moll
     */
     
+    
+    
 // enable or disable maintaince mode
+
 if (get_option('tidywp_maintaince_mode') == 'true') {
 function maintenance_mode_switch() {
 // Activate WordPress Maintenance Mode
@@ -19,13 +22,16 @@ add_action('get_header', 'wp_maintenance_mode');
 maintenance_mode_switch();
 }
 
+
+
+// smart security
+
 if (get_option('tidywp_smart_security') == 'true') {
 // hide wordpress login errors
 function no_wordpress_errors(){
   return 'Something is wrong!';
 }
 add_filter( 'login_errors', 'no_wordpress_errors' );
-
 
 // thanks to https://coderwall.com/p/dc2bbg/limit-login-attemps
 if ( ! class_exists( 'Limit_Login_Attempts' ) ) {
@@ -179,7 +185,7 @@ function nocdn_on_ssl_page() {
     }
 }
 define('FORCE_SSL_LOGIN', true);
-
+define( 'FORCE_SSL_ADMIN', true );
 
 // DisablePHPErrorReporting
 error_reporting(0);
@@ -188,6 +194,10 @@ error_reporting(0);
 // disable plugin and theme editor
 define( 'DISALLOW_FILE_EDIT', true );
 }
+
+
+
+// change login url
 
 if (get_option('tidywp_hide_login') != 'false') {
 function redirect_to_nonexistent_page(){
@@ -208,5 +218,49 @@ function redirect_to_actual_login(){
   }
 }
 add_action( 'init', 'redirect_to_actual_login');
-// // https://mijnplugin.sparknowmedia.com/wp-login.php?123
 }
+
+
+
+// autoupdate plugins or not and exclude some
+
+if (get_option( 'tidywp_enable_plugin_autoupdate') == 'true') {
+function filter_autoupdate_plugins($update, $plugin)
+{
+    $pluginsNotToUpdate = [];
+               
+    $pluginsNotToUpdate  =  is_array(get_option('tidywp_exclude_plugin_from_autoupdate')) ? get_option('tidywp_exclude_plugin_from_autoupdate') : [];
+
+    if (is_object($plugin))
+    {
+        $pluginName = $plugin->plugin;
+    }
+    else // compatible with earlier versions of wordpress
+    {
+        $pluginName = $plugin;
+    }
+
+    // Allow all plugins except the ones listed above to be updated
+    if (!in_array(trim($pluginName),$pluginsNotToUpdate))
+    {
+       
+        return true; // return true to allow update to go ahead
+    }
+
+    return false;
+}
+add_filter( 'auto_update_plugin', 'filter_autoupdate_plugins' ,20  /* priority  */,2 /* argument count passed to filter function  */);
+}
+
+
+
+// autoupdate themes and core
+
+if (get_option( 'tidywp_enable_theme_autoupdate') == 'true') {
+add_filter( 'auto_update_theme', '__return_true' );
+}
+
+if (get_option( 'tidywp_enable_theme_autoupdate') == 'true') {
+define( 'WP_AUTO_UPDATE_CORE', true );
+}
+

@@ -41,7 +41,11 @@ add_option( 'tidywp_secret_path', generateRandomString(16), '', 'no' );
     
     // exclude plugins from auto update
     add_option( 'tidywp_exclude_plugin_from_autoupdate', '', '', 'no' );
+    
+    // enable auto updates
     add_option( 'tidywp_enable_plugin_autoupdate', 'false' , '', 'no' );
+    add_option( 'tidywp_enable_theme_autoupdate', 'false' , '', 'no' );
+    add_option( 'tidywp_enable_core_autoupdate', 'false' , '', 'no' );
     
     // custom wordpress login and wp-admin
     add_option( 'tidywp_hide_login', 'false', '', 'no' );

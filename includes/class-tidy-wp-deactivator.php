@@ -41,7 +41,11 @@ class Tidy_Wp_Deactivator {
     
     // exclude plugins from auto update
     delete_option( 'tidywp_exclude_plugin_from_autoupdate');
+    
+    // autop update
     delete_option( 'tidywp_enable_plugin_autoupdate');
+    delete_option( 'tidywp_enable_theme_autoupdate');
+    delete_option( 'tidywp_enable_core_autoupdate');
     
     // custom wordpress login and wp-admin
     delete_option( 'tidywp_hide_login');

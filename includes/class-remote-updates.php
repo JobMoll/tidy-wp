@@ -10,18 +10,41 @@ function enable_plugin_autoupdate($data) {
     if (isset($_SERVER['HTTP_TOKEN'])) {
     if (($_SERVER['HTTP_TOKEN'] == $GLOBALS['secretToken'])) {
         
-        if ($data->get_param('enabled') == 'true') {
+        if ($data->get_param('pluginsEnabled') == 'true') {
             update_option( 'tidywp_enable_plugin_autoupdate', 'true', 'no' );
             echo 'true';
         } 
-        
-        if ($data->get_param('enabled') == 'false') {
+        if ($data->get_param('pluginsEnabled') == 'false') {
             update_option( 'tidywp_enable_plugin_autoupdate', 'false', 'no' );
             echo 'false';
         }
+      
         
-                if ($data->get_param('show') == 'true') {
-            echo '{"AutoUpdateEnabled":"' . get_option( 'tidywp_enable_plugin_autoupdate') . '"}';
+        if ($data->get_param('themeEnabled') == 'true') {
+            update_option( 'tidywp_enable_theme_autoupdate', 'true', 'no' );
+            echo 'true';
+        } 
+        if ($data->get_param('themeEnabled') == 'false') {
+            update_option( 'tidywp_enable_theme_autoupdate', 'false', 'no' );
+            echo 'false';
+        }
+        
+        
+        if ($data->get_param('coreEnabled') == 'true') {
+            update_option( 'tidywp_enable_core_autoupdate', 'true', 'no' );
+            echo 'true';
+        } 
+        if ($data->get_param('coreEnabled') == 'false') {
+            update_option( 'tidywp_enable_core_autoupdate', 'false', 'no' );
+            echo 'false';
+        }
+        
+        
+        
+        if ($data->get_param('show') == 'true') {
+            echo '{"AutoUpdatePluginsEnabled":"' . get_option( 'tidywp_enable_plugin_autoupdate') . 
+            '","AutoUpdateThemesEnabled":"' . get_option( 'tidywp_enable_theme_autoupdate') .
+            '","AutoUpdateCoreEnabled":"' . get_option( 'tidywp_enable_core_autoupdate') . '"}';
         }
         
     }
@@ -38,7 +61,9 @@ add_action( 'rest_api_init', function () {
   ) );
 } );
 
-// https://tidywp.sparknowmedia.com/wp-json/NNO6ZKvzjdX8eUuJ/enable_plugin_autoupdate?show=true
+// https://tidywp.sparknowmedia.com/wp-json/MwsojtrJvbdVhWIk/enable_plugin_autoupdate?enabled=show
+
+
 
 
 // 1. get list of all plugin names
@@ -46,49 +71,8 @@ add_action( 'rest_api_init', function () {
 // 3. add to the array and the array in the function
 // 4. true or false for auto update all plugins
 
-
-function get_installed_plugins_info_summary($data) {
-    if (isset($_SERVER['HTTP_TOKEN'])) {
-    if (($_SERVER['HTTP_TOKEN'] == $GLOBALS['secretToken'])) {
-    // Get all plugins
-    include_once( 'wp-admin/includes/plugin.php' );
-    $all_plugins = get_plugins();
-
-    // Get active plugins
-    $active_plugins = get_option('active_plugins');
-
-
- echo '{"TotalInstalledPlugins":"' . count($all_plugins) . '", ';
-  echo '"ActivePlugins":"' . count($active_plugins) . '", ';
-  if (empty(get_option('tidywp_exclude_plugin_from_autoupdate'))) {
-          echo '"ExcludedPluginsCount":"0", ';
-  } else {
-          echo '"ExcludedPluginsCount":"' . count(get_option('tidywp_exclude_plugin_from_autoupdate')) . '", ';
-  }
-echo '"AutoUpdateEnabled":"' . get_option( 'tidywp_enable_plugin_autoupdate') . '"}';
-
-   
-}
-} else {
-    echo 'Sorry... you are not allowed to view this data.';
-}
-}
- 
-// add to rest api
-add_action( 'rest_api_init', function () {
-  register_rest_route( get_option('tidywp_secret_path'), 'get_installed_plugins_info_summary', array(
-    'methods' => 'GET',
-    'callback' => 'get_installed_plugins_info_summary',
-  ) );
-} );
-
-// https://tidywp.sparknowmedia.com/wp-json/tidywp/get_installed_plugins_info_summary?token=123
-
-
-
-
 // 1. get list of all plugin names
-function get_installed_plugins_info($data) {
+function get_installed_plugins_info() {
     if (isset($_SERVER['HTTP_TOKEN'])) {
     if (($_SERVER['HTTP_TOKEN'] == $GLOBALS['secretToken'])) {
     // Get all plugins
@@ -126,7 +110,7 @@ add_action( 'rest_api_init', function () {
     'callback' => 'get_installed_plugins_info',
   ) );
 } );
-// https://tidywp.sparknowmedia.com/wp-json/tidywp/get_installed_plugins_info
+// https://tidywp.sparknowmedia.com/wp-json/MwsojtrJvbdVhWIk/get_installed_plugins_info
 
 
 
@@ -181,9 +165,9 @@ add_action( 'rest_api_init', function () {
     'callback' => 'exclude_new_plugin_from_autoupdate',
   ) );
 } );
-// https://tidywp.sparknowmedia.com/wp-json/tidywp/exclude_new_plugin_from_autoupdate?add-directory=
-// https://tidywp.sparknowmedia.com/wp-json/tidywp/exclude_new_plugin_from_autoupdate?remove-directory=
-// https://tidywp.sparknowmedia.com/wp-json/tidywp/exclude_new_plugin_from_autoupdate?show=true
+// https://tidywp.sparknowmedia.com/wp-json/MwsojtrJvbdVhWIk/exclude_new_plugin_from_autoupdate?add-directory=
+// https://tidywp.sparknowmedia.com/wp-json/MwsojtrJvbdVhWIk/exclude_new_plugin_from_autoupdate?remove-directory=
+// https://tidywp.sparknowmedia.com/wp-json/MwsojtrJvbdVhWIk/exclude_new_plugin_from_autoupdate?show=true
 
 
 
@@ -203,20 +187,39 @@ add_action( 'rest_api_init', function () {
 
 
 
+function get_installed_plugins_info_summary($data) {
+    if (isset($_SERVER['HTTP_TOKEN'])) {
+    if (($_SERVER['HTTP_TOKEN'] == $GLOBALS['secretToken'])) {
+    // Get all plugins
+    include_once( 'wp-admin/includes/plugin.php' );
+    $all_plugins = get_plugins();
+
+    // Get active plugins
+    $active_plugins = get_option('active_plugins');
 
 
-// function
-function update_wp_core() {
-global $wp_version;
-echo $wp_version;
+ echo '{"TotalInstalledPlugins":"' . count($all_plugins) . '", ';
+  echo '"ActivePlugins":"' . count($active_plugins) . '", ';
+  if (empty(get_option('tidywp_exclude_plugin_from_autoupdate'))) {
+          echo '"ExcludedPluginsCount":"0", ';
+  } else {
+          echo '"ExcludedPluginsCount":"' . count(get_option('tidywp_exclude_plugin_from_autoupdate')) . '", ';
+  }
+echo '"AutoUpdateEnabled":"' . get_option( 'tidywp_enable_plugin_autoupdate') . '"}';
+
+   
 }
-
+} else {
+    echo 'Sorry... you are not allowed to view this data.';
+}
+}
+ 
 // add to rest api
 add_action( 'rest_api_init', function () {
-  register_rest_route( get_option('tidywp_secret_path'), 'update_core', array(
+  register_rest_route( get_option('tidywp_secret_path'), 'get_installed_plugins_info_summary', array(
     'methods' => 'GET',
-    'callback' => 'update_wp_core',
+    'callback' => 'get_installed_plugins_info_summary',
   ) );
 } );
 
-// https://tidywp.sparknowmedia.com/wp-json/tidywp/update_core
+// https://tidywp.sparknowmedia.com/wp-json/MwsojtrJvbdVhWIk/get_installed_plugins_info_summary
