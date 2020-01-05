@@ -26,8 +26,6 @@ function backup($data) {
             
     update_option('tidywp_last_backup_date', date("H:i $dateFormat", strtotime("now")), 'no' );
     
-    https://tidywp.sparknowmedia.com/wp-cron.php?_nonce=a0951007&backwpup_run=runext&jobid=1
-    
     $url = get_bloginfo('wpurl') . '/wp-cron.php?_nonce='. get_option('backwpup_cfg_jobrunauthkey') . '&backwpup_run=runext&jobid=' . '1';
  
     file_get_contents($url);
