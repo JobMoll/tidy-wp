@@ -4,7 +4,7 @@
  * Fired during plugin activation
  *
  * @link       https://sparknowmedia.com
- * @since      1.0.0
+ * @since      0.0.1
  *
  * @package    tidy-wp
  * @subpackage tidy-wp/includes
@@ -46,6 +46,8 @@ add_option( 'tidywp_secret_path', generateRandomString(16), '', 'no' );
     // custom wordpress login and wp-admin
     add_option( 'tidywp_hide_login', 'false', '', 'no' );
     add_option( 'tidywp_smart_security', 'false', '', 'no' );
+    
+    // backup
     add_option( 'tidywp_last_backup_date', '', '', 'no' );
 	}
 
