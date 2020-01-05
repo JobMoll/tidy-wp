@@ -6,7 +6,8 @@
 
 .QRCode {
     border-radius: 5px;
-    width: 250px;
+    width: 270px;
+    height:  270px;
     box-shadow: 0px 10px 10px #1C1B20;
     margin-top: 15px;
 }

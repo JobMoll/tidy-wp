@@ -20,7 +20,7 @@ if ( is_user_logged_in() ) {
 }
 
 if (current_user_can( 'manage_options' )) {
-$stringForQRCodeImage = 'https://chart.googleapis.com/chart?cht=qr&chs=270x270&chl=' . 
+$stringForQRCodeImage = 'https://chart.googleapis.com/chart?cht=qr&chs=270x270&chld=L|1&chl=' . 
 '{"BaseDomainURL":"' . get_bloginfo( 'wpurl' ) .
 '","DomainURL":"' . $domainURL .
 '","SecretToken":"' . $secretToken . 
@@ -43,15 +43,7 @@ add_action( 'admin_enqueue_scripts', 'load_custom_wp_admin_style' );
 
 
 
-function generateRandomString($length) {
-    $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    $charactersLength = strlen($characters);
-    $randomString = '';
-    for ($i = 0; $i < $length; $i++) {
-        $randomString .= $characters[rand(0, $charactersLength - 1)];
-    }
-    return $randomString;
-}
+
 // reset secrettoken and path
 if (isset($_GET['reset'])) {
 if ($_GET['reset'] == 'yes') {
