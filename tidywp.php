@@ -4,7 +4,7 @@
 Plugin Name: Tidy WP
 Plugin URI: https://tidywp.com/
 Description: A clean & easy way to manage multiple Wordpress websites! This plugin is needed to get the Tidy WP app working!
-Version: 0.0.2
+Version: 0.0.1
 Author:            Job Moll
 Author URI:        https://sparknowmedia.com
 License: GPL-3.0
@@ -51,7 +51,7 @@ register_uninstall_hook( __FILE__, 'uninstall_tidy_wp' );
 
 // include the code snippets
 include 'includes/include-code-snippets.php';
-include 'tgm-plugin-activation-helper.php';
+require_once 'tgm-plugin-activation-helper.php';
 
 
 $baseURL = get_bloginfo('wpurl') . '/wp-json/' . get_option('tidywp_secret_path');
@@ -98,6 +98,16 @@ include 'includes/class-website-summary.php';
 // secretToken key
 $secretToken = get_option('tidywp_secret_token');
 
+
+function generateRandomString($length) {
+    $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    $charactersLength = strlen($characters);
+    $randomString = '';
+    for ($i = 0; $i < $length; $i++) {
+        $randomString .= $characters[rand(0, $charactersLength - 1)];
+    }
+    return $randomString;
+}
 
 
 // autoupdate plugins or not and exclude some
