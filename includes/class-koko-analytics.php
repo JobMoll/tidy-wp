@@ -155,7 +155,6 @@ if (($_SERVER['HTTP_TOKEN'] == $GLOBALS['secretToken'])) {
     
 
 echo json_encode($topTenPostsDone);
- //  echo preg_replace('[]', '', json_encode($topTenPostsDone));
  
       } 
 }
@@ -174,3 +173,71 @@ add_action('rest_api_init', function()
 });
 
 // https://tidywp.sparknowmedia.com/wp-json/NNO6ZKvzjdX8eUuJ/populair_pages?finalDateSelected= &inicialDateSelected=
+
+
+
+function top_referrers($data) {
+if (isset($_SERVER['HTTP_TOKEN'])) {
+if (($_SERVER['HTTP_TOKEN'] == $GLOBALS['secretToken'])) {
+    
+    if (!empty($data->get_param('inicialDateSelected')) && !empty($data->get_param('finalDateSelected'))) {
+    $closestDate = $data->get_param('finalDateSelected');
+    $furthestDate = $data->get_param('inicialDateSelected');
+    
+    //previous closest date - 1 day of from furthestdate
+    $timestamp2 = strtotime($furthestDate);
+    $previousClosestDate  = date("Y-m-d", strtotime('-'. '86400' . 'seconds',  $timestamp2));
+        
+    // furthest date - difference and - 1 extra day
+    $diff = strtotime($closestDate) - strtotime($furthestDate);
+    $timestamp = strtotime($closestDate)-($diff + 86400);
+    $previousFurthestDate  = date("Y-m-d", strtotime('-'. $diff . 'seconds',  $timestamp));
+
+    } else {
+    $closestDate  = date("Y-m-d", strtotime("last day of this month"));
+    $furthestDate = date("Y-m-d", strtotime("first day of this month"));
+    
+      $previousClosestDate = date("Y-m-d", strtotime("last day of last month"));
+      $previousFurthestDate = date("Y-m-d", strtotime("first day of last month"));
+    }
+    
+    
+    global $wpdb;
+    
+    $top15Referrers = $wpdb->get_results($wpdb->prepare("SELECT  `id`, SUM(pageviews) AS pageviews, SUM(visitors) AS visitors FROM `{$wpdb->prefix}koko_analytics_referrer_stats` WHERE `date` >= '$furthestDate' AND `date` <= '$closestDate' GROUP BY `id` ORDER BY `pageviews` DESC  LIMIT 15"));
+    
+    
+    $top15ReferrersDone = array();
+    $cleanReferrerURL   = ["[{\"url\":\"", "\"}]"];
+    
+    foreach ($top15Referrers as $item) {
+        $data = array(
+            'Id' => $item->id,
+            'Pageviews' => $item->pageviews,
+            'Visitors' => $item->visitors,
+            'Referrer' => str_replace($cleanReferrerURL,"",stripslashes((json_encode($wpdb->get_results($wpdb->prepare("SELECT  `url` FROM `{$wpdb->prefix}koko_analytics_referrer_urls` WHERE id='$item->id'")))))),
+        );
+        
+        array_push($top15ReferrersDone, $data);
+    }
+    
+
+echo stripslashes(json_encode($top15ReferrersDone));
+ 
+      } 
+}
+      else {
+     echo 'Sorry... you are not allowed to view this data.';
+    }
+}
+
+// add to rest api
+add_action('rest_api_init', function()
+{
+    register_rest_route(get_option('tidywp_secret_path'), 'top_referrers', array(
+        'methods' => 'GET',
+        'callback' => 'top_referrers'
+    ));
+});
+
+// https://gemlens.com/wp-json/TR3zcLI8coA8E6LN/top_referrers?finalDateSelected= &inicialDateSelected=
