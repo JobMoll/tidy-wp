@@ -7,12 +7,12 @@
     
 // true and false statement handler
 function backup($data) {
-    // if (isset($_SERVER['HTTP_TOKEN'])) {
-    // if (($_SERVER['HTTP_TOKEN'] == $GLOBALS['secretToken'])) {
+    if (isset($_SERVER['HTTP_TOKEN'])) {
+    if (($_SERVER['HTTP_TOKEN'] == $GLOBALS['secretToken'])) {
         
         if ($data->get_param('last-backup') == 'true') {
         
-            echo '{"LastBackup":"' . get_option('tidywp_last_backup_date') . '"}';
+            echo '{"LastBackup":"' . get_option('tidywp_last_backup_date') . '","BackWPupInstalled":"' . in_array('backwpup/backwpup.php', apply_filters('active_plugins', get_option('active_plugins'))) . '"}';
             
         } 
         
@@ -32,10 +32,10 @@ function backup($data) {
         }
         
         
-    // }
-//     } else {
-//     echo 'Sorry... you are not allowed to view this data.';
-// }
+    }
+    } else {
+    echo 'Sorry... you are not allowed to view this data.';
+}
 }
 
 // add to rest api
@@ -46,5 +46,5 @@ add_action( 'rest_api_init', function () {
   ) );
 } );
 
-// https://tidywp.sparknowmedia.com/wp-json/rmYiTtNhc2OmfFVB/backup?last-backup=true
-// https://tidywp.sparknowmedia.com/wp-json/rmYiTtNhc2OmfFVB/backup?new-backup=true
+// https://tidywp.sparknowmedia.com/wp-json/MwsojtrJvbdVhWIk/backup?last-backup=true
+// https://tidywp.sparknowmedia.com/wp-json/MwsojtrJvbdVhWIk/backup?new-backup=true
