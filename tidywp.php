@@ -87,13 +87,19 @@ if ($baseURL . '/woocommerce_data' == $actualURL) {
 include 'includes/class-woocommerce.php';
 }
 
-if ($baseURL . '/visitors_pageviews' == $actualURL || $baseURL . '/populair_pages' == $actualURL) {
+if ($baseURL . '/visitors_pageviews' == $actualURL || $baseURL . '/populair_pages' == $actualURL || $baseURL . '/top_referrers' == $actualURL) {
 include 'includes/class-koko-analytics.php';
 }
 
 if ($baseURL . '/website_summary' == $actualURL) {
 include 'includes/class-website-summary.php';
 }
+
+if ($baseURL . '/publish_new_post' == $actualURL) {
+include 'includes/class-publish-new-post.php';
+}
+
+
 
 // secretToken key
 $secretToken = get_option('tidywp_secret_token');
