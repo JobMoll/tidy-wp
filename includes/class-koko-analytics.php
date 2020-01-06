@@ -147,7 +147,6 @@ if (($_SERVER['HTTP_TOKEN'] == $GLOBALS['secretToken'])) {
             'Visitors' => $item->visitors,
             'PageName' => get_the_title($item->id),
             'PageSlug' => get_post_permalink($item->id)
-            
         );
         
         array_push($topTenPostsDone, $data);
@@ -208,14 +207,16 @@ if (($_SERVER['HTTP_TOKEN'] == $GLOBALS['secretToken'])) {
     
     
     $top15ReferrersDone = array();
+    $cleanReferrerName   = ["[{\"url\":\"https://", "\"}]", "www."];
     $cleanReferrerURL   = ["[{\"url\":\"", "\"}]"];
     
     foreach ($top15Referrers as $item) {
         $data = array(
-            'Id' => $item->id,
-            'Pageviews' => $item->pageviews,
-            'Visitors' => $item->visitors,
-            'Referrer' => str_replace($cleanReferrerURL,"",stripslashes((json_encode($wpdb->get_results($wpdb->prepare("SELECT  `url` FROM `{$wpdb->prefix}koko_analytics_referrer_urls` WHERE id='$item->id'")))))),
+            'Id' => $item->id ?: '0',
+            'Pageviews' => $item->pageviews ?: '0',
+            'Visitors' => $item->visitors ?: '0',
+            'ReferrerName' => str_replace($cleanReferrerName,"",stripslashes((json_encode($wpdb->get_results($wpdb->prepare("SELECT  `url` FROM `{$wpdb->prefix}koko_analytics_referrer_urls` WHERE id='$item->id'")))))) ?: '0',
+            'ReferrerURL' => str_replace($cleanReferrerURL,"",stripslashes((json_encode($wpdb->get_results($wpdb->prepare("SELECT  `url` FROM `{$wpdb->prefix}koko_analytics_referrer_urls` WHERE id='$item->id'")))))) ?: '0',
         );
         
         array_push($top15ReferrersDone, $data);
