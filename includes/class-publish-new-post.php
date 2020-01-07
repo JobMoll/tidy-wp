@@ -24,7 +24,7 @@ $post_array = array(
     'post_content'  => $data->get_param('post_content') , // a string
     'post_status'   => $data->get_param('post_status'), // draft, publish, private, future
     'post_author'   => 1,
-    'post_category' => array( $data->get_param('post_title') ) // 7,89 int gescheiden met een komma
+    'post_category' => array( $data->get_param('post_categories') ) // 7,89 int gescheiden met een komma
 );
  
 // Insert the post into the database.
