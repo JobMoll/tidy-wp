@@ -11,7 +11,7 @@ function backup($data) {
     if (($_SERVER['HTTP_TOKEN'] == $GLOBALS['secretToken'])) {
         
         if ($data->get_param('last-backup') == 'true') {
-        
+     
             echo '{"LastBackup":"' . get_option('tidywp_last_backup_date') . '","BackWPupInstalled":"' . in_array('backwpup/backwpup.php', apply_filters('active_plugins', get_option('active_plugins'))) . '"}';
             
         } 
@@ -26,9 +26,56 @@ function backup($data) {
             
     update_option('tidywp_last_backup_date', date("H:i $dateFormat", strtotime("now")), 'no' );
     
-    $url = get_bloginfo('wpurl') . '/wp-cron.php?_nonce='. get_option('backwpup_cfg_jobrunauthkey') . '&backwpup_run=runext&jobid=' . '1';
- 
+
+$defaultquantityarray = array (
+  1 => 
+  array (
+    'jobid' => (int) get_option('tidywp_BackWPup_key'),
+    'backuptype' => 'archive',
+    'type' => 
+    array (
+      0 => 'DBDUMP',
+      1 => 'FILE',
+      2 => 'WPPLUGIN',
+    ),
+    'destinations' => 
+    array (
+      0 => 'FOLDER',
+    ),
+    'name' => 'Tidy WP',
+    'mailaddresslog' => get_bloginfo( 'admin_email' ),
+    'mailaddresssenderlog' => 'BackWPup Tidy WP <' . get_bloginfo( 'admin_email' ) . '>',
+    'mailerroronly' => true,
+    'archiveformat' => '.zip',
+    'archiveencryption' => false,
+    'archivename' => '%d-%m-%Y_%H-%i-%s_%hash%',
+    'activetype' => 'link',
+    'cronselect' => 'basic',
+    'cron' => '0 3 * * *',
+    'dbdumpfilecompression' => '',
+    'dbdumpfile' => 'tidywp',
+    'dbdumpexclude' => 
+    array (
+    ),
+  ),
+);  
+
+
+function callBackupURl() {
+    $url = get_bloginfo('wpurl') . '/wp-cron.php?_nonce='. get_option('backwpup_cfg_jobrunauthkey') . '&backwpup_run=runext&jobid=' . get_option('tidywp_BackWPup_key');
     file_get_contents($url);
+}
+// only update_option on new plugin installations
+
+// it inserts it into the database but the user has to click 'save' first in the admin panel weird
+if (count(get_option('backwpup_jobs')) < 10){
+  update_option('backwpup_jobs', $defaultquantityarray); 
+  callBackupURl();
+} else {
+    callBackupURl();
+}
+  
+
         }
         
         

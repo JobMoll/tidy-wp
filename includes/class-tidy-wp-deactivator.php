@@ -53,6 +53,7 @@ class Tidy_Wp_Deactivator {
     
     // backup last date
     delete_option( 'tidywp_last_backup_date');
+    delete_option( 'tidywp_BackWPup_key');
 	}
 
 }
