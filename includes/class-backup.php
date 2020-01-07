@@ -18,25 +18,19 @@ function backup($data) {
         
         if ($data->get_param('new-backup') == 'true') {
 
-            if (get_bloginfo('language') == 'en-US') {
-              $dateFormat = 'm-d-Y'; 
-            } else {
-              $dateFormat = 'd-m-Y'; 
-            }
-            
-    update_option('tidywp_last_backup_date', date("H:i $dateFormat", strtotime("now")), 'no' );
-    
-
 $defaultquantityarray = array (
   1 => 
   array (
-    'jobid' => (int) get_option('tidywp_BackWPup_key'),
+  //  'jobid' => (int) get_option('tidywp_BackWPup_key'),
+    'jobid' => 1,
     'backuptype' => 'archive',
     'type' => 
     array (
-      0 => 'DBDUMP',
-      1 => 'FILE',
-      2 => 'WPPLUGIN',
+      0 => 'DBCHECK',
+      1 => 'DBDUMP',
+      2 => 'FILE',
+      3 => 'WPEXP',
+      4 => 'WPPLUGIN',
     ),
     'destinations' => 
     array (
@@ -62,8 +56,15 @@ $defaultquantityarray = array (
 
 
 function callBackupURl() {
-    $url = get_bloginfo('wpurl') . '/wp-cron.php?_nonce='. get_option('backwpup_cfg_jobrunauthkey') . '&backwpup_run=runext&jobid=' . get_option('tidywp_BackWPup_key');
+    $url = get_bloginfo('wpurl') . '/wp-cron.php?_nonce='. get_option('backwpup_cfg_jobrunauthkey') . '&backwpup_run=runext&jobid=1';// . get_option('tidywp_BackWPup_key');
     file_get_contents($url);
+    
+            if (get_bloginfo('language') == 'en-US') {
+              $dateFormat = 'm-d-Y'; 
+            } else {
+              $dateFormat = 'd-m-Y'; 
+            }
+    update_option('tidywp_last_backup_date', date("H:i $dateFormat", strtotime("now")), 'no' );
 }
 // only update_option on new plugin installations
 
@@ -73,6 +74,7 @@ if (count(get_option('backwpup_jobs')) < 10){
   callBackupURl();
 } else {
     callBackupURl();
+    
 }
   
 
