@@ -31,7 +31,7 @@
  * Plugin:
  * require_once dirname( __FILE__ ) . '/path/to/class-tgm-plugin-activation.php';
  */
-require_once dirname( __FILE__ ) . '/includes/class-tgm-plugin-activation.php';
+require_once dirname( __FILE__ ) . '/includes/class-tgm-plugin-recommended.php';
 
 add_action( 'tgmpa_register', 'tidy_wp_register_required_plugins' );
 
