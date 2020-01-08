@@ -134,6 +134,51 @@ p {
     margin-left: 0px;
 }
 
+.licenseKeyInput {
+    padding: 4px 8px;
+    border-radius: 5px;
+    height: 45px;
+    width: 70%;
+    max-width: 400px;
+    font-size: 16px;
+}
+
+.licenseKeyH3 {
+    margin-top: 50px;
+    margin-bottom: 20px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 /*text slider for tips*/

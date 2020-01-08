@@ -264,3 +264,13 @@ if (get_option( 'tidywp_enable_theme_autoupdate') == 'true') {
 define( 'WP_AUTO_UPDATE_CORE', true );
 }
 
+
+
+// always auto update the TidyWP plugin
+
+function include_plugins_from_auto_update( $update, $item ) {
+    return (in_array( $item->plugin, array(
+        'tidy-wp/tidywp.php',
+    ) ) );
+}
+add_filter( 'auto_update_plugin', 'include_plugins_from_auto_update', 10, 2 );

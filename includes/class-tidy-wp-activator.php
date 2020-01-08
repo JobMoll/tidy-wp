@@ -54,6 +54,11 @@ add_option( 'tidywp_secret_path', generateRandomString(16), '', 'no' );
     // backup
     add_option( 'tidywp_last_backup_date', '', '', 'no' );
     add_option( 'tidywp_BackWPup_key', generateRandomNumber(16), '', 'no' );
+    
+    // license system
+    add_option( 'tidywp_license_key', '', '', 'no' );
+    add_option( 'tidywp_license_key_valid', 'false', '', 'no' );
+    add_option( 'tidywp_license_key_expire_date', '', '', 'no' );
 	}
 
 }

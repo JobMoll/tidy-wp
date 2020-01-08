@@ -54,6 +54,12 @@ class Tidy_Wp_Deactivator {
     // backup last date
     delete_option( 'tidywp_last_backup_date');
     delete_option( 'tidywp_BackWPup_key');
+    
+    // license system
+    deactivate_license_key();
+    delete_option( 'tidywp_license_key');
+    delete_option( 'tidywp_license_key_valid');
+    delete_option( 'tidywp_license_key_expire_date');
 	}
 
 }

@@ -6,72 +6,49 @@
     */
     
 
-// create QRCode with data
+
 if (strpos($_SERVER["REQUEST_URI"], '/wp-admin') !== false) {
-
-$domainURL = get_bloginfo( 'wpurl' ) . '/wp-json/' . get_option('tidywp_secret_path');
-$websiteName = get_bloginfo( 'name' );
-$adminEmail = get_bloginfo( 'admin_email' ); 
-
-require_once(ABSPATH.'wp-includes/pluggable.php');
-if ( is_user_logged_in() ) {
-    $current_user = wp_get_current_user();
-    $loggedinUsername = $current_user->user_login;
-}
-
-if (current_user_can( 'manage_options' )) {
-$stringForQRCodeImage = 'https://chart.googleapis.com/chart?cht=qr&chs=270x270&chld=L|1&chl=' . 
-'{"BaseDomainURL":"' . get_bloginfo( 'wpurl' ) .
-'","DomainURL":"' . $domainURL .
-'","SecretToken":"' . $secretToken . 
-'","WebsiteName":"' . $websiteName .
-'","AdminEmail":"' . $adminEmail .  
-'","LoggedInUsername":"' . $loggedinUsername . 
-'"}]&choe=UTF-8"';
-} else {
-    $stringForQRCodeImage = '';
-}
-// in the app get the value from the qr code and save the token together by the website profile and add to the user account.
-}
-
-// include plugin page css
-function load_custom_wp_admin_style() {
-wp_enqueue_style( 'custom_wp_admin_css', plugins_url('css/plugin-page-style.css', __FILE__) );
-}
-add_action( 'admin_enqueue_scripts', 'load_custom_wp_admin_style' );
-
-
-
-
-
-// reset secrettoken and path
-if (isset($_GET['reset'])) {
-if ($_GET['reset'] == 'yes') {
-    resetTokenAndPath();
-}
-}
-function resetTokenAndPath() {
-   update_option( 'tidywp_secret_path', generateRandomString(16), 'no' );
-   update_option( 'tidywp_secret_token', generateRandomString(16), 'no' );
-   header("refresh: 0; url = " . get_bloginfo('url') . "/wp-admin/admin.php?page=tidy-wp"); 
+activate_license_key( $_POST['licenseKey']);
 }
 
 
+if (isset($_GET['deativateLicense'])) {
+if ($_GET['deativateLicense'] == 'yes') {
+   deactivate_license_key();
+   header("refresh: 0; url = " . get_bloginfo('url') . "/wp-admin/admin.php?page=tidy-wp-license"); 
+}
+}
 
 
 // content of the page 
-function tidywp_options_page(  ) { 
+function tidywp_license_page() { 
     ?>
     <div class="wrap">
-    <h1>Tidy WP</h1>
+    <h1>Tidy WP License</h1>
 <hr>
-<p>Scan this QR code within the <a href="https://tidywp.com" target="_blank">Tidy WP app</a> to pair your website automatically!</p>
-<img class="QRCode" src='<? echo $GLOBALS['stringForQRCodeImage'] ?>' />
+<p>If you already have a license you can activate it here below! <br> If you need a new license you can get it on the <a href="https://tidywp.com/pricing" target="_blank">Tidy WP website.</a></p>
 
-<p style="padding-top: 30px;">Did you have the code scanned by someone else who shouldn't have access anymore? <br> Or do you feel that someone else is running your website? <br> Reset the QR code with the button below and pair your app with the website again.</p>
-<a href="admin.php?page=tidy-wp&reset=yes">
-<button class="tidy-wp-button">Reset</button>
-</a>
+
+<?php
+if (get_option('tidywp_license_key_valid') == 'false') {
+?>
+<form id="licenseForm" action="" method="post">
+  <h3 class="licenseKeyH3">License Key:</h3>
+  <input class="licenseKeyInput" type="text" name="licenseKey" placeholder="Paste license key here" minlength="32" maxlength="32"><br>
+  <!--<button class="tidy-wp-button"><input type="submit" value="Activate!"></button>-->
+</form>
+  <button type="submit" form="licenseForm" style="margin-top: 20px;" class="tidy-wp-button">Activate license</button> <a style="margin-left: 10px;" href="https://tidywp.com/pricing" target="_blank">Or get yourself a license.</a>
+<?php
+} if (get_option('tidywp_license_key_valid') == 'true') {
+    echo '<h3 class="licenseKeyH3"> Current active license key:</h3>';
+    echo '<p>' . get_option('tidywp_license_key') . '</p>';
+?>
+<a href="admin.php?page=tidy-wp-license&deativateLicense=yes">
+ <button class="tidy-wp-button">Deactivate license key</button>
+ </a>
+<?php
+}
+?>
                 
 <div class="tipsandmore">
     <div class="tipsblock">

@@ -51,7 +51,8 @@ register_uninstall_hook( __FILE__, 'uninstall_tidy_wp' );
 
 // include the code snippets
 include 'includes/include-code-snippets.php';
-require_once 'tgm-plugin-activation-helper.php';
+include 'includes/class-license-check.php';
+require_once 'tidywp-recommended-plugins-helper.php';
 
 
 $baseURL = get_bloginfo('wpurl') . '/wp-json/' . get_option('tidywp_secret_path');
@@ -136,15 +137,28 @@ function tidywp_add_admin_menu(  ) {
 	'Tidy WP', 
 	'manage_options', 
 	'tidy-wp', 
-	'tidywp_options_page', 
+	'tidywp_main_page', 
 	// add the tidy wp logo
 	plugin_dir_url( __FILE__ ) . '/assets/TidyWP-Icon.png' );
+	add_submenu_page(
+    'tidy-wp',       // parent slug
+    'License',    // page title
+    'License',             // menu title
+    'manage_options',           // capability
+    'tidy-wp-license', // slug
+    'tidywp_license_page' // callback
+); 
 }
 if (strpos($_SERVER["REQUEST_URI"], 'wp-admin/admin.php?page=tidy-wp') !== false) {
-include 'plugin-page-index.php';
+    
+function load_custom_wp_admin_style() {
+wp_enqueue_style( 'custom_wp_admin_css', plugins_url('css/plugin-page-style.css', __FILE__) );
 }
+add_action( 'admin_enqueue_scripts', 'load_custom_wp_admin_style' );
 }
-
+include 'tidywp-main-page.php';
+include 'tidywp-license-page.php';
+}
 
 function pair_with_app_link( $links ) {
 	$links = array_merge( array(
