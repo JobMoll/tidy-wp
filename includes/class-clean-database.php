@@ -43,9 +43,9 @@ function cleanup_database($data) {
  $wpdb->query($wpdb->prepare("DELETE FROM $wpdb->posts WHERE post_status = 'trash'"));
    }
  // delete all posts in draft
-   if ($data->get_param('post-draft') == 'true') {
- $wpdb->query($wpdb->prepare("DELETE FROM $wpdb->posts WHERE post_status = 'draft'"));
-   }
+//   if ($data->get_param('post-draft') == 'true') {
+//  $wpdb->query($wpdb->prepare("DELETE FROM $wpdb->posts WHERE post_status = 'draft'"));
+//   }
  
  // delete transients
    if ($data->get_param('transients') == 'true') {
@@ -99,7 +99,7 @@ function show_count_database($data) {
  $postTrash = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM $wpdb->posts WHERE post_status = 'trash'"));
    
  // count all posts in draft
- $postDraft = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM $wpdb->posts WHERE post_status = 'draft'"));
+// $postDraft = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM $wpdb->posts WHERE post_status = 'draft'"));
   
  
  // count transients
