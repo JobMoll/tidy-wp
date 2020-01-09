@@ -6,8 +6,8 @@
     */
     
 function publish_new_post($data) {
-    // if (isset($_SERVER['HTTP_TOKEN'])) {
-    // if (($_SERVER['HTTP_TOKEN'] == $GLOBALS['secretToken'])) {
+    if (isset($_SERVER['HTTP_TOKEN'])) {
+    if (($_SERVER['HTTP_TOKEN'] == $GLOBALS['secretToken'])) {
        
        // get category name and id in json format
        $categories = get_terms( 'category', 'orderby=count&hide_empty=0' );
@@ -31,10 +31,10 @@ $post_array = array(
 wp_insert_post( $post_array );
 
 
-//     }
-//     } else {
-//     echo 'Sorry... you are not allowed to view this data.';
-// }
+    }
+    } else {
+    echo 'Sorry... you are not allowed to view this data.';
+}
 }
 
 // add to rest api
