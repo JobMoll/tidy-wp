@@ -14,11 +14,13 @@ function woocommerce_data($data) {
     } else {
        $dateFormat = 'd-m-Y'; 
     }
+    $currentTime = date("H:i:s");
+    $currentDate = date("Y-m-d");
     
     if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_option('active_plugins'))) && in_array('woocommerce-admin/woocommerce-admin.php', apply_filters('active_plugins', get_option('active_plugins'))) ) {
 
     if (!empty($data->get_param('inicialDateSelected')) && !empty($data->get_param('finalDateSelected'))) {
-    $closestDate = $data->get_param('finalDateSelected') . ' 23:59:59';
+    $closestDate = $data->get_param('finalDateSelected') . ' ' . $currentTime; 
     $furthestDate = $data->get_param('inicialDateSelected') . ' 00:00:00';
     
     $closestDateShowInApp  = date($dateFormat, strtotime($closestDate));
@@ -27,7 +29,7 @@ function woocommerce_data($data) {
     
         //previous closest date - 1 day of from furthestdate
     $timestamp2 = strtotime($data->get_param('inicialDateSelected'));
-    $previousClosestDate  = date("Y-m-d", strtotime('-'. '86400' . 'seconds',  $timestamp2)) . ' 23:59:59';
+    $previousClosestDate  = date("Y-m-d", strtotime('-'. '86400' . 'seconds',  $timestamp2)) . ' ' . $currentTime;
         
     // furthest date - difference and - 1 extra day
     $diff = strtotime($data->get_param('finalDateSelected')) - strtotime($data->get_param('inicialDateSelected'));
@@ -36,13 +38,17 @@ function woocommerce_data($data) {
     
 
     } else {
-    $closestDate  = date("Y-m-d", strtotime("last day of this month")) . ' 23:59:59';;
+    $closestDate =  date("Y-m-d H:i:s", strtotime($currentDate . $currentTime));
+
+ //   $closestDate  = date("Y-m-d", strtotime("last day of this month")) . ' 23:59:59';
+ 
+
     $furthestDate = date("Y-m-d", strtotime("first day of this month")) . ' 00:00:00';
     
-    $closestDateShowInApp  = date($dateFormat, strtotime("last day of this month"));
+    $closestDateShowInApp  = date($dateFormat, strtotime("now"));
     $furthestDateShowInApp = date($dateFormat, strtotime("first day of this month"));
     
-    $previousClosestDate = date("Y-m-d", strtotime("last day of last month")) . ' 23:59:59';
+    $previousClosestDate = date("Y-m-d", strtotime($currentDate . "-1 month")) . ' ' . $currentTime;
     $previousFurthestDate = date("Y-m-d", strtotime("first day of last month")) . ' 00:00:00';
     }
        
@@ -109,23 +115,19 @@ $numItemsSoldPercentage = getPercentages($numItemsSold, $previousNumItemsSold, $
 
 $percentageArr = array('TotalNetSalesPercentage' => $totalNetSalesPercentage ?: '0', 'TotalSalesPercentage' => $totalSalesPercentage ?: '0', 'OrdersPercentage' => $ordersPercentage ?: '0', 'AverageOrderValueNetPercentage' => $averageOrderValueNetPercentage ?: '0', 'NumItemsSoldPercentage' => $numItemsSoldPercentage ?: '0');
 
-
-
-
-
-
 $stringsArr = array( 'SelectionClosest' => strval(substr($closestDateShowInApp, 0, 10))  ?: '0', 
 'SelectionFurthest' => strval(substr($furthestDateShowInApp, 0, 10))  ?: '0');
-
-
 
 echo '{ "Numbers": ' . json_encode($dataArr) . ', ';
 echo '"Percentages": ' . json_encode($percentageArr) . ', ';
 echo '"Strings": ' . json_encode($stringsArr) . '}';
 
+
+
+
             } else {
               
-    $closestDateShowInApp  = date($dateFormat, strtotime("last day of this month"));
+    $closestDateShowInApp  = date($dateFormat, strtotime("now"));
     $furthestDateShowInApp = date($dateFormat, strtotime("first day of this month"));
     
                 $dataArr = array(

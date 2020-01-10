@@ -15,6 +15,8 @@ if (($_SERVER['HTTP_TOKEN'] == $GLOBALS['secretToken'])) {
        $dateFormat = 'd-m-Y'; 
     }
     
+    $currentDate = date("Y-m-d");
+    
         if (in_array('koko-analytics/koko-analytics.php', apply_filters('active_plugins', get_option('active_plugins')))) {
             
     if (!empty($data->get_param('inicialDateSelected')) && !empty($data->get_param('finalDateSelected'))) {
@@ -34,14 +36,14 @@ if (($_SERVER['HTTP_TOKEN'] == $GLOBALS['secretToken'])) {
     $previousFurthestDate  = date("Y-m-d", strtotime('-'. $diff . 'seconds',  $timestamp));
 
     } else {
-    $closestDate  = date("Y-m-d", strtotime("last day of this month"));
+    $closestDate =  date("Y-m-d", strtotime($currentDate));
     $furthestDate = date("Y-m-d", strtotime("first day of this month"));
     
-    $closestDateShowInApp  = date($dateFormat, strtotime("last day of this month"));
+    $closestDateShowInApp  = date($dateFormat, strtotime($currentDate));
     $furthestDateShowInApp = date($dateFormat, strtotime("first day of this month"));
     
     
-    $previousClosestDate = date("Y-m-d", strtotime("last day of last month"));
+    $previousClosestDate = date("Y-m-d", strtotime($currentDate . "-1 month"));
     $previousFurthestDate = date("Y-m-d", strtotime("first day of last month"));
     }
 
@@ -94,7 +96,7 @@ echo '{"Stats": ' . json_encode($dataArr) . '}';
     
         } else {
             
-    $closestDateShowInApp  = date($dateFormat, strtotime("last day of this month"));
+    $closestDateShowInApp  = date($dateFormat, strtotime($currentDate));
     $furthestDateShowInApp = date($dateFormat, strtotime("first day of this month"));
     
                 $dataArr = array(
@@ -134,12 +136,22 @@ add_action('rest_api_init', function()
 // https://tidywp.sparknowmedia.com/wp-json/NNO6ZKvzjdX8eUuJ/visitors_pageviews?finalDateSelected= &inicialDateSelected=
 
 
+
+
+
+
+
+
+
+
 function populair_pages($data) {
 if (isset($_SERVER['HTTP_TOKEN'])) {
 if (($_SERVER['HTTP_TOKEN'] == $GLOBALS['secretToken'])) {
     
-            if (in_array('koko-analytics/koko-analytics.php', apply_filters('active_plugins', get_option('active_plugins')))) {
-                
+  if (in_array('koko-analytics/koko-analytics.php', apply_filters('active_plugins', get_option('active_plugins')))) {
+    
+    $currentDate = date("Y-m-d");  
+    
     if (!empty($data->get_param('inicialDateSelected')) && !empty($data->get_param('finalDateSelected'))) {
     $closestDate = $data->get_param('finalDateSelected');
     $furthestDate = $data->get_param('inicialDateSelected');
@@ -154,11 +166,11 @@ if (($_SERVER['HTTP_TOKEN'] == $GLOBALS['secretToken'])) {
     $previousFurthestDate  = date("Y-m-d", strtotime('-'. $diff . 'seconds',  $timestamp));
 
     } else {
-    $closestDate  = date("Y-m-d", strtotime("last day of this month"));
+    $closestDate =  date("Y-m-d", strtotime($currentDate));
     $furthestDate = date("Y-m-d", strtotime("first day of this month"));
     
-      $previousClosestDate = date("Y-m-d", strtotime("last day of last month"));
-      $previousFurthestDate = date("Y-m-d", strtotime("first day of last month"));
+    $previousClosestDate = date("Y-m-d", strtotime($currentDate . "-1 month"));
+    $previousFurthestDate = date("Y-m-d", strtotime("first day of last month"));
     }
     
     global $wpdb;
@@ -169,11 +181,19 @@ if (($_SERVER['HTTP_TOKEN'] == $GLOBALS['secretToken'])) {
     $topTenPostsDone = array();
     
     foreach ($topTenPosts as $item) {
+        
+        $postName;
+        if (get_the_title($item->id) == '' || empty(get_the_title($item->id))) {
+             $postName = 'Page deleted...';
+        } else {
+             $postName = get_the_title($item->id);
+        }
+        
         $data = array(
             'Id' => $item->id,
             'Pageviews' => $item->pageviews,
             'Visitors' => $item->visitors,
-            'PageName' => get_the_title($item->id),
+            'PageName' => $postName,
             'PageSlug' => get_post_permalink($item->id)
         );
         
@@ -209,12 +229,18 @@ add_action('rest_api_init', function()
 
 
 
+
+
+
+
 function top_referrers($data) {
 if (isset($_SERVER['HTTP_TOKEN'])) {
 if (($_SERVER['HTTP_TOKEN'] == $GLOBALS['secretToken'])) {
     
     if (in_array('koko-analytics/koko-analytics.php', apply_filters('active_plugins', get_option('active_plugins')))) {
-        
+    
+    $currentDate = date("Y-m-d");  
+    
     if (!empty($data->get_param('inicialDateSelected')) && !empty($data->get_param('finalDateSelected'))) {
     $closestDate = $data->get_param('finalDateSelected');
     $furthestDate = $data->get_param('inicialDateSelected');
@@ -229,11 +255,11 @@ if (($_SERVER['HTTP_TOKEN'] == $GLOBALS['secretToken'])) {
     $previousFurthestDate  = date("Y-m-d", strtotime('-'. $diff . 'seconds',  $timestamp));
 
     } else {
-    $closestDate  = date("Y-m-d", strtotime("last day of this month"));
+    $closestDate =  date("Y-m-d", strtotime($currentDate));
     $furthestDate = date("Y-m-d", strtotime("first day of this month"));
     
-      $previousClosestDate = date("Y-m-d", strtotime("last day of last month"));
-      $previousFurthestDate = date("Y-m-d", strtotime("first day of last month"));
+    $previousClosestDate = date("Y-m-d", strtotime($currentDate . "-1 month"));
+    $previousFurthestDate = date("Y-m-d", strtotime("first day of last month"));
     }
     
     
@@ -247,6 +273,7 @@ if (($_SERVER['HTTP_TOKEN'] == $GLOBALS['secretToken'])) {
     $cleanReferrerURL   = ["[{\"url\":\"", "\"}]"];
     
     foreach ($top15Referrers as $item) {
+        
         $data = array(
             'Id' => $item->id ?: '0',
             'Pageviews' => $item->pageviews ?: '0',

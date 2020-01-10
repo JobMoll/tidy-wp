@@ -70,13 +70,13 @@ function tidy_wp_register_required_plugins() {
 			'slug'      => 'backwpup',
 			'required'  => false,
 		),
-		
+
 		array(
 			'name'      => 'Woocommerce Admin',
 			'slug'      => 'woocommerce-admin',
 			'required'  => false,
 		),
-     
+		
 	/*
 	 * Array of configuration settings. Amend each line as needed.
 	 *
