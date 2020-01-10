@@ -4,7 +4,33 @@
     * @license GPL-3.0+
     * @author Job Moll
     */
-    
+          
+
+       
+// get categorie names and id's
+
+// $categorieNames = []; 
+// $categorieIDS = []; 
+// $category_list_items = get_terms( 'category', 'orderby=count&hide_empty=0' );
+
+// foreach($category_list_items as $category_list_item){
+//     if(! empty($category_list_item->name) ){
+//      $category_list_item->name;
+//      $category_list_item->term_id;
+//         array_push($categorieNames, $category_list_item->name . $category_list_item->term_id);
+//     }
+// }
+
+// foreach($category_list_items as $category_list_item){
+//     if(! empty($category_list_item->term_id) ){
+//      $category_list_item->term_id;
+//         array_push($categorieIDS, $category_list_item->term_id);
+//     }
+// }
+
+// echo json_encode($categorieIDS);
+// echo json_encode($categorieNames);
+       
 function publish_new_post($data) {
     if (isset($_SERVER['HTTP_TOKEN'])) {
     if (($_SERVER['HTTP_TOKEN'] == $GLOBALS['secretToken'])) {
@@ -45,4 +71,4 @@ add_action( 'rest_api_init', function () {
   ) );
 } );
 
-// https://tidywp.sparknowmedia.com/wp-json/MwsojtrJvbdVhWIk/publish_new_post
+// https://tidywp.sparknowmedia.com/wp-json/MkmU2WcL8vhD2U7N/publish_new_post

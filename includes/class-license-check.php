@@ -80,7 +80,7 @@ return 'false';
 
 
 
-// only check if these conditions are met (Safes request to the license server checker)
+// only check if these conditions are met (Saves request to the license server checker)
 
 if (get_option('tidywp_license_key_valid') == 'true' && get_option('tidywp_license_key_valid') != '' && get_option('tidywp_license_key_expire_date') >= date("Y-m-d") && get_option('tidywp_license_key_expire_date') != '') {
 check_if_license_is_valid(); // return == true then the license is active!!

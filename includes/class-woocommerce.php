@@ -14,6 +14,8 @@ function woocommerce_data($data) {
     } else {
        $dateFormat = 'd-m-Y'; 
     }
+    
+    if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_option('active_plugins')))) {
 
     if (!empty($data->get_param('inicialDateSelected')) && !empty($data->get_param('finalDateSelected'))) {
     $closestDate = $data->get_param('finalDateSelected') . ' 23:59:59';
@@ -121,6 +123,35 @@ echo '{ "Numbers": ' . json_encode($dataArr) . ', ';
 echo '"Percentages": ' . json_encode($percentageArr) . ', ';
 echo '"Strings": ' . json_encode($stringsArr) . '}';
 
+            } else {
+              
+    $closestDateShowInApp  = date($dateFormat, strtotime("last day of this month"));
+    $furthestDateShowInApp = date($dateFormat, strtotime("first day of this month"));
+    
+                $dataArr = array(
+    'TotalNetSales' => '0', 
+'TotalSales' => '0', 
+'Orders' => '0', 
+'AverageOrderValueNet' => '0', 
+'NumItemsSold' => '0', 
+'PreviousTotalNetSales' => '0', 
+'PreviousTotalSales' => '0', 
+'PreviousOrders' => '0', 
+'PreviousAverageOrderValueNet' => '0' , 
+'PreviousNumItemsSold' => '0');
+
+                $percentageArr = array('TotalNetSalesPercentage' => '0', 'TotalSalesPercentage' => '0', 'OrdersPercentage' => '0', 'AverageOrderValueNetPercentage' => '0', 'NumItemsSoldPercentage' => '0');
+                $stringsArr = array( 'SelectionClosest' => strval(substr($closestDateShowInApp, 0, 10))  ?: '0', 'SelectionFurthest' => strval(substr($furthestDateShowInApp, 0, 10))  ?: '0');
+
+    echo '{ "Numbers": ' . json_encode($dataArr) . ', ';
+echo '"Percentages": ' . json_encode($percentageArr) . ', ';
+echo '"Strings": ' . json_encode($stringsArr) . '}';
+            }
+            
+            
+            
+            
+            
     }
     } else {
     echo 'Sorry... you are not allowed to view this data.';

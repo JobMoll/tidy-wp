@@ -15,6 +15,8 @@ if (($_SERVER['HTTP_TOKEN'] == $GLOBALS['secretToken'])) {
        $dateFormat = 'd-m-Y'; 
     }
     
+        if (in_array('koko-analytics/koko-analytics.php', apply_filters('active_plugins', get_option('active_plugins')))) {
+            
     if (!empty($data->get_param('inicialDateSelected')) && !empty($data->get_param('finalDateSelected'))) {
     $closestDate = $data->get_param('finalDateSelected');
     $furthestDate = $data->get_param('inicialDateSelected');
@@ -89,6 +91,30 @@ $percentageTotalPageviews = getPercentages($totalPageviews, $previousTotalPagevi
 echo '{"Stats": ' . json_encode($dataArr) . '}';
 
     
+    
+        } else {
+            
+    $closestDateShowInApp  = date($dateFormat, strtotime("last day of this month"));
+    $furthestDateShowInApp = date($dateFormat, strtotime("first day of this month"));
+    
+                $dataArr = array(
+        'TotalVisitors' => '0',
+        'PreviousTotalVisitors' => '0',
+        'TotalPageviews' => '0',
+        'PreviousTotalPageviews' => '0',
+        'PercentageTotalVisitors' => '0',
+        'PercentageTotalPageviews' => '0',
+        'SelectionClosest' => strval($closestDateShowInApp) ?: '0',
+        'SelectionFurthest' => strval($furthestDateShowInApp) ?: '0'
+    );
+    
+
+echo '{"Stats": ' . json_encode($dataArr) . '}';
+        }
+    
+    
+    
+    
       } 
 }
       else {
@@ -112,6 +138,8 @@ function populair_pages($data) {
 if (isset($_SERVER['HTTP_TOKEN'])) {
 if (($_SERVER['HTTP_TOKEN'] == $GLOBALS['secretToken'])) {
     
+            if (in_array('koko-analytics/koko-analytics.php', apply_filters('active_plugins', get_option('active_plugins')))) {
+                
     if (!empty($data->get_param('inicialDateSelected')) && !empty($data->get_param('finalDateSelected'))) {
     $closestDate = $data->get_param('finalDateSelected');
     $furthestDate = $data->get_param('inicialDateSelected');
@@ -154,7 +182,13 @@ if (($_SERVER['HTTP_TOKEN'] == $GLOBALS['secretToken'])) {
     
 
 echo json_encode($topTenPostsDone);
- 
+
+
+            } else {
+            $topTenPostsDone = array();
+             echo json_encode($topTenPostsDone);   
+            }
+
       } 
 }
       else {
@@ -179,6 +213,8 @@ function top_referrers($data) {
 if (isset($_SERVER['HTTP_TOKEN'])) {
 if (($_SERVER['HTTP_TOKEN'] == $GLOBALS['secretToken'])) {
     
+    if (in_array('koko-analytics/koko-analytics.php', apply_filters('active_plugins', get_option('active_plugins')))) {
+        
     if (!empty($data->get_param('inicialDateSelected')) && !empty($data->get_param('finalDateSelected'))) {
     $closestDate = $data->get_param('finalDateSelected');
     $furthestDate = $data->get_param('inicialDateSelected');
@@ -224,7 +260,10 @@ if (($_SERVER['HTTP_TOKEN'] == $GLOBALS['secretToken'])) {
     
 
 echo stripslashes(json_encode($top15ReferrersDone));
- 
+    } else {
+        $top15ReferrersDone = array();
+        echo json_encode($top15ReferrersDone);
+    }
       } 
 }
       else {
