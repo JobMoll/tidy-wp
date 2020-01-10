@@ -15,7 +15,7 @@ function woocommerce_data($data) {
        $dateFormat = 'd-m-Y'; 
     }
     
-    if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_option('active_plugins')))) {
+    if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_option('active_plugins'))) && in_array('woocommerce-admin/woocommerce-admin.php', apply_filters('active_plugins', get_option('active_plugins'))) ) {
 
     if (!empty($data->get_param('inicialDateSelected')) && !empty($data->get_param('finalDateSelected'))) {
     $closestDate = $data->get_param('finalDateSelected') . ' 23:59:59';
