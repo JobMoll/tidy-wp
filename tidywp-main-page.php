@@ -58,7 +58,7 @@ function tidywp_main_page(  ) {
     <h1>Tidy WP</h1>
 <hr>
 <p>Scan this QR code within the <a href="https://tidywp.com" target="_blank">Tidy WP app</a> to pair your website automatically!</p>
-<img class="QRCode" src='<? echo $GLOBALS['stringForQRCodeImage'] ?>' />
+<img class="QRCode" src='<?php echo $GLOBALS['stringForQRCodeImage'] ?>' />
 
 <p style="padding-top: 30px;">Did you have the code scanned by someone else who shouldn't have access anymore? <br> Or do you feel that someone else is running your website? <br> Reset the QR code with the button below and pair your app with the website again.</p>
 <a href="admin.php?page=tidy-wp&reset=yes">
