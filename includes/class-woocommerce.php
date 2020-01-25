@@ -26,30 +26,35 @@ function woocommerce_data($data) {
     $closestDateShowInApp  = date($dateFormat, strtotime($closestDate));
     $furthestDateShowInApp = date($dateFormat, strtotime($furthestDate));
     
+    // is closest to now
+    $previousClosestDate = date("Y-m-d", strtotime($data->get_param('finalDateSelected') . "-1 month")) . ' ' . $currentTime;
+    // is furthest away in the past
+    $previousFurthestDate = date("Y-m-d", strtotime($data->get_param('inicialDateSelected') . "-1 month")) . ' 00:00:00';
     
-        //previous closest date - 1 day of from furthestdate
-    $timestamp2 = strtotime($data->get_param('inicialDateSelected'));
-    $previousClosestDate  = date("Y-m-d", strtotime('-'. '86400' . 'seconds',  $timestamp2)) . ' ' . $currentTime;
+    // //previous closest date - 1 day of from furthestdate
+    // $timestamp2 = strtotime($data->get_param('inicialDateSelected'));
+    // $previousClosestDate  = date("Y-m-d", strtotime('-'. '86400' . 'seconds',  $timestamp2)) . ' ' . $currentTime;
         
-    // furthest date - difference and - 1 extra day
-    $diff = strtotime($data->get_param('finalDateSelected')) - strtotime($data->get_param('inicialDateSelected'));
-    $timestamp = strtotime($data->get_param('finalDateSelected'))-($diff + 86400);
-    $previousFurthestDate  = date("Y-m-d", strtotime('-'. $diff . 'seconds',  $timestamp)) . ' 00:00:00';
+    // // furthest date - difference and - 1 extra day
+    // $diff = strtotime($data->get_param('finalDateSelected')) - strtotime($data->get_param('inicialDateSelected'));
+    // $timestamp = strtotime($data->get_param('finalDateSelected'))-($diff + 86400);
+    // $previousFurthestDate  = date("Y-m-d", strtotime('-'. $diff . 'seconds',  $timestamp)) . ' 00:00:00';
     
 
     } else {
     $closestDate =  date("Y-m-d H:i:s", strtotime($currentDate . $currentTime));
-
- //   $closestDate  = date("Y-m-d", strtotime("last day of this month")) . ' 23:59:59';
- 
-
     $furthestDate = date("Y-m-d", strtotime("first day of this month")) . ' 00:00:00';
+    
+    // is closest to now
+    $previousClosestDate = date("Y-m-d", strtotime($currentDate . "-1 month")) . ' ' . $currentTime;
+    // is furthest away in the past
+    $previousFurthestDate = date("Y-m-d", strtotime("first day of last month")) . ' 00:00:00';
     
     $closestDateShowInApp  = date($dateFormat, strtotime("now"));
     $furthestDateShowInApp = date($dateFormat, strtotime("first day of this month"));
     
-    $previousClosestDate = date("Y-m-d", strtotime($currentDate . "-1 month")) . ' ' . $currentTime;
-    $previousFurthestDate = date("Y-m-d", strtotime("first day of last month")) . ' 00:00:00';
+    $previousClosestDateShowInApp  = date($dateFormat, strtotime("now"));
+    $previousFurthestDateShowInApp = date($dateFormat, strtotime("first day of last month"));
     }
        
        if (get_option('woocommerce_currency') == 'EUR') {
