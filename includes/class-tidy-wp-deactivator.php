@@ -35,7 +35,11 @@ class Tidy_Wp_Deactivator {
     
     // secret token
     delete_option('tidywp_secret_token');  
-      
+     
+    // encryption keys
+    delete_option('tidywp_encrypt_key');  
+    delete_option('tidywp_encrypt_iv');  
+    
     // maintaince mode
     delete_option('tidywp_maintaince_mode');  
     
@@ -60,6 +64,10 @@ class Tidy_Wp_Deactivator {
     delete_option( 'tidywp_license_key');
     delete_option( 'tidywp_license_key_valid');
     delete_option( 'tidywp_license_key_expire_date');
+    
+    // tidywp login details
+    delete_option( 'tidywp_website_username');
+    delete_option( 'tidywp_website_password');
 	}
 
 }

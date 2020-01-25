@@ -30,11 +30,15 @@ class Tidy_Wp_Activator {
 	public static function activate() {
 
 
-
-add_option( 'tidywp_secret_path', generateRandomString(16), '', 'no' );
+    // secret path
+    add_option( 'tidywp_secret_path', generateRandomString(16), '', 'no' );
     
     // secret token
     add_option( 'tidywp_secret_token', generateRandomString(16), '', 'no' );
+
+    // encryption keys
+    add_option( 'tidywp_encrypt_key', generateRandomString(64), '', 'no' );
+    add_option( 'tidywp_encrypt_iv', generateRandomString(64), '', 'no' );
     
     // maintaince mode
     add_option( 'tidywp_maintaince_mode', 'false', '', 'no' );
@@ -59,6 +63,10 @@ add_option( 'tidywp_secret_path', generateRandomString(16), '', 'no' );
     add_option( 'tidywp_license_key', '', '', 'no' );
     add_option( 'tidywp_license_key_valid', 'false', '', 'no' );
     add_option( 'tidywp_license_key_expire_date', '', '', 'no' );
+    
+    // tidywp login details
+    add_option( 'tidywp_website_username', '', '', 'no' );
+    add_option( 'tidywp_website_password', '', '', 'no' );
 	}
 
 }
