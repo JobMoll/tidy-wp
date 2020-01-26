@@ -161,7 +161,7 @@ include 'tidywp-license-page.php';
 
 function pair_with_app_link( $links ) {
 	$links = array_merge( array(
-		'<a href="' . esc_url( admin_url( '/admin.php?page=tidy-wp' ) ) . '">' . __( 'Pair with the app', 'textdomain' ) . '</a>'
+		'<a href="' . esc_url( admin_url( '/admin.php?page=tidy-wp' ) ) . '">' . __( 'Connect with the app', 'textdomain' ) . '</a>'
 	), $links );
 	return $links;
 }

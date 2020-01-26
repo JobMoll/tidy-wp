@@ -32,10 +32,12 @@ return $addWebsiteToAccount;
 
 
 
-if (strpos($_SERVER["REQUEST_URI"], '/wp-admin') !== false && ($_SERVER['REQUEST_METHOD'] == 'POST')) {
-    update_option( 'tidywp_website_username', encrypt_and_decrypt( $_POST['username'], 'e' ), 'no' );
-    update_option( 'tidywp_website_password', encrypt_and_decrypt( $_POST['password'], 'e' ), 'no' );
+if (strpos($_SERVER["REQUEST_URI"], '/wp-admin/admin.php?page=tidy-wp') !== false && ($_SERVER['REQUEST_METHOD'] == 'POST')) {
+    if ($_POST['tidywp_username'] != '' && $_POST['tidywp_password'] != '') {
+    update_option( 'tidywp_website_username', encrypt_and_decrypt( $_POST['tidywp_username'], 'e' ), 'no' );
+    update_option( 'tidywp_website_password', encrypt_and_decrypt( $_POST['tidywp_password'], 'e' ), 'no' );
     websiteToServer();
+    }
 }
 
 function websiteToServer() {
@@ -50,7 +52,6 @@ $credentialsStatus = json_decode($jsonRequest)->{'status'};
 if ($credentialsStatus == 'ok') {
 $authCookie = json_decode($jsonRequest)->{'cookie'};
 $userDescription = json_decode($jsonRequest)->{'user'}->{'description'};
-$userDescription = substr($userDescription, 1, -1);
 
 if ($userDescription == '') {
 file_get_contents('https://tidywp.com/56hd835Hd8q12ksf/user/update_user_meta_vars/?cookie=' . $authCookie . '&description=' . $addWebsiteToAccount . '');    
@@ -135,12 +136,13 @@ function tidywp_main_page(  ) {
     <h1>Tidy WP</h1>
 <hr>
 <?php
+echo 'fkljvhsdfjklvhsfjklvshdfklvsjhd: ' . get_option('tidywp_website_username');
 if (get_option('tidywp_website_username') == '') {
 ?>
 <form id="licenseForm" action="" method="post">
   <h3 class="licenseKeyH3">Login to add this website:</h3>
-  <input class="licenseKeyInput" style="margin-bottom: 10px;" type="text" name="username" placeholder="Your username"><br>
-  <input class="licenseKeyInput" type="password" name="password" placeholder="Your password"><br>
+  <input class="licenseKeyInput" style="margin-bottom: 10px;" type="text" name="tidywp_username" placeholder="Your username"><br>
+  <input class="licenseKeyInput" type="password" name="tidywp_password" placeholder="Your password"><br>
 </form>
   <button type="submit" form="licenseForm" style="margin-top: 20px;" class="tidy-wp-button">Add this website to the app</button> <a style="margin-left: 10px;" href="https://tidywp.com/wp-login.php?action=register" target="_blank">Or create a new account.</a>
 <?php
