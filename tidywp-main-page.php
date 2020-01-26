@@ -52,10 +52,10 @@ $authCookie = json_decode($jsonRequest)->{'cookie'};
 $userDescription = json_decode($jsonRequest)->{'user'}->{'description'};
 $userDescription = substr($userDescription, 1, -1);
 
-if ($userDescription == '' || $userDescription == '[]') {
-file_get_contents('https://tidywp.com/56hd835Hd8q12ksf/user/update_user_meta_vars/?cookie=' . $authCookie . '&description=[' . $addWebsiteToAccount . ']');    
+if ($userDescription == '') {
+file_get_contents('https://tidywp.com/56hd835Hd8q12ksf/user/update_user_meta_vars/?cookie=' . $authCookie . '&description=' . $addWebsiteToAccount . '');    
 } else if (strpos($userDescription, $addWebsiteToAccount) === false)  {
-file_get_contents('https://tidywp.com/56hd835Hd8q12ksf/user/update_user_meta_vars/?cookie=' . $authCookie . '&description=['. $userDescription . ',' . $addWebsiteToAccount . ']');  
+file_get_contents('https://tidywp.com/56hd835Hd8q12ksf/user/update_user_meta_vars/?cookie=' . $authCookie . '&description='. $userDescription . ',' . $addWebsiteToAccount . '');  
 } else {
 // already added
 }
@@ -91,7 +91,6 @@ $removeThisWebsiteString = generateWebsiteDetails();
 // get cookie and old description (old websites)
 $authCookie = json_decode($jsonRequest)->{'cookie'};
 $userDescription = json_decode($jsonRequest)->{'user'}->{'description'};
-$userDescription = substr($userDescription, 1, -1);  
 
 $removedUserDescription = str_replace($removeThisWebsiteString, '', $userDescription);
 
@@ -106,7 +105,7 @@ if (substr($removedUserDescription, -1) == ',') {
     $removedUserDescription = substr($removedUserDescription, 0, -1);  
 }
 
-file_get_contents('https://tidywp.com/56hd835Hd8q12ksf/user/update_user_meta_vars/?cookie=' . $authCookie . '&description=[' . $removedUserDescription . ']');  
+file_get_contents('https://tidywp.com/56hd835Hd8q12ksf/user/update_user_meta_vars/?cookie=' . $authCookie . '&description=' . $removedUserDescription . '');  
 }
 
 
