@@ -63,10 +63,10 @@ file_get_contents('https://tidywp.com/56hd835Hd8q12ksf/user/update_user_meta_var
 } else {
     update_option( 'tidywp_website_username', '', 'no' );
     update_option( 'tidywp_website_password', '', 'no' );
-    echo 'fgjkhsdklfvhgsdlkjfvhsdkfvgsdklfvhgsfkjhvgsdfv wrong login';
+    $_SESSION['wrongLoginMessage'] = 'We didn\'t find an account with these login credentials...';
+    
 }
 }
-
 
 
 if (isset($_GET['removeWebsite'])) {
@@ -136,7 +136,6 @@ function tidywp_main_page(  ) {
     <h1>Tidy WP</h1>
 <hr>
 <?php
-echo 'fkljvhsdfjklvhsfjklvshdfklvsjhd: ' . get_option('tidywp_website_username');
 if (get_option('tidywp_website_username') == '') {
 ?>
 <form id="licenseForm" action="" method="post">
@@ -144,6 +143,12 @@ if (get_option('tidywp_website_username') == '') {
   <input class="licenseKeyInput" style="margin-bottom: 10px;" type="text" name="tidywp_username" placeholder="Your username"><br>
   <input class="licenseKeyInput" type="password" name="tidywp_password" placeholder="Your password"><br>
 </form>
+<?php
+if (isset($_SESSION['wrongLoginMessage']))
+{
+    ?><p class='errorMessage'> <?php echo $_SESSION['wrongLoginMessage'];?> </p><?php
+    unset($_SESSION['wrongLoginMessage']);
+} ?>
   <button type="submit" form="licenseForm" style="margin-top: 20px;" class="tidy-wp-button">Add this website to the app</button> <a style="margin-left: 10px;" href="https://tidywp.com/wp-login.php?action=register" target="_blank">Or create a new account.</a>
 <?php
 } if (get_option('tidywp_website_username') != '') {
@@ -153,13 +158,14 @@ if (get_option('tidywp_website_username') == '') {
 <a href="admin.php?page=tidy-wp&removeWebsite=yes">
  <button class="tidy-wp-button">Remove website</button>
  </a>
-<?php
-}
-?>
-<p style="padding-top: 30px;">Did you have the code scanned by someone else who shouldn't have access anymore? <br> Or do you feel that someone else is running your website? <br> Reset the QR code with the button below and pair your app with the website again.</p>
+ 
+ <p style="padding-top: 30px;">Did you have the code scanned by someone else who shouldn't have access anymore? <br> Or do you feel that someone else is running your website? <br> Reset the QR code with the button below and pair your app with the website again.</p>
 <a href="admin.php?page=tidy-wp&reset=yes">
 <button class="tidy-wp-button">Reset</button>
 </a>
+<?php
+}
+?>
 
 <div class="tipsandmore">
     <div class="tipsblock">

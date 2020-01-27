@@ -72,6 +72,11 @@ p {
     text-shadow: none;
 }
 
+.errorMessage {
+    color: #fa163f;
+}
+
+
 
 .infoblock {
     border-radius: 5px;
