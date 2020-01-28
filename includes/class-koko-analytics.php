@@ -269,8 +269,8 @@ if (($_SERVER['HTTP_TOKEN'] == $GLOBALS['secretToken'])) {
     
     
     $top15ReferrersDone = array();
-    $cleanReferrerName   = ["[{\"url\":\"https://", "\"}]", "www."];
-    $cleanReferrerURL   = ["[{\"url\":\"", "\"}]"];
+	$cleanReferrerName = ["[{\"url\":\"", "\"}]", "https://", "http://", "www."];
+    $cleanReferrerURL = ["[{\"url\":\"", "\"}]"];
     
     foreach ($top15Referrers as $item) {
         
