@@ -65,8 +65,10 @@ class Tidy_Wp_Activator {
     add_option( 'tidywp_license_key_expire_date', '', '', 'no' );
     
     // tidywp login details
-    add_option( 'tidywp_website_username', '', '', 'no' );
-    add_option( 'tidywp_website_password', '', '', 'no' );
+    add_option( 'tidywp_website_username1', '', '', 'no' );
+    add_option( 'tidywp_website_password1', '', '', 'no' );
+    add_option( 'tidywp_website_username2', '', '', 'no' );
+    add_option( 'tidywp_website_password2', '', '', 'no' );
 	}
 
 }

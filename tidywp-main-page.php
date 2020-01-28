@@ -12,10 +12,6 @@ $websiteName = get_bloginfo( 'name' );
 $adminEmail = get_bloginfo( 'admin_email' ); 
 
 require_once(ABSPATH.'wp-includes/pluggable.php');
-if ( is_user_logged_in() ) {
-    $current_user = wp_get_current_user();
-    $loggedinUsername = $current_user->user_login;
-}
 
 // get website details to add
 $addWebsiteToAccount = '{"BaseDomainURL":"' . get_bloginfo( 'wpurl' ) . 
@@ -23,7 +19,6 @@ $addWebsiteToAccount = '{"BaseDomainURL":"' . get_bloginfo( 'wpurl' ) .
 '","SecretToken":"' . get_option('tidywp_secret_token') . 
 '","WebsiteName":"' . $websiteName .
 '","AdminEmail":"' . $adminEmail .  
-'","LoggedInUsername":"' . $loggedinUsername . 
 '"}';
 
 return $addWebsiteToAccount;
@@ -33,16 +28,26 @@ return $addWebsiteToAccount;
 
 
 if (strpos($_SERVER["REQUEST_URI"], '/wp-admin/admin.php?page=tidy-wp') !== false && ($_SERVER['REQUEST_METHOD'] == 'POST')) {
-    if ($_POST['tidywp_username'] != '' && $_POST['tidywp_password'] != '') {
-    update_option( 'tidywp_website_username', encrypt_and_decrypt( $_POST['tidywp_username'], 'e' ), 'no' );
-    update_option( 'tidywp_website_password', encrypt_and_decrypt( $_POST['tidywp_password'], 'e' ), 'no' );
-    websiteToServer();
+    if ($_POST['tidywp_username1'] != '' && $_POST['tidywp_password1'] != '') {
+    update_option( 'tidywp_website_username1', encrypt_and_decrypt( $_POST['tidywp_username1'], 'e' ), 'no' );
+    update_option( 'tidywp_website_password1', encrypt_and_decrypt( $_POST['tidywp_password1'], 'e' ), 'no' );
+    
+    websiteToServer(get_option( 'tidywp_website_username1'), get_option( 'tidywp_website_password1'));
+    }
+    
+    if ($_POST['tidywp_username2'] != '' && $_POST['tidywp_password2'] != '') {
+    update_option( 'tidywp_website_username2', encrypt_and_decrypt( $_POST['tidywp_username2'], 'e' ), 'no' );
+    update_option( 'tidywp_website_password2', encrypt_and_decrypt( $_POST['tidywp_password2'], 'e' ), 'no' );
+    
+    websiteToServer(get_option( 'tidywp_website_username2'), get_option( 'tidywp_website_password2'));
     }
 }
 
-function websiteToServer() {
+
+
+function websiteToServer($username, $password) {
 // generate cookie for user  
-$jsonRequest = file_get_contents('https://tidywp.com/56hd835Hd8q12ksf/user/generate_auth_cookie/?username=' . encrypt_and_decrypt( get_option( 'tidywp_website_username'), 'd' ) . '&password=' . encrypt_and_decrypt( get_option( 'tidywp_website_password'), 'd' ));
+$jsonRequest = file_get_contents('https://tidywp.com/56hd835Hd8q12ksf/user/generate_auth_cookie/?username=' . encrypt_and_decrypt( $username, 'd' ) . '&password=' . encrypt_and_decrypt( $password, 'd' ));
 
 $addWebsiteToAccount = generateWebsiteDetails();
 
@@ -70,22 +75,26 @@ file_get_contents('https://tidywp.com/56hd835Hd8q12ksf/user/update_user_meta_var
 
 
 if (isset($_GET['removeWebsite'])) {
-if ($_GET['removeWebsite'] == 'yes') {
-   removeWebsite();
+if ($_GET['removeWebsite'] == '1') {
+   removeWebsite(1);
+}
+if ($_GET['removeWebsite'] == '2') {
+   removeWebsite(2);
 }
 }
 
-function removeWebsite() {
-removeWebsiteStringFromServer();
+function removeWebsite($accountNumber) {
+removeWebsiteStringFromServer(get_option( 'tidywp_website_username' . $accountNumber), get_option( 'tidywp_website_password' . $accountNumber));
+  
 // last thing to do
-update_option( 'tidywp_website_username', '', 'no' );
-update_option( 'tidywp_website_password', '', 'no' );
+update_option( 'tidywp_website_username' . $accountNumber, '', 'no' );
+update_option( 'tidywp_website_password' . $accountNumber, '', 'no' );
 header("refresh: 0; url = " . get_bloginfo('url') . "/wp-admin/admin.php?page=tidy-wp"); 
 }
 
-function removeWebsiteStringFromServer() {
+function removeWebsiteStringFromServer($username, $password) {
 // generate cookie for user  
-$jsonRequest = file_get_contents('https://tidywp.com/56hd835Hd8q12ksf/user/generate_auth_cookie/?username=' . encrypt_and_decrypt( get_option( 'tidywp_website_username'), 'd' ) . '&password=' . encrypt_and_decrypt( get_option( 'tidywp_website_password'), 'd' ));
+$jsonRequest = file_get_contents('https://tidywp.com/56hd835Hd8q12ksf/user/generate_auth_cookie/?username=' . encrypt_and_decrypt( $username, 'd' ) . '&password=' . encrypt_and_decrypt( $password, 'd' ));
 
 $removeThisWebsiteString = generateWebsiteDetails();
 
@@ -111,7 +120,6 @@ file_get_contents('https://tidywp.com/56hd835Hd8q12ksf/user/update_user_meta_var
 
 
 
-
 // reset secrettoken and path
 if (isset($_GET['reset'])) {
 if ($_GET['reset'] == 'yes') {
@@ -120,10 +128,21 @@ if ($_GET['reset'] == 'yes') {
 }
 
 function resetTokenAndPath() {
-   removeWebsiteStringFromServer();
+  removeWebsiteStringFromServer(get_option( 'tidywp_website_username'), get_option( 'tidywp_website_password'));
+  
+  if (get_option( 'tidywp_website_username2') != '' && get_option( 'tidywp_website_password2') != '') {
+    removeWebsiteStringFromServer(get_option( 'tidywp_website_username2'), get_option( 'tidywp_website_password2'));
+  }
+  
   update_option( 'tidywp_secret_path', generateRandomString(16), 'no' );
   update_option( 'tidywp_secret_token', generateRandomString(16), 'no' );
-  websiteToServer();
+  
+  websiteToServer(get_option( 'tidywp_website_username'), get_option( 'tidywp_website_password'));
+  
+  if (get_option( 'tidywp_website_username2') != '' && get_option( 'tidywp_website_password2') != '') {
+    websiteToServer(get_option( 'tidywp_website_username2'), get_option( 'tidywp_website_password2'));
+  }
+
   header("refresh: 0; url = " . get_bloginfo('url') . "/wp-admin/admin.php?page=tidy-wp"); 
 }
 
@@ -136,12 +155,12 @@ function tidywp_main_page(  ) {
     <h1>Tidy WP</h1>
 <hr>
 <?php
-if (get_option('tidywp_website_username') == '') {
+if (get_option('tidywp_website_username1') == '') {
 ?>
 <form id="licenseForm" action="" method="post">
   <h3 class="licenseKeyH3">Login to add this website:</h3>
-  <input class="licenseKeyInput" style="margin-bottom: 10px;" type="text" name="tidywp_username" placeholder="Your username"><br>
-  <input class="licenseKeyInput" type="password" name="tidywp_password" placeholder="Your password"><br>
+  <input class="licenseKeyInput" style="margin-bottom: 10px;" type="text" name="tidywp_username1" placeholder="Your username"><br>
+  <input class="licenseKeyInput" type="password" name="tidywp_password1" placeholder="Your password"><br>
 </form>
 <?php
 if (isset($_SESSION['wrongLoginMessage']))
@@ -151,11 +170,11 @@ if (isset($_SESSION['wrongLoginMessage']))
 } ?>
   <button type="submit" form="licenseForm" style="margin-top: 20px;" class="tidy-wp-button">Add this website to the app</button> <a style="margin-left: 10px;" href="https://tidywp.com/wp-login.php?action=register" target="_blank">Or create a new account.</a>
 <?php
-} if (get_option('tidywp_website_username') != '') {
+} if (get_option('tidywp_website_username1') != '') {
     echo '<h3 class="licenseKeyH3"> Remove this website from your account:</h3>';
     echo '<p>' . get_bloginfo( 'wpurl' ) . '</p>';
 ?>
-<a href="admin.php?page=tidy-wp&removeWebsite=yes">
+<a href="admin.php?page=tidy-wp&removeWebsite=1">
  <button class="tidy-wp-button">Remove website</button>
  </a>
  

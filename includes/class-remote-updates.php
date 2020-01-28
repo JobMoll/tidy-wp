@@ -172,19 +172,7 @@ add_action( 'rest_api_init', function () {
 
 
 
-
-
-
-
-
-
  
- 
- 
- 
-
-
-
 
 
 function get_installed_plugins_info_summary($data) {
@@ -198,13 +186,22 @@ function get_installed_plugins_info_summary($data) {
     $active_plugins = get_option('active_plugins');
 
 
- echo '{"TotalInstalledPlugins":"' . count($all_plugins) . '", ';
+  echo '{"TotalInstalledPlugins":"' . count($all_plugins) . '", ';
   echo '"ActivePlugins":"' . count($active_plugins) . '", ';
   if (empty(get_option('tidywp_exclude_plugin_from_autoupdate'))) {
           echo '"ExcludedPluginsCount":"0", ';
   } else {
           echo '"ExcludedPluginsCount":"' . count(get_option('tidywp_exclude_plugin_from_autoupdate')) . '", ';
   }
+  
+// are there updates available?
+$update_data = wp_get_update_data();
+echo '"UpdatablePlugins":"' . $update_data['counts']['plugins'] . '", ';
+echo '"UpdatableThemes":"' . $update_data['counts']['themes'] . '", ';
+echo '"UpdatableCore":"' . $update_data['counts']['wordpress'] . '", ';
+echo '"UpdatableTranslations":"' . $update_data['counts']['translations'] . '", ';
+echo '"UpdatableTotal":"' . $update_data['counts']['total'] . '", ';
+
 echo '"AutoUpdateEnabled":"' . get_option( 'tidywp_enable_plugin_autoupdate') . '"}';
 
    

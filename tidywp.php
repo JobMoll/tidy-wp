@@ -100,6 +100,14 @@ if ($baseURL . '/publish_new_post' == $actualURL) {
 include 'includes/class-publish-new-post.php';
 }
 
+if ($baseURL . '/remove_website_from_server' == $actualURL || $baseURL . '/reset_website_secret_keys' == $actualURL) {
+include 'includes/class-website-communication-with-app.php';
+}
+
+if ($baseURL . '/site_settings' == $actualURL) {
+include 'includes/class-site-settings.php';
+}
+
 
 
 // secretToken key and path
