@@ -1,8 +1,8 @@
 <?php
 
 function site_settings($data) {
-    // if (isset($_SERVER['HTTP_TOKEN'])) {
-    // if (($_SERVER['HTTP_TOKEN'] == $GLOBALS['secretToken'])) {
+    if (isset($_SERVER['HTTP_TOKEN'])) {
+    if (($_SERVER['HTTP_TOKEN'] == $GLOBALS['secretToken'])) {
         
         if ($data->get_param('siteTitle') != '' && !empty($data->get_param('siteTitle'))) {
             update_option('blogname', $data->get_param('siteTitle'), 'yes' );
@@ -22,18 +22,18 @@ function site_settings($data) {
         }
 
 
-
+        if ($data->get_param('show') == 'true' && !empty($data->get_param('show'))) {
 echo '{"SiteTitle":"' . get_option('blogname') . '", ';
 
 echo '"Tagline":"' . get_option('blogdescription') . '", ';
 echo '"UsersCanRegister":"' . get_option('users_can_register') . '", ';
 echo '"BlogPublic":"' . get_option('blog_public') . '"}';
-
+}
    
-// }
-// } else {
-//     echo 'Sorry... you are not allowed to view this data.';
-// }
+}
+} else {
+    echo 'Sorry... you are not allowed to view this data.';
+}
 }
  
 // add to rest api

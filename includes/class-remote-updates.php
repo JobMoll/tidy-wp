@@ -178,8 +178,7 @@ add_action( 'rest_api_init', function () {
 function get_installed_plugins_info_summary($data) {
     if (isset($_SERVER['HTTP_TOKEN'])) {
     if (($_SERVER['HTTP_TOKEN'] == $GLOBALS['secretToken'])) {
-    // Get all plugins
-    include_once( 'wp-admin/includes/plugin.php' );
+	
     $all_plugins = get_plugins();
 
     // Get active plugins
@@ -195,15 +194,39 @@ function get_installed_plugins_info_summary($data) {
   }
   
 // are there updates available?
-$update_data = wp_get_update_data();
-echo '"UpdatablePlugins":"' . $update_data['counts']['plugins'] . '", ';
-echo '"UpdatableThemes":"' . $update_data['counts']['themes'] . '", ';
-echo '"UpdatableCore":"' . $update_data['counts']['wordpress'] . '", ';
-echo '"UpdatableTranslations":"' . $update_data['counts']['translations'] . '", ';
-echo '"UpdatableTotal":"' . $update_data['counts']['total'] . '", ';
-
+// get plugin updates
+$update_plugins = get_site_transient( 'update_plugins' );
+if ( ! empty( $update_plugins->response ) ) {
+echo '"UpdatablePlugins":"' . $counts['plugins'] = count( $update_plugins->response ) . '", ';
+}
+// get theme updates
+$update_themes = get_site_transient( 'update_themes' );
+if ( ! empty( $update_themes->response ) ) {
+echo '"UpdatableThemes":"' . $counts['themes'] = count( $update_themes->response ) . '", ';
+}
+	
+// get core updates
+require_once ABSPATH . '/wp-admin/includes/update.php';
+if ( function_exists( 'get_core_updates' ) ) {
+   $update_wordpress = get_core_updates( array( 'dismissed' => false ) );
+   if ( ! empty( $update_wordpress ) && ! in_array( $update_wordpress[0]->response, array( 'development', 'latest' ) ) ) {
+echo '"UpdatableCore":"' .  $counts['wordpress'] = 1 . '", ';
+        } else {
+	   echo '"UpdatableCore":"' .  $counts['wordpress'] = 0 . '", ';
+   }
+    }
+ 
+// get translations updates
+if ( wp_get_translation_updates() ) {
+	   echo '"UpdatableTranslations":"' .  $counts['translations'] = 1 . '", ';
+    } else {
+	  echo '"UpdatableTranslations":"' .  $counts['translations'] = 0 . '", ';
+	}
+	
+// calculate total updates
+echo '"UpdatableTotal":"' . ($counts['plugins'] + $counts['themes'] + $counts['wordpress'] + $counts['translations']). '", ';
+	
 echo '"AutoUpdateEnabled":"' . get_option( 'tidywp_enable_plugin_autoupdate') . '"}';
-
    
 }
 } else {
@@ -218,5 +241,4 @@ add_action( 'rest_api_init', function () {
     'callback' => 'get_installed_plugins_info_summary',
   ) );
 } );
-
 // https://tidywp.sparknowmedia.com/wp-json/MwsojtrJvbdVhWIk/get_installed_plugins_info_summary
