@@ -2,7 +2,7 @@
 
 function remove_website_from_server($data) {
     if (isset($_SERVER['HTTP_TOKEN'])) {
-    if (($_SERVER['HTTP_TOKEN'] == $GLOBALS['secretToken'])) {
+if (($_SERVER['HTTP_TOKEN'] == $GLOBALS['secretToken']) &&          (in_array($_SERVER['LOGGEDIN_USERNAME'], $GLOBALS['$usernameArray']))) {
  
 include ABSPATH . 'wp-content/plugins/tidy-wp/tidywp-main-page.php';
 
@@ -31,7 +31,7 @@ add_action( 'rest_api_init', function () {
 
 function reset_website_secret_keys() {
     if (isset($_SERVER['HTTP_TOKEN'])) {
-    if (($_SERVER['HTTP_TOKEN'] == $GLOBALS['secretToken'])) {
+if (($_SERVER['HTTP_TOKEN'] == $GLOBALS['secretToken']) &&          (in_array($_SERVER['LOGGEDIN_USERNAME'], $GLOBALS['$usernameArray']))) {
      
 include ABSPATH . 'wp-content/plugins/tidy-wp/tidywp-main-page.php';
 	

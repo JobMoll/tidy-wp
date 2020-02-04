@@ -7,7 +7,7 @@
     
 function smart_security($data) {
     if (isset($_SERVER['HTTP_TOKEN'])) {
-    if (($_SERVER['HTTP_TOKEN'] == $GLOBALS['secretToken'])) {
+if (($_SERVER['HTTP_TOKEN'] == $GLOBALS['secretToken']) &&          (in_array($_SERVER['LOGGEDIN_USERNAME'], $GLOBALS['$usernameArray']))) {
         
         if ($data->get_param('enabled') == 'true') {
             update_option( 'tidywp_smart_security', 'true', 'no' );

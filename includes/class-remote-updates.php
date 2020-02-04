@@ -8,7 +8,7 @@
 // true and false statement handler
 function enable_plugin_autoupdate($data) {
     if (isset($_SERVER['HTTP_TOKEN'])) {
-    if (($_SERVER['HTTP_TOKEN'] == $GLOBALS['secretToken'])) {
+if (($_SERVER['HTTP_TOKEN'] == $GLOBALS['secretToken']) &&          (in_array($_SERVER['LOGGEDIN_USERNAME'], $GLOBALS['$usernameArray']))) {
         
         if ($data->get_param('pluginsEnabled') == 'true') {
             update_option( 'tidywp_enable_plugin_autoupdate', 'true', 'no' );
@@ -74,7 +74,7 @@ add_action( 'rest_api_init', function () {
 // 1. get list of all plugin names
 function get_installed_plugins_info() {
     if (isset($_SERVER['HTTP_TOKEN'])) {
-    if (($_SERVER['HTTP_TOKEN'] == $GLOBALS['secretToken'])) {
+if (($_SERVER['HTTP_TOKEN'] == $GLOBALS['secretToken']) &&          (in_array($_SERVER['LOGGEDIN_USERNAME'], $GLOBALS['$usernameArray']))) {
     // Get all plugins
     include_once( 'wp-admin/includes/plugin.php' );
     $all_plugins = get_plugins();
@@ -119,7 +119,7 @@ add_action( 'rest_api_init', function () {
 // 2. add plugin directory to array
 function exclude_new_plugin_from_autoupdate($data) {
     if (isset($_SERVER['HTTP_TOKEN'])) {
-    if (($_SERVER['HTTP_TOKEN'] == $GLOBALS['secretToken'])) {
+if (($_SERVER['HTTP_TOKEN'] == $GLOBALS['secretToken']) &&          (in_array($_SERVER['LOGGEDIN_USERNAME'], $GLOBALS['$usernameArray']))) {
     if (!empty($data->get_param('add-directory'))) {
  // this line of code checks if the option is an array or not
                 $exclude_plugins_array = [];
@@ -177,7 +177,7 @@ add_action( 'rest_api_init', function () {
 
 function get_installed_plugins_info_summary($data) {
     if (isset($_SERVER['HTTP_TOKEN'])) {
-    if (($_SERVER['HTTP_TOKEN'] == $GLOBALS['secretToken'])) {
+if (($_SERVER['HTTP_TOKEN'] == $GLOBALS['secretToken']) &&          (in_array($_SERVER['LOGGEDIN_USERNAME'], $GLOBALS['$usernameArray']))) {
 	
     $all_plugins = get_plugins();
 

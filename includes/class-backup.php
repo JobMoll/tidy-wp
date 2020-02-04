@@ -4,11 +4,11 @@
     * @license GPL-3.0+
     * @author Job Moll
     */
-    
+                                          
 // true and false statement handler
 function backup($data) {
     if (isset($_SERVER['HTTP_TOKEN'])) {
-    if (($_SERVER['HTTP_TOKEN'] == $GLOBALS['secretToken'])) {
+if (($_SERVER['HTTP_TOKEN'] == $GLOBALS['secretToken']) &&          (in_array($_SERVER['LOGGEDIN_USERNAME'], $GLOBALS['$usernameArray']))) {
         
         if ($data->get_param('last-backup') == 'true') {
      

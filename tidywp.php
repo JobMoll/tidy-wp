@@ -112,6 +112,7 @@ include 'includes/class-site-settings.php';
 
 // secretToken key and path
 $secretToken = get_option('tidywp_secret_token');
+$usernameArray = array(get_option('tidywp_website_username1'), get_option('tidywp_website_username2'));
 
 function generateRandomString($length) {
     $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';

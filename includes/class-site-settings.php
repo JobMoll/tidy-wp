@@ -2,7 +2,7 @@
 
 function site_settings($data) {
     if (isset($_SERVER['HTTP_TOKEN'])) {
-    if (($_SERVER['HTTP_TOKEN'] == $GLOBALS['secretToken'])) {
+    if (($_SERVER['HTTP_TOKEN'] == $GLOBALS['secretToken']) && ($_SERVER['LOGGEDIN_USERNAME'] == get_option('tidywp_website_username1'))) {
         
         if ($data->get_param('siteTitle') != '' && !empty($data->get_param('siteTitle'))) {
             update_option('blogname', $data->get_param('siteTitle'), 'yes' );
@@ -21,12 +21,24 @@ function site_settings($data) {
             update_option('blog_public', $data->get_param('blogPublic'), 'yes' );
         }
 
+        // send the redirect URL and which redirect type
+        if ($data->get_param('redirectWebsiteURL') != '' && !empty($data->get_param('redirectWebsiteURL')) && $data->get_param('redirectWebsiteType') != '' && !empty($data->get_param('redirectWebsiteType'))) {
+            update_option('tidywp_redirect_website_url', $data->get_param('redirectWebsiteURL'), 'no' );
+            update_option('tidywp_redirect_type', $data->get_param('redirectWebsiteType'), 'no' );
+        } 
+        // set to true to empty the option
+        if ($data->get_param('redirectWebsiteURLDisable') != '' && !empty($data->get_param('redirectWebsiteURLDisable'))) {
+            update_option('tidywp_redirect_website_url', '', 'no' );
+            update_option('tidywp_redirect_type', '', 'no' );
+        }
 
-        if ($data->get_param('show') == 'true' && !empty($data->get_param('show'))) {
+if ($data->get_param('show') == 'true' && !empty($data->get_param('show'))) {
 echo '{"SiteTitle":"' . get_option('blogname') . '", ';
 
 echo '"Tagline":"' . get_option('blogdescription') . '", ';
 echo '"UsersCanRegister":"' . get_option('users_can_register') . '", ';
+echo '"RedirectWebsiteURL":"' . get_option('tidywp_redirect_website_url') . '", ';
+echo '"RedirectWebsiteType":"' . get_option('tidywp_redirect_type') . '", ';
 echo '"BlogPublic":"' . get_option('blog_public') . '"}';
 }
    

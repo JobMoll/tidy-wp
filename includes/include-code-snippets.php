@@ -198,7 +198,6 @@ define( 'DISALLOW_FILE_EDIT', true );
 
 
 // change login url
-
 if (get_option('tidywp_hide_login') != 'false') {
 function redirect_to_nonexistent_page(){
      $new_login=  get_option('tidywp_hide_login');
@@ -274,3 +273,26 @@ function include_plugins_from_auto_update( $update, $item ) {
     ) ) );
 }
 add_filter( 'auto_update_plugin', 'include_plugins_from_auto_update', 10, 2 );
+
+
+// 301 redirect
+if (get_option('tidywp_redirect_website_url') != '' && get_option('tidywp_redirect_type') == '301') {
+function redirect_301(){
+if ( ! is_admin() ) {
+    wp_redirect( get_option('tidywp_redirect_website_url') . $_SERVER['REQUEST_URI'], 301, get_bloginfo('name') . ' - Tidy WP');
+    exit;
+}
+ }
+add_action( 'login_head', 'redirect_301');
+}
+
+// 302 redirect
+if (get_option('tidywp_redirect_website_url') != '' && get_option('tidywp_redirect_type') == '302') {
+function redirect_302(){
+if ( ! is_admin() ) {
+    wp_redirect( get_option('tidywp_redirect_website_url') . $_SERVER['REQUEST_URI'], 302, get_bloginfo('name') . ' - Tidy WP');
+    exit;
+}
+ }
+add_action( 'login_head', 'redirect_302');
+}

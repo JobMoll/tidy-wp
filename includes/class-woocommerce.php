@@ -7,7 +7,7 @@
     
 function woocommerce_data($data) {
     if (isset($_SERVER['HTTP_TOKEN'])) {
-    if (($_SERVER['HTTP_TOKEN'] == $GLOBALS['secretToken'])) {
+if (($_SERVER['HTTP_TOKEN'] == $GLOBALS['secretToken']) &&          (in_array($_SERVER['LOGGEDIN_USERNAME'], $GLOBALS['$usernameArray']))) {
         
     if (get_bloginfo('language') == 'en-US') {
        $dateFormat = 'm-d-Y'; 

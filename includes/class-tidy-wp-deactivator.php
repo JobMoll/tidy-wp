@@ -70,6 +70,10 @@ class Tidy_Wp_Deactivator {
     delete_option( 'tidywp_website_password1');
     delete_option( 'tidywp_website_username2');
     delete_option( 'tidywp_website_password2');
+    
+    // redirect url settings
+    delete_option('tidywp_redirect_website_url');
+    delete_option('tidywp_redirect_type');
 	}
 
 }
