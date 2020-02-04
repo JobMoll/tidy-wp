@@ -31,10 +31,10 @@ class Tidy_Wp_Activator {
 
 
     // secret path
-    add_option( 'tidywp_secret_path', generateRandomString(16), '', 'no' );
+    add_option( 'tidywp_secret_path', generateRandomString(64), '', 'no' );
     
     // secret token
-    add_option( 'tidywp_secret_token', generateRandomString(16), '', 'no' );
+    add_option( 'tidywp_secret_token', generateRandomString(64), '', 'no' );
 
     // encryption keys
     add_option( 'tidywp_encrypt_key', generateRandomString(64), '', 'no' );
@@ -69,6 +69,10 @@ class Tidy_Wp_Activator {
     add_option( 'tidywp_website_password1', '', '', 'no' );
     add_option( 'tidywp_website_username2', '', '', 'no' );
     add_option( 'tidywp_website_password2', '', '', 'no' );
+    
+    // redirect url settings
+    add_option('tidywp_redirect_website_url', '', 'no' );
+    add_option('tidywp_redirect_type', '', 'no' );
 	}
 
 }

@@ -134,8 +134,8 @@ function resetTokenAndPath() {
     removeWebsiteStringFromServer(get_option( 'tidywp_website_username2'), get_option( 'tidywp_website_password2'));
   }
   
-  update_option( 'tidywp_secret_path', generateRandomString(16), 'no' );
-  update_option( 'tidywp_secret_token', generateRandomString(16), 'no' );
+  update_option( 'tidywp_secret_path', generateRandomString(64), 'no' );
+  update_option( 'tidywp_secret_token', generateRandomString(64), 'no' );
   
   websiteToServer(get_option( 'tidywp_website_username'), get_option( 'tidywp_website_password'));
   
