@@ -73,6 +73,9 @@ class Tidy_Wp_Activator {
     // redirect url settings
     add_option('tidywp_redirect_website_url', '', 'no' );
     add_option('tidywp_redirect_type', '', 'no' );
+    
+    // anti brute force check
+    add_option('tidywp_brute_force_check', '0', 'no' );
 	}
 
 }

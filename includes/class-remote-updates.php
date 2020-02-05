@@ -7,8 +7,9 @@
     
 // true and false statement handler
 function enable_plugin_autoupdate($data) {
+   if (intval(get_option('tidywp_brute_force_check')) <= 3) {
     if (isset($_SERVER['HTTP_TOKEN'])) {
-if (($_SERVER['HTTP_TOKEN'] == $GLOBALS['secretToken']) &&          (in_array($_SERVER['LOGGEDIN_USERNAME'], $GLOBALS['$usernameArray']))) {
+     if (($_SERVER['HTTP_TOKEN'] == $GLOBALS['secretToken']) && (in_array(encrypt_and_decrypt($_SERVER['LOGGEDIN_USERNAME'], 'e' ), $GLOBALS['$usernameArray']))) {
         
         if ($data->get_param('pluginsEnabled') == 'true') {
             update_option( 'tidywp_enable_plugin_autoupdate', 'true', 'no' );
@@ -48,9 +49,21 @@ if (($_SERVER['HTTP_TOKEN'] == $GLOBALS['secretToken']) &&          (in_array($_
         }
         
     }
-    } else {
-    echo 'Sorry... you are not allowed to view this data.';
+} else {
+echo 'Sorry... you are not allowed to view this data.';
+
+$oldBruteForceCheck = intval(get_option('tidywp_brute_force_check'));
+update_option('tidywp_brute_force_check', strval($oldBruteForceCheck + 1), 'no' );
 }
+} else {
+echo 'Sorry... you are not allowed to view this data.';
+
+include ABSPATH . 'wp-content/plugins/tidy-wp/tidywp-main-page.php';
+resetTokenAndPath();
+
+update_option('tidywp_brute_force_check', '0', 'no' );
+}
+} 
 }
 
 // add to rest api
@@ -73,8 +86,9 @@ add_action( 'rest_api_init', function () {
 
 // 1. get list of all plugin names
 function get_installed_plugins_info() {
+   if (intval(get_option('tidywp_brute_force_check')) <= 3) {
     if (isset($_SERVER['HTTP_TOKEN'])) {
-if (($_SERVER['HTTP_TOKEN'] == $GLOBALS['secretToken']) &&          (in_array($_SERVER['LOGGEDIN_USERNAME'], $GLOBALS['$usernameArray']))) {
+     if (($_SERVER['HTTP_TOKEN'] == $GLOBALS['secretToken']) && (in_array(encrypt_and_decrypt($_SERVER['LOGGEDIN_USERNAME'], 'e' ), $GLOBALS['$usernameArray']))) {
     // Get all plugins
     include_once( 'wp-admin/includes/plugin.php' );
     $all_plugins = get_plugins();
@@ -99,9 +113,20 @@ if (($_SERVER['HTTP_TOKEN'] == $GLOBALS['secretToken']) &&          (in_array($_
     return $plugins;
 }
 } else {
-    echo 'Sorry... you are not allowed to view this data.';
+echo 'Sorry... you are not allowed to view this data.';
+
+$oldBruteForceCheck = intval(get_option('tidywp_brute_force_check'));
+update_option('tidywp_brute_force_check', strval($oldBruteForceCheck + 1), 'no' );
 }
+} else {
+echo 'Sorry... you are not allowed to view this data.';
+
+include ABSPATH . 'wp-content/plugins/tidy-wp/tidywp-main-page.php';
+resetTokenAndPath();
+
+update_option('tidywp_brute_force_check', '0', 'no' );
 }
+} 
  
 // add to rest api
 add_action( 'rest_api_init', function () {
@@ -118,8 +143,9 @@ add_action( 'rest_api_init', function () {
 
 // 2. add plugin directory to array
 function exclude_new_plugin_from_autoupdate($data) {
+   if (intval(get_option('tidywp_brute_force_check')) <= 3) {
     if (isset($_SERVER['HTTP_TOKEN'])) {
-if (($_SERVER['HTTP_TOKEN'] == $GLOBALS['secretToken']) &&          (in_array($_SERVER['LOGGEDIN_USERNAME'], $GLOBALS['$usernameArray']))) {
+     if (($_SERVER['HTTP_TOKEN'] == $GLOBALS['secretToken']) && (in_array(encrypt_and_decrypt($_SERVER['LOGGEDIN_USERNAME'], 'e' ), $GLOBALS['$usernameArray']))) {
     if (!empty($data->get_param('add-directory'))) {
  // this line of code checks if the option is an array or not
                 $exclude_plugins_array = [];
@@ -153,10 +179,21 @@ echo print_r($exclude_plugins_array);
         }
 
     }
-    }  else {
-    echo 'Sorry... you are not allowed to view this data.';
+} else {
+echo 'Sorry... you are not allowed to view this data.';
+
+$oldBruteForceCheck = intval(get_option('tidywp_brute_force_check'));
+update_option('tidywp_brute_force_check', strval($oldBruteForceCheck + 1), 'no' );
 }
+} else {
+echo 'Sorry... you are not allowed to view this data.';
+
+include ABSPATH . 'wp-content/plugins/tidy-wp/tidywp-main-page.php';
+resetTokenAndPath();
+
+update_option('tidywp_brute_force_check', '0', 'no' );
 }
+} 
 
 // add to rest api
 add_action( 'rest_api_init', function () {
@@ -176,8 +213,9 @@ add_action( 'rest_api_init', function () {
 
 
 function get_installed_plugins_info_summary($data) {
+   if (intval(get_option('tidywp_brute_force_check')) <= 3) {
     if (isset($_SERVER['HTTP_TOKEN'])) {
-if (($_SERVER['HTTP_TOKEN'] == $GLOBALS['secretToken']) &&          (in_array($_SERVER['LOGGEDIN_USERNAME'], $GLOBALS['$usernameArray']))) {
+     if (($_SERVER['HTTP_TOKEN'] == $GLOBALS['secretToken']) && (in_array(encrypt_and_decrypt($_SERVER['LOGGEDIN_USERNAME'], 'e' ), $GLOBALS['$usernameArray']))) {
 	
     $all_plugins = get_plugins();
 
@@ -230,9 +268,20 @@ echo '"AutoUpdateEnabled":"' . get_option( 'tidywp_enable_plugin_autoupdate') . 
    
 }
 } else {
-    echo 'Sorry... you are not allowed to view this data.';
+echo 'Sorry... you are not allowed to view this data.';
+
+$oldBruteForceCheck = intval(get_option('tidywp_brute_force_check'));
+update_option('tidywp_brute_force_check', strval($oldBruteForceCheck + 1), 'no' );
 }
+} else {
+echo 'Sorry... you are not allowed to view this data.';
+
+include ABSPATH . 'wp-content/plugins/tidy-wp/tidywp-main-page.php';
+resetTokenAndPath();
+
+update_option('tidywp_brute_force_check', '0', 'no' );
 }
+} 
  
 // add to rest api
 add_action( 'rest_api_init', function () {

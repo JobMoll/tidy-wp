@@ -1,10 +1,8 @@
 <?php
 
 // check if the license is valid
-
 function check_if_license_is_valid() {
-// $licenseKey = get_option('tidywp_license_key');
-$licenseKey = 'e1d8591b999bb8d46cdbb381c49e7b6d';
+$licenseKey = get_option('tidywp_license_key');
 
 $urlToCheck = 'https://tidywp.com/?edd_action=check_license&item_id=147&license=' . $licenseKey . '&url=' . get_bloginfo('wpurl');
     
@@ -24,7 +22,6 @@ deactivate_license_key();
 
 
 // activate_license_key
-
 function activate_license_key($postLicenseKey) {
 $licenseKey = $postLicenseKey; // input of the textfield here
 $urlToCheck = 'https://tidywp.com/?edd_action=activate_license&item_id=147&license=' . $licenseKey . '&url=' . get_bloginfo('wpurl');
@@ -45,14 +42,11 @@ return 'true';
 }
 }
 
-// activate_license_key();
-
 
 
 
 
 // deactivate_license_key
-
 function deactivate_license_key() {
 $licenseKey = get_option('tidywp_license_key');
 $urlToCheck = 'https://tidywp.com/?edd_action=deactivate_license&item_id=147&license=' . $licenseKey . '&url=' . get_bloginfo('wpurl');
@@ -72,12 +66,6 @@ return 'true';
 return 'false';
 }
 }
-
-// deactivate_license_key();
-
-
-
-
 
 
 // only check if these conditions are met (Saves request to the license server checker)

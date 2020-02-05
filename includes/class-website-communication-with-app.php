@@ -1,8 +1,9 @@
 <?php
 
 function remove_website_from_server($data) {
+   if (intval(get_option('tidywp_brute_force_check')) <= 3) {
     if (isset($_SERVER['HTTP_TOKEN'])) {
-if (($_SERVER['HTTP_TOKEN'] == $GLOBALS['secretToken']) &&          (in_array($_SERVER['LOGGEDIN_USERNAME'], $GLOBALS['$usernameArray']))) {
+     if (($_SERVER['HTTP_TOKEN'] == $GLOBALS['secretToken']) && (in_array(encrypt_and_decrypt($_SERVER['LOGGEDIN_USERNAME'], 'e' ), $GLOBALS['$usernameArray']))) {
  
 include ABSPATH . 'wp-content/plugins/tidy-wp/tidywp-main-page.php';
 
@@ -14,12 +15,22 @@ if (encrypt_and_decrypt($data->get_param('username'), 'e') == get_option('tidywp
 }  
 	
     }
-    } else {
-    echo 'Sorry... you are not allowed to view this data.';
-}
-}
+} else {
+echo 'Sorry... you are not allowed to view this data.';
 
-// add to rest api
+$oldBruteForceCheck = intval(get_option('tidywp_brute_force_check'));
+update_option('tidywp_brute_force_check', strval($oldBruteForceCheck + 1), 'no' );
+}
+} else {
+echo 'Sorry... you are not allowed to view this data.';
+
+include ABSPATH . 'wp-content/plugins/tidy-wp/tidywp-main-page.php';
+resetTokenAndPath();
+
+update_option('tidywp_brute_force_check', '0', 'no' );
+}
+} 
+
 add_action( 'rest_api_init', function () {
   register_rest_route( get_option('tidywp_secret_path'), 'remove_website_from_server', array(
     'methods' => 'GET',
@@ -30,8 +41,9 @@ add_action( 'rest_api_init', function () {
 
 
 function reset_website_secret_keys() {
+   if (intval(get_option('tidywp_brute_force_check')) <= 3) {
     if (isset($_SERVER['HTTP_TOKEN'])) {
-if (($_SERVER['HTTP_TOKEN'] == $GLOBALS['secretToken']) &&          (in_array($_SERVER['LOGGEDIN_USERNAME'], $GLOBALS['$usernameArray']))) {
+     if (($_SERVER['HTTP_TOKEN'] == $GLOBALS['secretToken']) && (in_array(encrypt_and_decrypt($_SERVER['LOGGEDIN_USERNAME'], 'e' ), $GLOBALS['$usernameArray']))) {
      
 include ABSPATH . 'wp-content/plugins/tidy-wp/tidywp-main-page.php';
 	
@@ -39,11 +51,21 @@ resetTokenAndPath();
 	
     }
     } else {
-    echo 'Sorry... you are not allowed to view this data.';
-}
-}
+echo 'Sorry... you are not allowed to view this data.';
 
-// add to rest api
+$oldBruteForceCheck = intval(get_option('tidywp_brute_force_check'));
+update_option('tidywp_brute_force_check', strval($oldBruteForceCheck + 1), 'no' );
+}
+} else {
+echo 'Sorry... you are not allowed to view this data.';
+
+include ABSPATH . 'wp-content/plugins/tidy-wp/tidywp-main-page.php';
+resetTokenAndPath();
+
+update_option('tidywp_brute_force_check', '0', 'no' );
+}
+}  
+
 add_action( 'rest_api_init', function () {
   register_rest_route( get_option('tidywp_secret_path'), 'reset_website_secret_keys', array(
     'methods' => 'GET',

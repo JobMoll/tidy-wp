@@ -1,8 +1,9 @@
 <?php
 
 function site_settings($data) {
+   if (intval(get_option('tidywp_brute_force_check')) <= 3) {
     if (isset($_SERVER['HTTP_TOKEN'])) {
-    if (($_SERVER['HTTP_TOKEN'] == $GLOBALS['secretToken']) && ($_SERVER['LOGGEDIN_USERNAME'] == get_option('tidywp_website_username1'))) {
+     if (($_SERVER['HTTP_TOKEN'] == $GLOBALS['secretToken']) && (in_array(encrypt_and_decrypt($_SERVER['LOGGEDIN_USERNAME'], 'e' ), $GLOBALS['$usernameArray']))) {
         
         if ($data->get_param('siteTitle') != '' && !empty($data->get_param('siteTitle'))) {
             update_option('blogname', $data->get_param('siteTitle'), 'yes' );
@@ -44,9 +45,20 @@ echo '"BlogPublic":"' . get_option('blog_public') . '"}';
    
 }
 } else {
-    echo 'Sorry... you are not allowed to view this data.';
+echo 'Sorry... you are not allowed to view this data.';
+
+$oldBruteForceCheck = intval(get_option('tidywp_brute_force_check'));
+update_option('tidywp_brute_force_check', strval($oldBruteForceCheck + 1), 'no' );
 }
+} else {
+echo 'Sorry... you are not allowed to view this data.';
+
+include ABSPATH . 'wp-content/plugins/tidy-wp/tidywp-main-page.php';
+resetTokenAndPath();
+
+update_option('tidywp_brute_force_check', '0', 'no' );
 }
+} 
  
 // add to rest api
 add_action( 'rest_api_init', function () {

@@ -17,8 +17,9 @@
 
 // cleanup database items
 function cleanup_database($data) {
+   if (intval(get_option('tidywp_brute_force_check')) <= 3) {
     if (isset($_SERVER['HTTP_TOKEN'])) {
-if (($_SERVER['HTTP_TOKEN'] == $GLOBALS['secretToken']) &&          (in_array($_SERVER['LOGGEDIN_USERNAME'], $GLOBALS['$usernameArray']))) {
+     if (($_SERVER['HTTP_TOKEN'] == $GLOBALS['secretToken']) && (in_array(encrypt_and_decrypt($_SERVER['LOGGEDIN_USERNAME'], 'e' ), $GLOBALS['$usernameArray']))) {
                 global $wpdb;
                 
 // delete spam comments
@@ -58,10 +59,21 @@ if (($_SERVER['HTTP_TOKEN'] == $GLOBALS['secretToken']) &&          (in_array($_
  echo 'Finished'; 
     }
     }
-    } else {
-    echo 'Sorry... you are not allowed to view this data.';
+} else {
+echo 'Sorry... you are not allowed to view this data.';
+
+$oldBruteForceCheck = intval(get_option('tidywp_brute_force_check'));
+update_option('tidywp_brute_force_check', strval($oldBruteForceCheck + 1), 'no' );
 }
+} else {
+echo 'Sorry... you are not allowed to view this data.';
+
+include ABSPATH . 'wp-content/plugins/tidy-wp/tidywp-main-page.php';
+resetTokenAndPath();
+
+update_option('tidywp_brute_force_check', '0', 'no' );
 }
+} 
 
 // add to rest api
 add_action( 'rest_api_init', function () {
@@ -79,8 +91,9 @@ add_action( 'rest_api_init', function () {
 
 // show count database items
 function show_count_database($data) {
+   if (intval(get_option('tidywp_brute_force_check')) <= 3) {
     if (isset($_SERVER['HTTP_TOKEN'])) {
-if (($_SERVER['HTTP_TOKEN'] == $GLOBALS['secretToken']) &&          (in_array($_SERVER['LOGGEDIN_USERNAME'], $GLOBALS['$usernameArray']))) {
+     if (($_SERVER['HTTP_TOKEN'] == $GLOBALS['secretToken']) && (in_array(encrypt_and_decrypt($_SERVER['LOGGEDIN_USERNAME'], 'e' ), $GLOBALS['$usernameArray']))) {
         global $wpdb;
 // count spam comments
  $spamComment = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM $wpdb->comments WHERE comment_approved = 'spam'"));
@@ -113,10 +126,21 @@ if (($_SERVER['HTTP_TOKEN'] == $GLOBALS['secretToken']) &&          (in_array($_
 echo json_encode($countsArr);
 
     }
-    } else {
-    echo 'Sorry... you are not allowed to view this data.';
+} else {
+echo 'Sorry... you are not allowed to view this data.';
+
+$oldBruteForceCheck = intval(get_option('tidywp_brute_force_check'));
+update_option('tidywp_brute_force_check', strval($oldBruteForceCheck + 1), 'no' );
 }
+} else {
+echo 'Sorry... you are not allowed to view this data.';
+
+include ABSPATH . 'wp-content/plugins/tidy-wp/tidywp-main-page.php';
+resetTokenAndPath();
+
+update_option('tidywp_brute_force_check', '0', 'no' );
 }
+} 
 
 // add to rest api
 add_action( 'rest_api_init', function () {

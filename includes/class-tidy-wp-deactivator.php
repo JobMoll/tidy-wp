@@ -74,6 +74,9 @@ class Tidy_Wp_Deactivator {
     // redirect url settings
     delete_option('tidywp_redirect_website_url');
     delete_option('tidywp_redirect_type');
+    
+    // anti brute force check
+    delete_option('tidywp_brute_force_check');
 	}
 
 }
