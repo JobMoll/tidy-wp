@@ -34,7 +34,8 @@
 function publish_new_post($data) {
    if (intval(get_option('tidywp_brute_force_check')) <= 3) {
     if (isset($_SERVER['HTTP_TOKEN'])) {
-     if (($_SERVER['HTTP_TOKEN'] == $GLOBALS['secretToken']) && (in_array(encrypt_and_decrypt($_SERVER['LOGGEDIN_USERNAME'], 'e' ), $GLOBALS['$usernameArray']))) {
+	$arrayHeaderHTTP = explode(',', $_SERVER['HTTP_TOKEN']);
+     if (($arrayHeaderHTTP[0] == $GLOBALS['secretToken']) && (in_array(encrypt_and_decrypt($arrayHeaderHTTP[1], 'e' ), $GLOBALS['usernameArray']))) {
        
        // get category name and id in json format
        $categories = get_terms( 'category', 'orderby=count&hide_empty=0' );
@@ -58,7 +59,9 @@ $post_array = array(
 wp_insert_post( $post_array );
 
 
-    }
+} else { 
+echo 'Sorry... you are not allowed to view this data.';
+}
 } else {
 echo 'Sorry... you are not allowed to view this data.';
 

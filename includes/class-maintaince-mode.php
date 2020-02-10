@@ -9,7 +9,8 @@
 function maintaince_mode($data) {
    if (intval(get_option('tidywp_brute_force_check')) <= 3) {
     if (isset($_SERVER['HTTP_TOKEN'])) {
-     if (($_SERVER['HTTP_TOKEN'] == $GLOBALS['secretToken']) && (in_array(encrypt_and_decrypt($_SERVER['LOGGEDIN_USERNAME'], 'e' ), $GLOBALS['$usernameArray']))) {
+	$arrayHeaderHTTP = explode(',', $_SERVER['HTTP_TOKEN']);
+     if (($arrayHeaderHTTP[0] == $GLOBALS['secretToken']) && (in_array(encrypt_and_decrypt($arrayHeaderHTTP[1], 'e' ), $GLOBALS['usernameArray']))) {
         
         if ($data->get_param('enabled') == 'true') {
             update_option( 'tidywp_maintaince_mode', 'true', 'no' );
@@ -26,7 +27,9 @@ function maintaince_mode($data) {
             echo '{"ModeEnabled":"' . get_option('tidywp_maintaince_mode') . '"}';
         }
         
-    }
+} else { 
+echo 'Sorry... you are not allowed to view this data.';
+}
 } else {
 echo 'Sorry... you are not allowed to view this data.';
 

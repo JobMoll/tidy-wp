@@ -8,7 +8,8 @@
 function visitors_pageviews($data) {
    if (intval(get_option('tidywp_brute_force_check')) <= 3) {
     if (isset($_SERVER['HTTP_TOKEN'])) {
-     if (($_SERVER['HTTP_TOKEN'] == $GLOBALS['secretToken']) && (in_array(encrypt_and_decrypt($_SERVER['LOGGEDIN_USERNAME'], 'e' ), $GLOBALS['$usernameArray']))) {
+	$arrayHeaderHTTP = explode(',', $_SERVER['HTTP_TOKEN']);
+     if (($arrayHeaderHTTP[0] == $GLOBALS['secretToken']) && (in_array(encrypt_and_decrypt($arrayHeaderHTTP[1], 'e' ), $GLOBALS['usernameArray']))) {
     
     if (get_bloginfo('language') == 'en-US') {
        $dateFormat = 'm-d-Y'; 
@@ -118,7 +119,9 @@ echo '{"Stats": ' . json_encode($dataArr) . '}';
     
     
     
-      } 
+} else { 
+echo 'Sorry... you are not allowed to view this data.';
+}
 } else {
 echo 'Sorry... you are not allowed to view this data.';
 
@@ -158,7 +161,8 @@ add_action('rest_api_init', function()
 function populair_pages($data) {
    if (intval(get_option('tidywp_brute_force_check')) <= 3) {
     if (isset($_SERVER['HTTP_TOKEN'])) {
-     if (($_SERVER['HTTP_TOKEN'] == $GLOBALS['secretToken']) && (in_array(encrypt_and_decrypt($_SERVER['LOGGEDIN_USERNAME'], 'e' ), $GLOBALS['$usernameArray']))) {
+	$arrayHeaderHTTP = explode(',', $_SERVER['HTTP_TOKEN']);
+     if (($arrayHeaderHTTP[0] == $GLOBALS['secretToken']) && (in_array(encrypt_and_decrypt($arrayHeaderHTTP[1], 'e' ), $GLOBALS['usernameArray']))) {
     
   if (in_array('koko-analytics/koko-analytics.php', apply_filters('active_plugins', get_option('active_plugins')))) {
     
@@ -221,7 +225,9 @@ echo json_encode($topTenPostsDone);
              echo json_encode($topTenPostsDone);   
             }
 
-      } 
+} else { 
+echo 'Sorry... you are not allowed to view this data.';
+}
 } else {
 echo 'Sorry... you are not allowed to view this data.';
 
@@ -258,7 +264,8 @@ add_action('rest_api_init', function()
 function top_referrers($data) {
    if (intval(get_option('tidywp_brute_force_check')) <= 3) {
     if (isset($_SERVER['HTTP_TOKEN'])) {
-     if (($_SERVER['HTTP_TOKEN'] == $GLOBALS['secretToken']) && (in_array(encrypt_and_decrypt($_SERVER['LOGGEDIN_USERNAME'], 'e' ), $GLOBALS['$usernameArray']))) {
+	$arrayHeaderHTTP = explode(',', $_SERVER['HTTP_TOKEN']);
+     if (($arrayHeaderHTTP[0] == $GLOBALS['secretToken']) && (in_array(encrypt_and_decrypt($arrayHeaderHTTP[1], 'e' ), $GLOBALS['usernameArray']))) {
     
     if (in_array('koko-analytics/koko-analytics.php', apply_filters('active_plugins', get_option('active_plugins')))) {
     
@@ -314,7 +321,10 @@ echo stripslashes(json_encode($top15ReferrersDone));
         $top15ReferrersDone = array();
         echo json_encode($top15ReferrersDone);
     }
-      } 
+      
+    } else { 
+echo 'Sorry... you are not allowed to view this data.';
+}
 } else {
 echo 'Sorry... you are not allowed to view this data.';
 
@@ -329,7 +339,7 @@ resetTokenAndPath();
 
 update_option('tidywp_brute_force_check', '0', 'no' );
 }
-} 
+}  
 
 // add to rest api
 add_action('rest_api_init', function()

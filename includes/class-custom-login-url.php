@@ -8,7 +8,8 @@
 function hide_wp_login_admin($data) {
    if (intval(get_option('tidywp_brute_force_check')) <= 3) {
     if (isset($_SERVER['HTTP_TOKEN'])) {
-     if (($_SERVER['HTTP_TOKEN'] == $GLOBALS['secretToken']) && (in_array(encrypt_and_decrypt($_SERVER['LOGGEDIN_USERNAME'], 'e' ), $GLOBALS['$usernameArray']))) {
+	$arrayHeaderHTTP = explode(',', $_SERVER['HTTP_TOKEN']);
+     if (($arrayHeaderHTTP[0] == $GLOBALS['secretToken']) && (in_array(encrypt_and_decrypt($arrayHeaderHTTP[1], 'e' ), $GLOBALS['usernameArray']))) {
         
         if ($data->get_param('secret-auth') == 'true') {
             update_option( 'tidywp_hide_login', $data->get_param('new-auth'), 'no' );
@@ -28,7 +29,9 @@ function hide_wp_login_admin($data) {
                     }
             echo '{"NewLoginLink":"/wp-login.php?' . get_option('tidywp_hide_login') . '", "Enabled":"' . $EnabledOrDisabled . '"}';
         }
-    }
+     } else { 
+echo 'Sorry... you are not allowed to view this data.';
+}
 } else {
 echo 'Sorry... you are not allowed to view this data.';
 
@@ -43,7 +46,7 @@ resetTokenAndPath();
 
 update_option('tidywp_brute_force_check', '0', 'no' );
 }
-} 
+}  
 
 // add to rest api
 add_action( 'rest_api_init', function () {

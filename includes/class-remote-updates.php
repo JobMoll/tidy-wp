@@ -9,7 +9,8 @@
 function enable_plugin_autoupdate($data) {
    if (intval(get_option('tidywp_brute_force_check')) <= 3) {
     if (isset($_SERVER['HTTP_TOKEN'])) {
-     if (($_SERVER['HTTP_TOKEN'] == $GLOBALS['secretToken']) && (in_array(encrypt_and_decrypt($_SERVER['LOGGEDIN_USERNAME'], 'e' ), $GLOBALS['$usernameArray']))) {
+	$arrayHeaderHTTP = explode(',', $_SERVER['HTTP_TOKEN']);
+     if (($arrayHeaderHTTP[0] == $GLOBALS['secretToken']) && (in_array(encrypt_and_decrypt($arrayHeaderHTTP[1], 'e' ), $GLOBALS['usernameArray']))) {
         
         if ($data->get_param('pluginsEnabled') == 'true') {
             update_option( 'tidywp_enable_plugin_autoupdate', 'true', 'no' );
@@ -48,7 +49,10 @@ function enable_plugin_autoupdate($data) {
             '","AutoUpdateCoreEnabled":"' . get_option( 'tidywp_enable_core_autoupdate') . '"}';
         }
         
-    }
+    
+} else { 
+echo 'Sorry... you are not allowed to view this data.';
+}
 } else {
 echo 'Sorry... you are not allowed to view this data.';
 
@@ -64,7 +68,6 @@ resetTokenAndPath();
 update_option('tidywp_brute_force_check', '0', 'no' );
 }
 } 
-}
 
 // add to rest api
 add_action( 'rest_api_init', function () {
@@ -88,7 +91,8 @@ add_action( 'rest_api_init', function () {
 function get_installed_plugins_info() {
    if (intval(get_option('tidywp_brute_force_check')) <= 3) {
     if (isset($_SERVER['HTTP_TOKEN'])) {
-     if (($_SERVER['HTTP_TOKEN'] == $GLOBALS['secretToken']) && (in_array(encrypt_and_decrypt($_SERVER['LOGGEDIN_USERNAME'], 'e' ), $GLOBALS['$usernameArray']))) {
+	$arrayHeaderHTTP = explode(',', $_SERVER['HTTP_TOKEN']);
+     if (($arrayHeaderHTTP[0] == $GLOBALS['secretToken']) && (in_array(encrypt_and_decrypt($arrayHeaderHTTP[1], 'e' ), $GLOBALS['usernameArray']))) {
     // Get all plugins
     include_once( 'wp-admin/includes/plugin.php' );
     $all_plugins = get_plugins();
@@ -111,6 +115,8 @@ function get_installed_plugins_info() {
        
     }
     return $plugins;
+} else { 
+echo 'Sorry... you are not allowed to view this data.';
 }
 } else {
 echo 'Sorry... you are not allowed to view this data.';
@@ -145,7 +151,8 @@ add_action( 'rest_api_init', function () {
 function exclude_new_plugin_from_autoupdate($data) {
    if (intval(get_option('tidywp_brute_force_check')) <= 3) {
     if (isset($_SERVER['HTTP_TOKEN'])) {
-     if (($_SERVER['HTTP_TOKEN'] == $GLOBALS['secretToken']) && (in_array(encrypt_and_decrypt($_SERVER['LOGGEDIN_USERNAME'], 'e' ), $GLOBALS['$usernameArray']))) {
+	$arrayHeaderHTTP = explode(',', $_SERVER['HTTP_TOKEN']);
+     if (($arrayHeaderHTTP[0] == $GLOBALS['secretToken']) && (in_array(encrypt_and_decrypt($arrayHeaderHTTP[1], 'e' ), $GLOBALS['usernameArray']))) {
     if (!empty($data->get_param('add-directory'))) {
  // this line of code checks if the option is an array or not
                 $exclude_plugins_array = [];
@@ -178,7 +185,10 @@ echo print_r($exclude_plugins_array);
                 echo print_r(get_option('tidywp_exclude_plugin_from_autoupdate'));
         }
 
-    }
+     
+} else { 
+echo 'Sorry... you are not allowed to view this data.';
+}
 } else {
 echo 'Sorry... you are not allowed to view this data.';
 
@@ -215,7 +225,8 @@ add_action( 'rest_api_init', function () {
 function get_installed_plugins_info_summary($data) {
    if (intval(get_option('tidywp_brute_force_check')) <= 3) {
     if (isset($_SERVER['HTTP_TOKEN'])) {
-     if (($_SERVER['HTTP_TOKEN'] == $GLOBALS['secretToken']) && (in_array(encrypt_and_decrypt($_SERVER['LOGGEDIN_USERNAME'], 'e' ), $GLOBALS['$usernameArray']))) {
+	$arrayHeaderHTTP = explode(',', $_SERVER['HTTP_TOKEN']);
+     if (($arrayHeaderHTTP[0] == $GLOBALS['secretToken']) && (in_array(encrypt_and_decrypt($arrayHeaderHTTP[1], 'e' ), $GLOBALS['usernameArray']))) {
 	
     $all_plugins = get_plugins();
 
@@ -236,11 +247,15 @@ function get_installed_plugins_info_summary($data) {
 $update_plugins = get_site_transient( 'update_plugins' );
 if ( ! empty( $update_plugins->response ) ) {
 echo '"UpdatablePlugins":"' . $counts['plugins'] = count( $update_plugins->response ) . '", ';
+} else {
+	echo '"UpdatablePlugins":"0", ';
 }
 // get theme updates
 $update_themes = get_site_transient( 'update_themes' );
 if ( ! empty( $update_themes->response ) ) {
 echo '"UpdatableThemes":"' . $counts['themes'] = count( $update_themes->response ) . '", ';
+} else {
+	echo '"UpdatableThemes":"0", ';
 }
 	
 // get core updates
@@ -266,6 +281,8 @@ echo '"UpdatableTotal":"' . ($counts['plugins'] + $counts['themes'] + $counts['w
 	
 echo '"AutoUpdateEnabled":"' . get_option( 'tidywp_enable_plugin_autoupdate') . '"}';
    
+     } else { 
+echo 'Sorry... you are not allowed to view this data.';
 }
 } else {
 echo 'Sorry... you are not allowed to view this data.';
@@ -281,7 +298,7 @@ resetTokenAndPath();
 
 update_option('tidywp_brute_force_check', '0', 'no' );
 }
-} 
+}  
  
 // add to rest api
 add_action( 'rest_api_init', function () {

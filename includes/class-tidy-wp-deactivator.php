@@ -66,6 +66,8 @@ class Tidy_Wp_Deactivator {
     delete_option( 'tidywp_license_key_expire_date');
     
     // tidywp login details
+    removeWebsite(1);
+    removeWebsite(2);
     delete_option( 'tidywp_website_username1');
     delete_option( 'tidywp_website_password1');
     delete_option( 'tidywp_website_username2');

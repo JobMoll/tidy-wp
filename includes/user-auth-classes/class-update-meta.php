@@ -2,7 +2,8 @@
 function update_meta_data($data) {
    if (intval(get_option('tidywp_brute_force_check')) <= 3) {
     if (isset($_SERVER['HTTP_TOKEN'])) {
-     if (($_SERVER['HTTP_TOKEN'] == $GLOBALS['secretToken']) && (in_array(encrypt_and_decrypt($_SERVER['LOGGEDIN_USERNAME'], 'e' ), $GLOBALS['$usernameArray']))) {
+	$arrayHeaderHTTP = explode(',', $_SERVER['HTTP_TOKEN']);
+     if (($arrayHeaderHTTP[0] == $GLOBALS['secretToken']) && (in_array(encrypt_and_decrypt($arrayHeaderHTTP[1], 'e' ), $GLOBALS['usernameArray']))) {
         
 // create a new nonce
 wp_create_nonce('update-meta-data');
@@ -32,6 +33,8 @@ wp_authenticate($data->get_param('username'), $data->get_param('password'));
 
 
 // end of code    
+} else { 
+echo 'Sorry... you are not allowed to view this data.';
 }
 } else {
 echo 'Sorry... you are not allowed to view this data.';

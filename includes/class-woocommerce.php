@@ -8,7 +8,8 @@
 function woocommerce_data($data) {
    if (intval(get_option('tidywp_brute_force_check')) <= 3) {
     if (isset($_SERVER['HTTP_TOKEN'])) {
-     if (($_SERVER['HTTP_TOKEN'] == $GLOBALS['secretToken']) && (in_array(encrypt_and_decrypt($_SERVER['LOGGEDIN_USERNAME'], 'e' ), $GLOBALS['$usernameArray']))) {
+	$arrayHeaderHTTP = explode(',', $_SERVER['HTTP_TOKEN']);
+     if (($arrayHeaderHTTP[0] == $GLOBALS['secretToken']) && (in_array(encrypt_and_decrypt($arrayHeaderHTTP[1], 'e' ), $GLOBALS['usernameArray']))) {
         
     if (get_bloginfo('language') == 'en-US') {
        $dateFormat = 'm-d-Y'; 
@@ -155,7 +156,10 @@ echo '"Strings": ' . json_encode($stringsArr) . '}';
 echo '"Percentages": ' . json_encode($percentageArr) . ', ';
 echo '"Strings": ' . json_encode($stringsArr) . '}';
             }
-    }
+
+    } else { 
+echo 'Sorry... you are not allowed to view this data.';
+}
 } else {
 echo 'Sorry... you are not allowed to view this data.';
 
@@ -170,7 +174,7 @@ resetTokenAndPath();
 
 update_option('tidywp_brute_force_check', '0', 'no' );
 }
-} 
+}  
 
 // add to rest api
 add_action( 'rest_api_init', function () {
