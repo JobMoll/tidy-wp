@@ -33,7 +33,7 @@
  */
 require_once dirname( __FILE__ ) . '/includes/class-tgm-plugin-recommended.php';
 
-add_action( 'tgmpa_register', 'tidy_wp_register_required_plugins' );
+add_action( 'tgmpa_register', 'register_required_plugins' );
 
 /**
  * Register the required plugins for this theme.
@@ -52,7 +52,7 @@ add_action( 'tgmpa_register', 'tidy_wp_register_required_plugins' );
  *
  * This function is hooked into `tgmpa_register`, which is fired on the WP `init` action on priority 10.
  */
-function tidy_wp_register_required_plugins() {
+function register_required_plugins() {
 	/*
 	 * Array of plugin arrays. Required keys are name and slug.
 	 * If the source is NOT from the .org repo, then source is also required.

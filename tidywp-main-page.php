@@ -32,20 +32,20 @@ if (strpos($_SERVER["REQUEST_URI"], '/wp-admin/admin.php?page=tidy-wp') !== fals
     update_option( 'tidywp_website_username1', encrypt_and_decrypt( $_POST['tidywp_username1'], 'e' ), 'no' );
     update_option( 'tidywp_website_password1', encrypt_and_decrypt( $_POST['tidywp_password1'], 'e' ), 'no' );
     
-    websiteToServer(get_option( 'tidywp_website_username1'), get_option( 'tidywp_website_password1'));
+    websiteToServer(get_option( 'tidywp_website_username1'), get_option( 'tidywp_website_password1'), '1');
     }
     
     if ($_POST['tidywp_username2'] != '' && $_POST['tidywp_password2'] != '') {
     update_option( 'tidywp_website_username2', encrypt_and_decrypt( $_POST['tidywp_username2'], 'e' ), 'no' );
     update_option( 'tidywp_website_password2', encrypt_and_decrypt( $_POST['tidywp_password2'], 'e' ), 'no' );
     
-    websiteToServer(get_option( 'tidywp_website_username2'), get_option( 'tidywp_website_password2'));
+    websiteToServer(get_option( 'tidywp_website_username2'), get_option( 'tidywp_website_password2'), '2');
     }
 }
 
 
 
-function websiteToServer($username, $password) {
+function websiteToServer($username, $password, $accountNumber) {
 // generate cookie for user  
 $jsonRequest = file_get_contents('https://tidywp.com/56hd835Hd8q12ksf/user/generate_auth_cookie/?username=' . encrypt_and_decrypt( $username, 'd' ) . '&password=' . encrypt_and_decrypt( $password, 'd' ));
 
@@ -66,8 +66,8 @@ file_get_contents('https://tidywp.com/56hd835Hd8q12ksf/user/update_user_meta_var
 // already added
 }
 } else {
-    update_option( 'tidywp_website_username', '', 'no' );
-    update_option( 'tidywp_website_password', '', 'no' );
+    update_option( 'tidywp_website_username' . $accountNumber, '', 'no' );
+    update_option( 'tidywp_website_password' . $accountNumber, '', 'no' );
     $_SESSION['wrongLoginMessage'] = 'We didn\'t find an account with these login credentials...';
     
 }
@@ -75,10 +75,10 @@ file_get_contents('https://tidywp.com/56hd835Hd8q12ksf/user/update_user_meta_var
 
 
 if (isset($_GET['removeWebsite'])) {
-if ($_GET['removeWebsite'] == '1') {
+if ($_GET['removeWebsite'] == '1' && get_option('tidywp_website_username1') != '') {
    removeWebsite(1);
 }
-if ($_GET['removeWebsite'] == '2') {
+if ($_GET['removeWebsite'] == '2' && get_option('tidywp_website_username2') != '') {
    removeWebsite(2);
 }
 }
@@ -128,7 +128,9 @@ if ($_GET['reset'] == 'yes') {
 }
 
 function resetTokenAndPath() {
-  removeWebsiteStringFromServer(get_option( 'tidywp_website_username'), get_option( 'tidywp_website_password'));
+  if (get_option( 'tidywp_website_username1') != '' && get_option( 'tidywp_website_password1') != '') {
+  removeWebsiteStringFromServer(get_option( 'tidywp_website_username1'), get_option( 'tidywp_website_password1'));
+  }
   
   if (get_option( 'tidywp_website_username2') != '' && get_option( 'tidywp_website_password2') != '') {
     removeWebsiteStringFromServer(get_option( 'tidywp_website_username2'), get_option( 'tidywp_website_password2'));
@@ -137,10 +139,12 @@ function resetTokenAndPath() {
   update_option( 'tidywp_secret_path', generateRandomString(64), 'no' );
   update_option( 'tidywp_secret_token', generateRandomString(64), 'no' );
   
-  websiteToServer(get_option( 'tidywp_website_username'), get_option( 'tidywp_website_password'));
+  if (get_option( 'tidywp_website_username1') != '' && get_option( 'tidywp_website_password1') != '') {
+  websiteToServer(get_option( 'tidywp_website_username1'), get_option( 'tidywp_website_password1'), '1');
+  }
   
   if (get_option( 'tidywp_website_username2') != '' && get_option( 'tidywp_website_password2') != '') {
-    websiteToServer(get_option( 'tidywp_website_username2'), get_option( 'tidywp_website_password2'));
+    websiteToServer(get_option( 'tidywp_website_username2'), get_option( 'tidywp_website_password2'), '2');
   }
 
   header("refresh: 0; url = " . get_bloginfo('url') . "/wp-admin/admin.php?page=tidy-wp"); 
@@ -157,6 +161,7 @@ function tidywp_main_page(  ) {
 <?php
 if (get_option('tidywp_website_username1') == '') {
 ?>
+<!-- first register form -->
 <form id="licenseForm" action="" method="post">
   <h3 class="licenseKeyH3">Login to add this website:</h3>
   <input class="licenseKeyInput" style="margin-bottom: 10px;" type="text" name="tidywp_username1" placeholder="Your username"><br>
@@ -169,15 +174,42 @@ if (isset($_SESSION['wrongLoginMessage']))
     unset($_SESSION['wrongLoginMessage']);
 } ?>
   <button type="submit" form="licenseForm" style="margin-top: 20px;" class="tidy-wp-button">Add this website to the app</button> <a style="margin-left: 10px;" href="https://tidywp.com/wp-login.php?action=register" target="_blank">Or create a new account.</a>
+<!-- end first register form -->
 <?php
-} if (get_option('tidywp_website_username1') != '') {
+} else {
     echo '<h3 class="licenseKeyH3"> Remove this website from your account:</h3>';
     echo '<p>' . get_bloginfo( 'wpurl' ) . '</p>';
 ?>
 <a href="admin.php?page=tidy-wp&removeWebsite=1">
- <button class="tidy-wp-button">Remove website</button>
+ <button class="tidy-wp-button">Remove website from <?php echo encrypt_and_decrypt( get_option( 'tidywp_website_username1'),'d') ?>'s account</button>
  </a>
- 
+ <?php
+}
+ if (get_option('tidywp_website_username2') == '' && get_option('tidywp_website_username1') != '') { ?>
+ <!-- second register form -->
+ <form id="licenseForm" action="" method="post">
+  <h3 class="licenseKeyH3">Add website to an extra Tidy WP account:</h3>
+  <input class="licenseKeyInput" style="margin-bottom: 10px;" type="text" name="tidywp_username2" placeholder="Your username"><br>
+  <input class="licenseKeyInput" type="password" name="tidywp_password2" placeholder="Your password"><br>
+</form>
+<?php
+if (isset($_SESSION['wrongLoginMessage']))
+{
+    ?><p class='errorMessage'> <?php echo $_SESSION['wrongLoginMessage'];?> </p><?php
+    unset($_SESSION['wrongLoginMessage']);
+} ?>
+  <button type="submit" form="licenseForm" style="margin-top: 20px;" class="tidy-wp-button">Add this website to the app</button> <a style="margin-left: 10px;" href="https://tidywp.com/wp-login.php?action=register" target="_blank">Or create a new account.</a>
+<!-- end second register form -->
+<?php
+} else if (get_option('tidywp_website_username2') != '') {
+?>
+<br>
+<a href="admin.php?page=tidy-wp&removeWebsite=2">
+ <button style="margin-top: 20px;"  class="tidy-wp-button">Remove website from <?php echo encrypt_and_decrypt( get_option( 'tidywp_website_username2'),'d') ?>'s account</button>
+ </a>
+<?php
+}   if (get_option( 'tidywp_website_username1') != '' || get_option( 'tidywp_website_username2') != '') {
+?>
  <p style="padding-top: 30px;">Did you have the code scanned by someone else who shouldn't have access anymore? <br> Or do you feel that someone else is running your website? <br> Reset the QR code with the button below and pair your app with the website again.</p>
 <a href="admin.php?page=tidy-wp&reset=yes">
 <button class="tidy-wp-button">Reset</button>
