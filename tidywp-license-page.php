@@ -4,8 +4,8 @@
     * @license GPL-3.0+
     * @author Job Moll
     */
-    
 
+// check_if_license_is_valid();
 
 if (strpos($_SERVER["REQUEST_URI"], '/wp-admin/admin.php?page=tidy-wp-license') !== false) {
 activate_license_key( $_POST['licenseKey']);
@@ -18,10 +18,9 @@ if ($_GET['deativateLicense'] == 'yes') {
    header("refresh: 0; url = " . get_bloginfo('url') . "/wp-admin/admin.php?page=tidy-wp-license"); 
 }
 }
-
-
+ 
 // content of the page 
-function tidywp_license_page() { 
+function tidywp_license_page() {
     ?>
     <div class="wrap">
     <h1>Tidy WP License</h1>

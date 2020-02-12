@@ -17,7 +17,6 @@ return 'true';
 deactivate_license_key();
     return 'false';
 }
-
 }
 
 
@@ -48,18 +47,18 @@ return 'true';
 
 // deactivate_license_key
 function deactivate_license_key() {
+ 
 $licenseKey = get_option('tidywp_license_key');
 $urlToCheck = 'https://tidywp.com/?edd_action=deactivate_license&item_id=147&license=' . $licenseKey . '&url=' . get_bloginfo('wpurl');
     
 $json = file_get_contents($urlToCheck);
 $data = json_decode($json);
 
-if ($data->{'license'} == 'deactivated') {
+if ($data->{'license'} == 'deactivated' || $data->{'license'} == 'failed') {
 // succesfully deativated
 update_option( 'tidywp_license_key', '', 'no' );
 update_option( 'tidywp_license_key_valid', 'false', 'no' );
 update_option( 'tidywp_license_key_expire_date', '', 'no' );
-
 return 'true';
 } else {
 // something went wrong
@@ -69,7 +68,6 @@ return 'false';
 
 
 // only check if these conditions are met (Saves request to the license server checker)
-
-if (get_option('tidywp_license_key_valid') == 'true' && get_option('tidywp_license_key_valid') != '' && get_option('tidywp_license_key_expire_date') >= date("Y-m-d") && get_option('tidywp_license_key_expire_date') != '') {
+if (get_option('tidywp_license_key_valid') == 'true' && get_option('tidywp_license_key_valid') != '') {
 check_if_license_is_valid(); // return == true then the license is active!!
 }
