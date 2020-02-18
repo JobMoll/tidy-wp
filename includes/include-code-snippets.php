@@ -178,12 +178,6 @@ add_action( 'send_headers', 'add_security_headers', 1 );
 
 
 // force ssl
-add_action('wp_head','nocdn_on_ssl_page');
-function nocdn_on_ssl_page() {
-    if($_SERVER['HTTPS'] == "on") {
-        define('DONOTCDN', true);
-    }
-}
 define('FORCE_SSL_LOGIN', true);
 define( 'FORCE_SSL_ADMIN', true );
 
