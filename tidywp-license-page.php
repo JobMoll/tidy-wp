@@ -8,7 +8,7 @@
 // check_if_license_is_valid();
 
 if (strpos($_SERVER["REQUEST_URI"], '/wp-admin/admin.php?page=tidy-wp-license') !== false) {
-activate_license_key( $_POST['licenseKey']);
+activate_license_key( sanitize_text_field($_POST['licenseKey']);
 }
 
 

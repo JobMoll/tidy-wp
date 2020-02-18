@@ -28,19 +28,19 @@ return $addWebsiteToAccount;
 
 
 if (strpos($_SERVER["REQUEST_URI"], '/wp-admin/admin.php?page=tidy-wp') !== false && ($_SERVER['REQUEST_METHOD'] == 'POST')) {
-    if ($_POST['tidywp_username1'] != '' && $_POST['tidywp_password1'] != '') {
-    update_option( 'tidywp_website_username1', encrypt_and_decrypt( $_POST['tidywp_username1'], 'e' ), 'no' );
-    update_option( 'tidywp_website_password1', encrypt_and_decrypt( $_POST['tidywp_password1'], 'e' ), 'no' );
+    if (sanitize_text_field($_POST['tidywp_username1']) != '' && sanitize_text_field($_POST['tidywp_password1']) != '') {
+    update_option( 'tidywp_website_username1', encrypt_and_decrypt( sanitize_text_field($_POST['tidywp_username1']), 'e' ), 'no' );
+    update_option( 'tidywp_website_password1', encrypt_and_decrypt( sanitize_text_field($_POST['tidywp_password1']), 'e' ), 'no' );
     
     websiteToServer(get_option( 'tidywp_website_username1'), get_option( 'tidywp_website_password1'), '1');
     }
     
-    if ($_POST['tidywp_username2'] != '' && $_POST['tidywp_password2'] != '' && $_POST['tidywp_username2'] != encrypt_and_decrypt( get_option( 'tidywp_website_username1'),'d')) {
-    update_option( 'tidywp_website_username2', encrypt_and_decrypt( $_POST['tidywp_username2'], 'e' ), 'no' );
-    update_option( 'tidywp_website_password2', encrypt_and_decrypt( $_POST['tidywp_password2'], 'e' ), 'no' );
+    if (sanitize_text_field($_POST['tidywp_username2']) != '' && sanitize_text_field($_POST['tidywp_password2']) != '' && sanitize_text_field($_POST['tidywp_username2']) != encrypt_and_decrypt( get_option( 'tidywp_website_username1'),'d')) {
+    update_option( 'tidywp_website_username2', encrypt_and_decrypt( sanitize_text_field($_POST['tidywp_username2']), 'e' ), 'no' );
+    update_option( 'tidywp_website_password2', encrypt_and_decrypt( sanitize_text_field($_POST['tidywp_password2']), 'e' ), 'no' );
     
     websiteToServer(get_option( 'tidywp_website_username2'), get_option( 'tidywp_website_password2'), '2');
-    } else if ($_POST['tidywp_username2'] != '' && get_option( 'tidywp_website_username1') != '' && $_POST['tidywp_username1'] == '') {
+    } else if (sanitize_text_field($_POST['tidywp_username2']) != '' && get_option( 'tidywp_website_username1') != '' && sanitize_text_field($_POST['tidywp_username1']) == '') {
         $_SESSION['wrongLoginMessage'] = 'This account is already added...';
     }
 }
