@@ -47,7 +47,7 @@ if (strpos($_SERVER["REQUEST_URI"], '/wp-admin/admin.php?page=tidy-wp') !== fals
 
 function websiteToServer($username, $password, $accountNumber) {
 // generate cookie for user  
-$jsonRequest = file_get_contents('https://tidywp.com/56hd835Hd8q12ksf/user/generate_auth_cookie/?username=' . encrypt_and_decrypt( $username, 'd' ) . '&password=' . encrypt_and_decrypt( $password, 'd' ));
+$jsonRequest = url_get_contents('https://tidywp.com/56hd835Hd8q12ksf/user/generate_auth_cookie/?username=' . encrypt_and_decrypt( $username, 'd' ) . '&password=' . encrypt_and_decrypt( $password, 'd' ));
 
 $addWebsiteToAccount = generateWebsiteDetails();
 
@@ -59,9 +59,9 @@ $authCookie = json_decode($jsonRequest)->{'cookie'};
 $userDescription = json_decode($jsonRequest)->{'user'}->{'description'};
 
 if ($userDescription == '') {
-file_get_contents('https://tidywp.com/56hd835Hd8q12ksf/user/update_user_meta_vars/?cookie=' . $authCookie . '&description=' . $addWebsiteToAccount . '');    
+url_get_contents('https://tidywp.com/56hd835Hd8q12ksf/user/update_user_meta_vars/?cookie=' . $authCookie . '&description=' . $addWebsiteToAccount . '');    
 } else if (strpos($userDescription, $addWebsiteToAccount) === false)  {
-file_get_contents('https://tidywp.com/56hd835Hd8q12ksf/user/update_user_meta_vars/?cookie=' . $authCookie . '&description='. $userDescription . ',' . $addWebsiteToAccount . '');  
+url_get_contents('https://tidywp.com/56hd835Hd8q12ksf/user/update_user_meta_vars/?cookie=' . $authCookie . '&description='. $userDescription . ',' . $addWebsiteToAccount . '');  
 } else {
 // already added
 }
@@ -94,7 +94,7 @@ header("refresh: 0; url = " . get_bloginfo('url') . "/wp-admin/admin.php?page=ti
 
 function removeWebsiteStringFromServer($username, $password) {
 // generate cookie for user  
-$jsonRequest = file_get_contents('https://tidywp.com/56hd835Hd8q12ksf/user/generate_auth_cookie/?username=' . encrypt_and_decrypt( $username, 'd' ) . '&password=' . encrypt_and_decrypt( $password, 'd' ));
+$jsonRequest = url_get_contents('https://tidywp.com/56hd835Hd8q12ksf/user/generate_auth_cookie/?username=' . encrypt_and_decrypt( $username, 'd' ) . '&password=' . encrypt_and_decrypt( $password, 'd' ));
 
 $removeThisWebsiteString = generateWebsiteDetails();
 
@@ -115,7 +115,7 @@ if (substr($removedUserDescription, -1) == ',') {
     $removedUserDescription = substr($removedUserDescription, 0, -1);  
 }
 
-file_get_contents('https://tidywp.com/56hd835Hd8q12ksf/user/update_user_meta_vars/?cookie=' . $authCookie . '&description=' . $removedUserDescription . '');  
+url_get_contents('https://tidywp.com/56hd835Hd8q12ksf/user/update_user_meta_vars/?cookie=' . $authCookie . '&description=' . $removedUserDescription . '');  
 }
 
 

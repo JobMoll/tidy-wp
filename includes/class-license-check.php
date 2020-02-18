@@ -6,7 +6,7 @@ $licenseKey = get_option('tidywp_license_key');
 
 $urlToCheck = 'https://tidywp.com/?edd_action=check_license&item_id=147&license=' . $licenseKey . '&url=' . get_bloginfo('wpurl');
     
-$json = file_get_contents($urlToCheck);
+$json = url_get_contents($urlToCheck);
 $data = json_decode($json);
 
 if ($data->{'license'} == 'valid' && $data->{'expires'} > date("Y-m-d")) {
@@ -25,7 +25,7 @@ function activate_license_key($postLicenseKey) {
 $licenseKey = $postLicenseKey; // input of the textfield here
 $urlToCheck = 'https://tidywp.com/?edd_action=activate_license&item_id=147&license=' . $licenseKey . '&url=' . get_bloginfo('wpurl');
     
-$json = file_get_contents($urlToCheck);
+$json = url_get_contents($urlToCheck);
 $data = json_decode($json);
 
 if ($data->{'license'} == 'valid') {
@@ -51,7 +51,7 @@ function deactivate_license_key() {
 $licenseKey = get_option('tidywp_license_key');
 $urlToCheck = 'https://tidywp.com/?edd_action=deactivate_license&item_id=147&license=' . $licenseKey . '&url=' . get_bloginfo('wpurl');
     
-$json = file_get_contents($urlToCheck);
+$json = url_get_contents($urlToCheck);
 $data = json_decode($json);
 
 if ($data->{'license'} == 'deactivated' || $data->{'license'} == 'failed') {

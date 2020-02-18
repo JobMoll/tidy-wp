@@ -59,7 +59,7 @@ $defaultquantityarray = array (
 
 function callBackupURl() {
     $url = get_bloginfo('wpurl') . '/wp-cron.php?_nonce='. get_option('backwpup_cfg_jobrunauthkey') . '&backwpup_run=runext&jobid=1';// . get_option('tidywp_BackWPup_key');
-    file_get_contents($url);
+    url_get_contents($url);
     
             if (get_bloginfo('language') == 'en-US') {
               $dateFormat = 'm-d-Y'; 
