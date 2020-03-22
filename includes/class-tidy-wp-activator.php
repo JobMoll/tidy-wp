@@ -55,10 +55,6 @@ class Tidy_Wp_Activator {
     add_option( 'tidywp_hide_login', 'false', '', 'no' );
     add_option( 'tidywp_smart_security', 'false', '', 'no' );
     
-    // backup
-    add_option( 'tidywp_last_backup_date', '', '', 'no' );
-    add_option( 'tidywp_BackWPup_key', generateRandomNumber(16), '', 'no' );
-    
     // license system
     add_option( 'tidywp_license_key', '', '', 'no' );
     add_option( 'tidywp_license_key_valid', 'false', '', 'no' );
@@ -67,9 +63,11 @@ class Tidy_Wp_Activator {
     // tidywp login details
     add_option( 'tidywp_website_username1', '', '', 'no' );
     add_option( 'tidywp_website_password1', '', '', 'no' );
+    add_option( 'tidywp_website_userRole1', '', '', 'no' );
     add_option( 'tidywp_website_username2', '', '', 'no' );
     add_option( 'tidywp_website_password2', '', '', 'no' );
-    
+    add_option( 'tidywp_website_userRole2', '', '', 'no' );
+        
     // redirect url settings
     add_option('tidywp_redirect_website_url', '', 'no' );
     add_option('tidywp_redirect_type', '', 'no' );

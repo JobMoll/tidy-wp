@@ -55,10 +55,6 @@ class Tidy_Wp_Deactivator {
     delete_option( 'tidywp_hide_login');
     delete_option( 'tidywp_smart_security');
     
-    // backup last date
-    delete_option( 'tidywp_last_backup_date');
-    delete_option( 'tidywp_BackWPup_key');
-    
     // license system
     deactivate_license_key();
     delete_option( 'tidywp_license_key');
@@ -70,9 +66,11 @@ class Tidy_Wp_Deactivator {
     removeWebsite(2);
     delete_option( 'tidywp_website_username1');
     delete_option( 'tidywp_website_password1');
+    delete_option( 'tidywp_website_userRole1');
     delete_option( 'tidywp_website_username2');
     delete_option( 'tidywp_website_password2');
-    
+    delete_option( 'tidywp_website_userRole2');
+        
     // redirect url settings
     delete_option('tidywp_redirect_website_url');
     delete_option('tidywp_redirect_type');

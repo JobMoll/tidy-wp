@@ -66,10 +66,6 @@ include 'includes/class-remote-updates.php';
 }
 
 
-if ($baseURL . '/backup' == $actualURL) {
-include 'includes/class-backup.php';
-}
-
 if ($baseURL . '/show_count_database' == $actualURL || $baseURL . '/cleanup_database' == $actualURL) {
 include 'includes/class-clean-database.php';
 }

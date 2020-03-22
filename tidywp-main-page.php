@@ -6,7 +6,7 @@
     */
     
 
-function generateWebsiteDetails() {
+function generateWebsiteDetails($accountNumber) {
 $domainURL = get_bloginfo( 'wpurl' ) . '/wp-json/' . get_option('tidywp_secret_path');
 $websiteName = get_bloginfo( 'name' );
 $adminEmail = get_bloginfo( 'admin_email' );
@@ -17,6 +17,7 @@ require_once(ABSPATH.'wp-includes/pluggable.php');
 $addWebsiteToAccount = '{"BaseDomainURL":"' . get_bloginfo( 'wpurl' ) .
 '","DomainURL":"' . $domainURL .
 '","SecretToken":"' . get_option('tidywp_secret_token') .
+'","UserRole":"' . get_option('tidywp_website_userRole' . $accountNumber) .
 '","WebsiteName":"' . $websiteName .
 '","AdminEmail":"' . $adminEmail .
 '"}';
@@ -24,20 +25,23 @@ $addWebsiteToAccount = '{"BaseDomainURL":"' . get_bloginfo( 'wpurl' ) .
 return $addWebsiteToAccount;
 }
 
-
-
-
 if (strpos($_SERVER["REQUEST_URI"], '/wp-admin/admin.php?page=tidy-wp') !== false && ($_SERVER['REQUEST_METHOD'] == 'POST')) {
-    if (sanitize_text_field($_POST['tidywp_username1']) != '' && sanitize_text_field($_POST['tidywp_password1']) != '') {
+    if (sanitize_text_field($_POST['tidywp_username1']) != '' && sanitize_text_field($_POST['tidywp_password1']) != '') && sanitize_text_field($_POST['tidywp_userRole1']) != '') {
     update_option( 'tidywp_website_username1', encrypt_and_decrypt( sanitize_text_field($_POST['tidywp_username1']), 'e' ), 'no' );
     update_option( 'tidywp_website_password1', encrypt_and_decrypt( sanitize_text_field($_POST['tidywp_password1']), 'e' ), 'no' );
-    
+    update_option( 'tidywp_website_userRole1', encrypt_and_decrypt( sanitize_text_field($_POST['tidywp_userRole1']), 'e' ), 'no' );
+        
     websiteToServer(get_option( 'tidywp_website_username1'), get_option( 'tidywp_website_password1'), '1');
     }
     
-    if (sanitize_text_field($_POST['tidywp_username2']) != '' && sanitize_text_field($_POST['tidywp_password2']) != '' && sanitize_text_field($_POST['tidywp_username2']) != encrypt_and_decrypt( get_option( 'tidywp_website_username1'),'d')) {
+    
+    
+    if (sanitize_text_field($_POST['tidywp_username2']) != '' &&
+        sanitize_text_field($_POST['tidywp_userRole2']) != '') &&
+        sanitize_text_field($_POST['tidywp_password2']) != '' && sanitize_text_field($_POST['tidywp_username2']) != encrypt_and_decrypt( get_option( 'tidywp_website_username1'),'d')) {
     update_option( 'tidywp_website_username2', encrypt_and_decrypt( sanitize_text_field($_POST['tidywp_username2']), 'e' ), 'no' );
     update_option( 'tidywp_website_password2', encrypt_and_decrypt( sanitize_text_field($_POST['tidywp_password2']), 'e' ), 'no' );
+    update_option( 'tidywp_website_userRole2', encrypt_and_decrypt( sanitize_text_field($_POST['tidywp_userRole2']), 'e' ), 'no' );
     
     websiteToServer(get_option( 'tidywp_website_username2'), get_option( 'tidywp_website_password2'), '2');
     } else if (sanitize_text_field($_POST['tidywp_username2']) != '' && get_option( 'tidywp_website_username1') != '' && sanitize_text_field($_POST['tidywp_username1']) == '') {
@@ -51,7 +55,7 @@ function websiteToServer($username, $password, $accountNumber) {
 // generate cookie for user
 $jsonRequest = url_get_contents('https://tidywp.com/56hd835Hd8q12ksf/user/generate_auth_cookie/?username=' . encrypt_and_decrypt( $username, 'd' ) . '&password=' . encrypt_and_decrypt( $password, 'd' ));
 
-$addWebsiteToAccount = generateWebsiteDetails();
+$addWebsiteToAccount = generateWebsiteDetails($accountNumber);
 
 // get cookie and old description (old websites)
 $credentialsStatus = json_decode($jsonRequest)->{'status'};
@@ -98,7 +102,7 @@ function removeWebsiteStringFromServer($username, $password) {
 // generate cookie for user
 $jsonRequest = url_get_contents('https://tidywp.com/56hd835Hd8q12ksf/user/generate_auth_cookie/?username=' . encrypt_and_decrypt( $username, 'd' ) . '&password=' . encrypt_and_decrypt( $password, 'd' ));
 
-$removeThisWebsiteString = generateWebsiteDetails();
+$removeThisWebsiteString = generateWebsiteDetails($accountNumber);
 
 // get cookie and old description (old websites)
 $authCookie = json_decode($jsonRequest)->{'cookie'};
@@ -166,8 +170,12 @@ if (get_option('tidywp_website_username1') == '') {
 <!-- first register form -->
 <form id="licenseForm" action="" method="post">
   <h3 class="licenseKeyH3">Login to add this website:</h3>
-  <input class="licenseKeyInput" style="margin-bottom: 10px;" type="text" name="tidywp_username1" placeholder="Your username"><br>
-  <input class="licenseKeyInput" type="password" name="tidywp_password1" placeholder="Your password"><br>
+  <input class="licenseKeyInput" style="margin-bottom: 10px;" type="text" name="tidywp_username1" placeholder="Your username" required><br>
+  <input class="licenseKeyInput" type="password" name="tidywp_password1" placeholder="Your password" required><br>
+<select class="" name="tidywp_userRole1" required>
+  <option value="full-access">Full Access</option>
+  <option value="read-only">Read Only</option>
+</select><br>
 </form>
 <?php
 if (isset($_SESSION['wrongLoginMessage']))
@@ -191,8 +199,12 @@ if (isset($_SESSION['wrongLoginMessage']))
  <!-- second register form -->
  <form id="licenseForm" action="" method="post">
   <h3 class="licenseKeyH3">Add website to an extra Tidy WP account:</h3>
-  <input class="licenseKeyInput" style="margin-bottom: 10px;" type="text" name="tidywp_username2" placeholder="Your username"><br>
-  <input class="licenseKeyInput" type="password" name="tidywp_password2" placeholder="Your password"><br>
+  <input class="licenseKeyInput" style="margin-bottom: 10px;" type="text" name="tidywp_username2" placeholder="Your username" required><br>
+  <input class="licenseKeyInput" type="password" name="tidywp_password2" placeholder="Your password" required><br>
+<select class="" name="tidywp_userRole2" required>
+  <option value="full-access">Full Access</option>
+  <option value="read-only">Read Only</option>
+</select><br>
 </form>
 <?php
 if (isset($_SESSION['wrongLoginMessage']))
@@ -237,7 +249,7 @@ if (isset($_SESSION['wrongLoginMessage']))
                                 <p>Tidy WP has a feature to make your website safer and more secure.</p>
                             </li>
                             <li class="anim3">
-                                <p>Tidy WP can make a backup of your site in seconds.</p>
+                                <p>Tidy WP shows your handy statistics about your website.</p>
                             </li>
                             <li class="anim4">
                                 <p>Tidy WP is the easiest way to manage multiple Wordpress websites</p>

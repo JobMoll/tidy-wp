@@ -60,13 +60,13 @@ if (get_option('tidywp_license_key_valid') == 'false') {
                     <div class="mask">
                         <ul>
                             <li class="anim1">
-                                <p>Tidy WP can update your plugins automatically for you.</a></p>
+                                <p>Tidy WP can update your plugins automatically for you.</p>
                             </li>
                             <li class="anim2">
                                 <p>Tidy WP has a feature to make your website safer and more secure.</p>
                             </li>
                             <li class="anim3">
-                                <p>Tidy WP can make a backup of your site in seconds.</p>
+                                <p>Tidy WP shows your handy statistics about your website.</p>
                             </li>
                             <li class="anim4">
                                 <p>Tidy WP is the easiest way to manage multiple Wordpress websites</p>

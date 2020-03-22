@@ -64,12 +64,6 @@ function register_required_plugins() {
 			'slug'      => 'koko-analytics',
 			'required'  => false,
 		),
-		
-		array(
-			'name'      => 'BackWPup',
-			'slug'      => 'backwpup',
-			'required'  => false,
-		),
 
 		array(
 			'name'      => 'Woocommerce Admin',
