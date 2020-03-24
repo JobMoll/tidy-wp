@@ -43,6 +43,15 @@ class Tidy_Wp_Activator {
     // maintaince mode
     add_option( 'tidywp_maintaince_mode', 'false', '', 'no' );
     
+    // custom website popup
+    add_option( 'tidywp_custom_website_snackbar_mode', 'false', '', 'no' );
+    add_option( 'tidywp_custom_website_snackbar_text', '', '', 'no' );
+    add_option( 'tidywp_custom_website_snackbar_action_text', '', '', 'no' );
+    add_option( 'tidywp_custom_website_snackbar_position', '0', '', 'no' );
+    add_option( 'tidywp_custom_website_snackbar_theme', '0', '', 'no' );
+    add_option( 'tidywp_custom_website_snackbar_cookie_duration', '0', '', 'no' );
+    add_option( 'tidywp_custom_website_snackbar_show_duration_in_sec', '5', '', 'no' );
+    
     // exclude plugins from auto update
     add_option( 'tidywp_exclude_plugin_from_autoupdate', '', '', 'no' );
     

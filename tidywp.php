@@ -74,6 +74,10 @@ if ($baseURL . '/maintaince_mode' == $actualURL) {
 include 'includes/class-maintaince-mode.php';
 }
 
+if ($baseURL . '/custom_website_snackbar' == $actualURL) {
+include 'includes/class-custom-website-snackbar.php';
+}
+
 if ($baseURL . '/hide_wp_login_admin' == $actualURL) {
 include 'includes/class-custom-login-url.php';
 }

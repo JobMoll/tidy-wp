@@ -43,6 +43,15 @@ class Tidy_Wp_Deactivator {
     // maintaince mode
     delete_option('tidywp_maintaince_mode');  
     
+    // custom website popup
+    delete_option('tidywp_custom_website_snackbar_mode');
+    delete_option('tidywp_custom_website_snackbar_text');
+    delete_option('tidywp_custom_website_snackbar_action_text');
+    delete_option('tidywp_custom_website_snackbar_position');
+    delete_option('tidywp_custom_website_snackbar_theme');
+    delete_option('tidywp_custom_website_snackbar_cookie_duration');
+    delete_option('tidywp_custom_website_snackbar_show_duration_in_sec');
+    
     // exclude plugins from auto update
     delete_option( 'tidywp_exclude_plugin_from_autoupdate');
     

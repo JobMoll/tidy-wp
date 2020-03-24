@@ -77,10 +77,6 @@ add_action( 'rest_api_init', function () {
   ) );
 } );
 
-// https://tidywp.sparknowmedia.com/wp-json/MwsojtrJvbdVhWIk/enable_plugin_autoupdate?enabled=show
-
-
-
 
 // 1. get list of all plugin names
 // 2. get_plugin_file
@@ -223,11 +219,15 @@ add_action( 'rest_api_init', function () {
 
 
 function get_installed_plugins_info_summary($data) {
-   if (intval(get_option('tidywp_brute_force_check')) <= 3) {
+  if (intval(get_option('tidywp_brute_force_check')) <= 3) {
     if (isset($_SERVER['HTTP_TOKEN'])) {
 	$arrayHeaderHTTP = explode(',', $_SERVER['HTTP_TOKEN']);
      if (($arrayHeaderHTTP[0] == $GLOBALS['secretToken']) && (in_array(encrypt_and_decrypt($arrayHeaderHTTP[1], 'e' ), $GLOBALS['usernameArray']))) {
 	
+	if ( ! function_exists( 'get_plugins' ) ) {
+    require_once ABSPATH . 'wp-admin/includes/plugin.php';
+    }
+    
     $all_plugins = get_plugins();
 
     // Get active plugins
@@ -307,4 +307,3 @@ add_action( 'rest_api_init', function () {
     'callback' => 'get_installed_plugins_info_summary',
   ) );
 } );
-// https://tidywp.sparknowmedia.com/wp-json/MwsojtrJvbdVhWIk/get_installed_plugins_info_summary

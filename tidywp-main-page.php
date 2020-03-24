@@ -26,10 +26,10 @@ return $addWebsiteToAccount;
 }
 
 if (strpos($_SERVER["REQUEST_URI"], '/wp-admin/admin.php?page=tidy-wp') !== false && ($_SERVER['REQUEST_METHOD'] == 'POST')) {
-    if (sanitize_text_field($_POST['tidywp_username1']) != '' && sanitize_text_field($_POST['tidywp_password1']) != '') && sanitize_text_field($_POST['tidywp_userRole1']) != '') {
+    if (sanitize_text_field($_POST['tidywp_username1']) != '' && sanitize_text_field($_POST['tidywp_password1']) != '' && sanitize_text_field($_POST['tidywp_userRole1']) != '') {
     update_option( 'tidywp_website_username1', encrypt_and_decrypt( sanitize_text_field($_POST['tidywp_username1']), 'e' ), 'no' );
     update_option( 'tidywp_website_password1', encrypt_and_decrypt( sanitize_text_field($_POST['tidywp_password1']), 'e' ), 'no' );
-    update_option( 'tidywp_website_userRole1', encrypt_and_decrypt( sanitize_text_field($_POST['tidywp_userRole1']), 'e' ), 'no' );
+    update_option( 'tidywp_website_userRole1', sanitize_text_field($_POST['tidywp_userRole1']), 'no' );
         
     websiteToServer(get_option( 'tidywp_website_username1'), get_option( 'tidywp_website_password1'), '1');
     }
@@ -37,11 +37,11 @@ if (strpos($_SERVER["REQUEST_URI"], '/wp-admin/admin.php?page=tidy-wp') !== fals
     
     
     if (sanitize_text_field($_POST['tidywp_username2']) != '' &&
-        sanitize_text_field($_POST['tidywp_userRole2']) != '') &&
+        sanitize_text_field($_POST['tidywp_userRole2']) != '' &&
         sanitize_text_field($_POST['tidywp_password2']) != '' && sanitize_text_field($_POST['tidywp_username2']) != encrypt_and_decrypt( get_option( 'tidywp_website_username1'),'d')) {
     update_option( 'tidywp_website_username2', encrypt_and_decrypt( sanitize_text_field($_POST['tidywp_username2']), 'e' ), 'no' );
     update_option( 'tidywp_website_password2', encrypt_and_decrypt( sanitize_text_field($_POST['tidywp_password2']), 'e' ), 'no' );
-    update_option( 'tidywp_website_userRole2', encrypt_and_decrypt( sanitize_text_field($_POST['tidywp_userRole2']), 'e' ), 'no' );
+    update_option( 'tidywp_website_userRole2', sanitize_text_field($_POST['tidywp_userRole2']), 'no' );
     
     websiteToServer(get_option( 'tidywp_website_username2'), get_option( 'tidywp_website_password2'), '2');
     } else if (sanitize_text_field($_POST['tidywp_username2']) != '' && get_option( 'tidywp_website_username1') != '' && sanitize_text_field($_POST['tidywp_username1']) == '') {
@@ -90,15 +90,16 @@ if ($_GET['removeWebsite'] == '2' && get_option('tidywp_website_username2') != '
 }
 
 function removeWebsite($accountNumber) {
-removeWebsiteStringFromServer(get_option( 'tidywp_website_username' . $accountNumber), get_option( 'tidywp_website_password' . $accountNumber));
+removeWebsiteStringFromServer(get_option( 'tidywp_website_username' . $accountNumber), get_option( 'tidywp_website_password' . $accountNumber), $accountNumber);
   
 // last thing to do
 update_option( 'tidywp_website_username' . $accountNumber, '', 'no' );
 update_option( 'tidywp_website_password' . $accountNumber, '', 'no' );
+update_option( 'tidywp_website_userRole' . $accountNumber, '', 'no' );
 header("refresh: 0; url = " . get_bloginfo('url') . "/wp-admin/admin.php?page=tidy-wp");
 }
 
-function removeWebsiteStringFromServer($username, $password) {
+function removeWebsiteStringFromServer($username, $password, $accountNumber) {
 // generate cookie for user
 $jsonRequest = url_get_contents('https://tidywp.com/56hd835Hd8q12ksf/user/generate_auth_cookie/?username=' . encrypt_and_decrypt( $username, 'd' ) . '&password=' . encrypt_and_decrypt( $password, 'd' ));
 
@@ -165,14 +166,19 @@ function tidywp_main_page(  ) {
     <h1>Tidy WP</h1>
 <hr>
 <?php
+if (strpos(get_bloginfo( 'wpurl' ), 'localhost') !== false) {
+   ?>
+   <h3 class="licenseKeyH3">You can't add Tidy WP on a localhost...</h3>
+   <?php
+} else {
 if (get_option('tidywp_website_username1') == '') {
 ?>
 <!-- first register form -->
 <form id="licenseForm" action="" method="post">
   <h3 class="licenseKeyH3">Login to add this website:</h3>
   <input class="licenseKeyInput" style="margin-bottom: 10px;" type="text" name="tidywp_username1" placeholder="Your username" required><br>
-  <input class="licenseKeyInput" type="password" name="tidywp_password1" placeholder="Your password" required><br>
-<select class="" name="tidywp_userRole1" required>
+  <input class="licenseKeyInput" style="margin-bottom: 10px;" type="password" name="tidywp_password1" placeholder="Your password" required><br>
+<select class="userRoleSelectBox" name="tidywp_userRole1" required>
   <option value="full-access">Full Access</option>
   <option value="read-only">Read Only</option>
 </select><br>
@@ -200,8 +206,8 @@ if (isset($_SESSION['wrongLoginMessage']))
  <form id="licenseForm" action="" method="post">
   <h3 class="licenseKeyH3">Add website to an extra Tidy WP account:</h3>
   <input class="licenseKeyInput" style="margin-bottom: 10px;" type="text" name="tidywp_username2" placeholder="Your username" required><br>
-  <input class="licenseKeyInput" type="password" name="tidywp_password2" placeholder="Your password" required><br>
-<select class="" name="tidywp_userRole2" required>
+  <input class="licenseKeyInput" style="margin-bottom: 10px;" type="password" name="tidywp_password2" placeholder="Your password" required><br>
+<select class="userRoleSelectBox" name="tidywp_userRole2" required>
   <option value="full-access">Full Access</option>
   <option value="read-only">Read Only</option>
 </select><br>
@@ -285,4 +291,5 @@ if (isset($_SESSION['wrongLoginMessage']))
     </div>
     </div>
     <?php
+}
 }
