@@ -57,6 +57,7 @@ include 'includes/class-license-check.php';
 require_once 'tidywp-recommended-plugins-helper.php';
 
 
+
 $baseURL = get_bloginfo('wpurl') . '/wp-json/' . get_option('tidywp_secret_path');
 $actualURL = $_SERVER['REQUEST_SCHEME'] .'://'. $_SERVER['HTTP_HOST'] 
      . explode('?', $_SERVER['REQUEST_URI'], 2)[0];

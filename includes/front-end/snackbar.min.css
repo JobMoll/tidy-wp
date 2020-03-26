@@ -1,13 +1,8 @@
 .snackbar-container .action {
-    background: inherit;
-    width: 310px;
-}
-
-@media screen and (min-width: 1024px){
-.snackbar-container .action {
-    background: inherit;
-    width: 230px;
-}
+white-space: nowrap;
+text-overflow: ellipsis;
+overflow: hidden;
+display: inherit;
 }
 
 .snackbarTidyWP p {

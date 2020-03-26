@@ -378,7 +378,7 @@ add_action( 'login_head', 'redirect_302');
 
 
 
-if (get_option('tidywp_custom_website_snackbar_mode') == 'false') {
+if (get_option('tidywp_custom_website_snackbar_mode') == 'true') {
 if(!isset($_COOKIE['tidyWPSnackbarCookie'])) {
 function tidywp_snackbar_load_scripts($hook) {
  
@@ -399,7 +399,7 @@ function tidyWP_add_onload() {
 ?>
 <script type="text/javascript">
 function tidyWPSnackbar() {
-var tidyWPSnackbarDuration = <?php echo json_encode(get_option('tidywp_custom_website_snackbar_show_duration_in_sec')); ?> * 600;
+var tidyWPSnackbarDuration = <?php echo get_option('tidywp_custom_website_snackbar_show_duration_in_sec'); ?> * 600;
 
 var tidyWPSnackbarPosition = ['bottom-left', 'bottom-center', 'bottom-right', 'top-left', 'top-center', 'top-right'];
 var tidyWPSnackbarTextColorTheme = ["#ffffff", "#323941"];
@@ -407,17 +407,17 @@ var tidyWPSnackbarActionTextColorTheme = ["#00d2ff", "#3a7bd5"];
 var tidyWPSnackbarBackgroundColorTheme = ["#323941", "#ececec"];
 
 Snackbar.show({
-    pos: tidyWPSnackbarPosition[<?php echo intval(json_encode(get_option('tidywp_custom_website_snackbar_position'))); ?>],
+    pos: tidyWPSnackbarPosition[<?php echo intval(get_option('tidywp_custom_website_snackbar_position')); ?>],
     text: <?php echo json_encode(get_option('tidywp_custom_website_snackbar_text')); ?>,
-    textColor: tidyWPSnackbarTextColorTheme[<?php echo intval(json_encode(get_option('tidywp_custom_website_snackbar_theme'))); ?>],
+    textColor: tidyWPSnackbarTextColorTheme[<?php echo intval(get_option('tidywp_custom_website_snackbar_theme')); ?>],
     actionText: <?php echo json_encode(get_option('tidywp_custom_website_snackbar_action_text')); ?>,
     actionTextAria: <?php echo json_encode(get_option('tidywp_custom_website_snackbar_action_text')); ?>,
-    actionTextColor: tidyWPSnackbarActionTextColorTheme[<?php echo intval(json_encode(get_option('tidywp_custom_website_snackbar_theme'))); ?>],
-    backgroundColor: tidyWPSnackbarBackgroundColorTheme[<?php echo intval(json_encode(get_option('tidywp_custom_website_snackbar_theme'))); ?>],
+    actionTextColor: tidyWPSnackbarActionTextColorTheme[<?php echo intval(get_option('tidywp_custom_website_snackbar_theme')); ?>],
+    backgroundColor: tidyWPSnackbarBackgroundColorTheme[<?php echo intval(get_option('tidywp_custom_website_snackbar_theme')); ?>],
     duration: tidyWPSnackbarDuration.toString(),
     alertScreenReader: 'true',
     customClass: 'snackbarTidyWP',
-    onClose: function dontShowSnackbarAgain() {<?php if (intval(json_encode(get_option('tidywp_custom_website_snackbar_cookie_duration'))) != 0) { ?> setCookie('tidyWPSnackbarCookie', 'true', <?php echo intval(json_encode(get_option('tidywp_custom_website_snackbar_cookie_duration'))); ?>) <?php } ?> },
+    onClose: function dontShowSnackbarAgain() {<?php if (intval(get_option('tidywp_custom_website_snackbar_cookie_duration')) != 0) { ?> setCookie('tidyWPSnackbarCookie', 'true', <?php echo intval(get_option('tidywp_custom_website_snackbar_cookie_duration')); ?>) <?php } ?> },
 });
 };
 window.onload = tidyWPSnackbar();

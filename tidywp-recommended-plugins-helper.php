@@ -57,6 +57,8 @@ function register_required_plugins() {
 	 * Array of plugin arrays. Required keys are name and slug.
 	 * If the source is NOT from the .org repo, then source is also required.
 	 */
+
+
 	$plugins = array(
 		// This is an example of how to include a plugin from the WordPress Plugin Repository.
 		array(
@@ -65,12 +67,13 @@ function register_required_plugins() {
 			'required'  => false,
 		),
 
-		array(
+
+        array(
 			'name'      => 'Woocommerce Admin',
 			'slug'      => 'woocommerce-admin',
 			'required'  => false,
 		),
-		
+    	
 	/*
 	 * Array of configuration settings. Amend each line as needed.
 	 *
@@ -81,7 +84,7 @@ function register_required_plugins() {
 	 * Only uncomment the strings in the config array if you want to customize the strings.
 	 */
 	$config = array(
-		'id'           => 'tidy-wp',                 // Unique ID for hashing notices for multiple instances of TGMPA.
+		'id'           => 'tidy-wp-recommended-plugins',                 // Unique ID for hashing notices for multiple instances of TGMPA.
 		'default_path' => '',                      // Default absolute path to bundled plugins.
 		'menu'         => 'tgmpa-install-plugins', // Menu slug.
 		'parent_slug'  => 'plugins.php',            // Parent menu slug.

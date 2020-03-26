@@ -6,7 +6,7 @@
     */
     
 function custom_website_snackbar($data) {
-   if (intval(get_option('tidywp_brute_force_check')) <= 3) {
+  if (intval(get_option('tidywp_brute_force_check')) <= 3) {
     if (isset($_SERVER['HTTP_TOKEN'])) {
 	$arrayHeaderHTTP = explode(',', $_SERVER['HTTP_TOKEN']);
      if (($arrayHeaderHTTP[0] == $GLOBALS['secretToken']) && (in_array(encrypt_and_decrypt($arrayHeaderHTTP[1], 'e' ), $GLOBALS['usernameArray']))) {
@@ -21,27 +21,27 @@ function custom_website_snackbar($data) {
             echo 'false';
         }
         
-        if (isset($data->get_param('text'))) {
+        if ($data->get_param('text') !== null) {
             update_option( 'tidywp_custom_website_snackbar_text', sanitize_text_field($data->get_param('text')), 'no' );
         }
         
-        if (isset($data->get_param('action_text'))) {
+        if ($data->get_param('action_text') !== null) {
             update_option( 'tidywp_custom_website_snackbar_action_text', sanitize_text_field($data->get_param('action_text')), 'no' );
         }
         
-        if (isset($data->get_param('position'))) {
+        if ($data->get_param('position') !== null) {
             update_option( 'tidywp_custom_website_snackbar_position', sanitize_text_field($data->get_param('position')), 'no' );
         }
         
-        if (isset($data->get_param('theme'))) {
+        if ($data->get_param('theme') !== null) {
             update_option( 'tidywp_custom_website_snackbar_theme', sanitize_text_field($data->get_param('theme')), 'no' );
         }
         
-        if (isset($data->get_param('cookie_duration'))) {
+        if ($data->get_param('cookie_duration') !== null) {
             update_option( 'tidywp_custom_website_snackbar_cookie_duration', sanitize_text_field($data->get_param('cookie_duration')), 'no' );
         }
         
-        if (isset($data->get_param('show_duration_in_sec'))) {
+        if ($data->get_param('show_duration_in_sec') !== null) {
             update_option( 'tidywp_custom_website_snackbar_show_duration_in_sec', sanitize_text_field($data->get_param('show_duration_in_sec')), 'no' );
         }
         
@@ -77,7 +77,7 @@ resetTokenAndPath();
 
 update_option('tidywp_brute_force_check', '0', 'no' );
 }
-} 
+ } 
 
 // add to rest api
 add_action( 'rest_api_init', function () {

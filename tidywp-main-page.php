@@ -180,7 +180,7 @@ if (get_option('tidywp_website_username1') == '') {
   <input class="licenseKeyInput" style="margin-bottom: 10px;" type="password" name="tidywp_password1" placeholder="Your password" required><br>
 <select class="userRoleSelectBox" name="tidywp_userRole1" required>
   <option value="full-access">Full Access</option>
-  <option value="read-only">Read Only</option>
+  <option value="read-only"<?php if (get_option('tidywp_license_key_valid') == 'false') { echo ' label="Read Only (Need Tidy WP Pro)" disabled'; } ?>>Read Only</option>
 </select><br>
 </form>
 <?php
@@ -209,7 +209,7 @@ if (isset($_SESSION['wrongLoginMessage']))
   <input class="licenseKeyInput" style="margin-bottom: 10px;" type="password" name="tidywp_password2" placeholder="Your password" required><br>
 <select class="userRoleSelectBox" name="tidywp_userRole2" required>
   <option value="full-access">Full Access</option>
-  <option value="read-only">Read Only</option>
+  <option value="read-only"<?php if (get_option('tidywp_license_key_valid') == 'false') { echo ' label="Read Only (Need Tidy WP Pro)" disabled'; } ?>>Read Only</option>
 </select><br>
 </form>
 <?php
