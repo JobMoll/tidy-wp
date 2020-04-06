@@ -48,7 +48,7 @@ if (get_option('tidywp_license_key_valid') == 'false') {
 <?php
 }
 ?>
-                
+
 <div class="tipsandmore">
     <div class="tipsblock">
         <div class="infocontainer">

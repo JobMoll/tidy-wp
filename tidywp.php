@@ -36,12 +36,12 @@ if ( ! defined( 'WPINC' ) ) {
 }
 
 function activate_tidy_wp() {
-	require_once plugin_dir_path( __FILE__ ) . 'includes/class-tidy-wp-activator.php';
+	require_once plugin_dir_path( __FILE__ ) . 'includes/plugin-feature-classes/class-tidy-wp-activator.php';
 	Tidy_Wp_Activator::activate();
 }
 
 function uninstall_tidy_wp() {
-	require_once plugin_dir_path( __FILE__ ) . 'includes/class-tidy-wp-deactivator.php';
+	require_once plugin_dir_path( __FILE__ ) . 'includes/plugin-feature-classes/class-tidy-wp-deactivator.php';
 	Tidy_Wp_Deactivator::deactivate();
 }
 
@@ -53,7 +53,7 @@ register_uninstall_hook( __FILE__, 'uninstall_tidy_wp' );
 
 // include the code snippets
 include 'includes/include-code-snippets.php';
-include 'includes/class-license-check.php';
+include 'includes/plugin-feature-classes/class-license-check.php';
 require_once 'tidywp-recommended-plugins-helper.php';
 
 
@@ -63,52 +63,56 @@ $actualURL = $_SERVER['REQUEST_SCHEME'] .'://'. $_SERVER['HTTP_HOST']
      . explode('?', $_SERVER['REQUEST_URI'], 2)[0];
 
 if ($baseURL . '/exclude_new_plugin_from_autoupdate' == $actualURL || $baseURL . '/get_installed_plugins_info_summary' == $actualURL || $baseURL . '/enable_plugin_autoupdate' == $actualURL || $baseURL . '/get_installed_plugins_info' == $actualURL) {
-include 'includes/class-remote-updates.php';
+include 'includes/app-feature-classes/class-remote-updates.php';
 }
 
 
 if ($baseURL . '/show_count_database' == $actualURL || $baseURL . '/cleanup_database' == $actualURL) {
-include 'includes/class-clean-database.php';
+include 'includes/app-feature-classes/class-clean-database.php';
 }
 
 if ($baseURL . '/maintaince_mode' == $actualURL) {
-include 'includes/class-maintaince-mode.php';
+include 'includes/app-feature-classes/class-maintaince-mode.php';
 }
 
 if ($baseURL . '/custom_website_snackbar' == $actualURL) {
-include 'includes/class-custom-website-snackbar.php';
+include 'includes/app-feature-classes/class-custom-website-snackbar.php';
 }
 
 if ($baseURL . '/hide_wp_login_admin' == $actualURL) {
-include 'includes/class-custom-login-url.php';
+include 'includes/app-feature-classes/class-custom-login-url.php';
 }
 
 if ($baseURL . '/smart_security' == $actualURL) {
-include 'includes/class-smart-security.php';
+include 'includes/app-feature-classes/class-smart-security.php';
 }
 
 if ($baseURL . '/woocommerce_data' == $actualURL) {
-include 'includes/class-woocommerce.php';
+include 'includes/app-feature-classes/class-woocommerce.php';
 }
 
 if ($baseURL . '/visitors_pageviews' == $actualURL || $baseURL . '/populair_pages' == $actualURL || $baseURL . '/top_referrers' == $actualURL) {
-include 'includes/class-koko-analytics.php';
+include 'includes/app-feature-classes/class-koko-analytics.php';
 }
 
 if ($baseURL . '/website_summary' == $actualURL) {
-include 'includes/class-website-summary.php';
+include 'includes/app-feature-classes/class-website-summary.php';
 }
 
 if ($baseURL . '/publish_new_post' == $actualURL) {
-include 'includes/class-publish-new-post.php';
+include 'includes/app-feature-classes/class-publish-new-post.php';
 }
 
 if ($baseURL . '/remove_website_from_server' == $actualURL || $baseURL . '/reset_website_secret_keys' == $actualURL) {
-include 'includes/class-website-communication-with-app.php';
+include 'includes/app-feature-classes/class-website-communication-with-app.php';
 }
 
 if ($baseURL . '/site_settings' == $actualURL) {
-include 'includes/class-site-settings.php';
+include 'includes/app-feature-classes/class-site-settings.php';
+}
+
+if ($baseURL . '/website_summary_specific' == $actualURL) {
+include 'includes/app-feature-classes/class-website-summary-specific.php.php';
 }
 
 
@@ -150,7 +154,16 @@ function tidywp_add_admin_menu(  ) {
 	'tidy-wp', 
 	'tidywp_main_page', 
 	// add the tidy wp logo
-	plugin_dir_url( __FILE__ ) . '/assets/TidyWP-Icon.png' );
+	plugin_dir_url( __FILE__ ) . '/backend-assets/images/TidyWP-Icon.png' );
+	
+	add_submenu_page(
+    'tidy-wp',       // parent slug
+    'Addons',    // page title
+    'Addons',             // menu title
+    'manage_options',           // capability
+    'tidy-wp-addon', // slug
+    'tidywp_addon_page' // callback
+); 
 	add_submenu_page(
     'tidy-wp',       // parent slug
     'License',    // page title
@@ -159,16 +172,19 @@ function tidywp_add_admin_menu(  ) {
     'tidy-wp-license', // slug
     'tidywp_license_page' // callback
 ); 
+
+
 }
 if (strpos($_SERVER["REQUEST_URI"], 'wp-admin/admin.php?page=tidy-wp') !== false) {
     
 function load_custom_wp_admin_style() {
-wp_enqueue_style( 'custom_wp_admin_css', plugins_url('css/plugin-page-style.css', __FILE__) );
+wp_enqueue_style( 'custom_wp_admin_css', plugins_url('/backend-assets/css/plugin-page-style.css', __FILE__) );
 }
 add_action( 'admin_enqueue_scripts', 'load_custom_wp_admin_style' );
 }
-include 'tidywp-main-page.php';
-include 'tidywp-license-page.php';
+include 'plugin-pages/tidywp-main-page.php';
+include 'plugin-pages/tidywp-license-page.php';
+include 'plugin-pages/tidywp-addon-page.php';
 }
 
 function pair_with_app_link( $links ) {
@@ -193,7 +209,6 @@ $myUpdateChecker->setBranch('master');
 
 // encryption to be used
 function encrypt_and_decrypt( $string, $action = 'e' ) {
-    // you may change these values to your own
     $secret_key = get_option('tidywp_encrypt_key');
     $secret_iv = get_option('tidywp_encrypt_iv');
  
@@ -211,6 +226,7 @@ function encrypt_and_decrypt( $string, $action = 'e' ) {
  
     return $output;
 }
+
 
 function url_get_contents($Url) {
     if (!function_exists('curl_init')){

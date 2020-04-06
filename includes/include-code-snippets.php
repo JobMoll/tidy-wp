@@ -354,6 +354,9 @@ function include_plugins_from_auto_update( $update, $item ) {
 add_filter( 'auto_update_plugin', 'include_plugins_from_auto_update', 10, 2 );
 
 
+
+// redirection
+
 // 301 redirect
 if (get_option('tidywp_redirect_website_url') != '' && get_option('tidywp_redirect_type') == '301') {
 function redirect_301(){
@@ -378,17 +381,19 @@ add_action( 'login_head', 'redirect_302');
 
 
 
+// snackbar
+
 if (get_option('tidywp_custom_website_snackbar_mode') == 'true') {
 if(!isset($_COOKIE['tidyWPSnackbarCookie'])) {
 function tidywp_snackbar_load_scripts($hook) {
- 
+
     // create my own version codes
-    $tidywp_snackbar_js_ver  = date("ymd-Gis", filemtime( plugin_dir_path( __FILE__ ) . 'front-end/snackbar.min.js' ));
-    $tidywp_snackbar_css_ver = date("ymd-Gis", filemtime( plugin_dir_path( __FILE__ ) . 'front-end/snackbar.min.css' ));
+    $tidywp_snackbar_js_ver  = date("ymd-Gis", filemtime( 'front-end-assets/js/snackbar.min.js' ));
+    $tidywp_snackbar_css_ver = date("ymd-Gis", filemtime( 'front-end-assets/css/snackbar.min.css' ));
      
     // 
-    wp_enqueue_script( 'custom_js', plugins_url( 'front-end/snackbar.min.js', __FILE__ ), array(), $tidywp_snackbar_js_ver );
-    wp_register_style( 'my_css',    plugins_url( 'front-end/snackbar.min.css',    __FILE__ ), false,   $tidywp_snackbar_css_ver );
+    wp_enqueue_script( 'custom_js', plugins_url( 'front-end-assets/js/snackbar.min.js', __DIR__ ), array(), $tidywp_snackbar_js_ver );
+    wp_register_style( 'my_css',    plugins_url( 'front-end-assets/css/snackbar.min.css',    __DIR__ ), false,   $tidywp_snackbar_css_ver );
     wp_enqueue_style ( 'my_css' );
  
 }
@@ -428,3 +433,22 @@ window.onload = tidyWPSnackbar();
 add_action( 'wp_footer', 'tidyWP_add_onload' );
 }
 }
+
+
+
+// backend notice
+
+// notice-success
+// notice-error
+// notice-warning
+
+// is-dismissible
+
+function tidywp_backend_notice() {
+    ?>
+    <div class="notice notice-warning is-dismissible">
+        <p><?php _e( 'There has been an error. Bummer!', 'my_plugin_textdomain' ); ?></p>
+    </div>
+    <?php
+}
+add_action( 'admin_notices', 'tidywp_backend_notice' );

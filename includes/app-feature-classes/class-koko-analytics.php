@@ -6,10 +6,13 @@
 */
 
 function visitors_pageviews($data) {
-   if (intval(get_option('tidywp_brute_force_check')) <= 3) {
-    if (isset($_SERVER['HTTP_TOKEN'])) {
-	$arrayHeaderHTTP = explode(',', $_SERVER['HTTP_TOKEN']);
-     if (($arrayHeaderHTTP[0] == $GLOBALS['secretToken']) && (in_array(encrypt_and_decrypt($arrayHeaderHTTP[1], 'e' ), $GLOBALS['usernameArray']))) {
+include str_replace('app', 'plugin', plugin_dir_path(__FILE__)) . 'class-tidy-wp-auth.php';
+if (isset($_SERVER['HTTP_TOKEN'])) {
+$apiAuthOK = tidyWPAuth($_SERVER['HTTP_TOKEN']);
+} else { 
+echo 'Sorry... you are not allowed to view this data.';
+}
+if ($apiAuthOK == true) {
     
     if (get_bloginfo('language') == 'en-US') {
        $dateFormat = 'm-d-Y'; 
@@ -119,22 +122,6 @@ echo '{"Stats": ' . json_encode($dataArr) . '}';
     
     
     
-} else { 
-echo 'Sorry... you are not allowed to view this data.';
-}
-} else {
-echo 'Sorry... you are not allowed to view this data.';
-
-$oldBruteForceCheck = intval(get_option('tidywp_brute_force_check'));
-update_option('tidywp_brute_force_check', strval($oldBruteForceCheck + 1), 'no' );
-}
-} else {
-echo 'Sorry... you are not allowed to view this data.';
-
-include ABSPATH . 'wp-content/plugins/tidy-wp/tidywp-main-page.php';
-resetTokenAndPath();
-
-update_option('tidywp_brute_force_check', '0', 'no' );
 }
 } 
 
@@ -159,10 +146,13 @@ add_action('rest_api_init', function()
 
 
 function populair_pages($data) {
-   if (intval(get_option('tidywp_brute_force_check')) <= 3) {
-    if (isset($_SERVER['HTTP_TOKEN'])) {
-	$arrayHeaderHTTP = explode(',', $_SERVER['HTTP_TOKEN']);
-     if (($arrayHeaderHTTP[0] == $GLOBALS['secretToken']) && (in_array(encrypt_and_decrypt($arrayHeaderHTTP[1], 'e' ), $GLOBALS['usernameArray']))) {
+include str_replace('app', 'plugin', plugin_dir_path(__FILE__)) . 'class-tidy-wp-auth.php';
+if (isset($_SERVER['HTTP_TOKEN'])) {
+$apiAuthOK = tidyWPAuth($_SERVER['HTTP_TOKEN']);
+} else { 
+echo 'Sorry... you are not allowed to view this data.';
+}
+if ($apiAuthOK == true) {
     
   if (in_array('koko-analytics/koko-analytics.php', apply_filters('active_plugins', get_option('active_plugins')))) {
     
@@ -225,22 +215,6 @@ echo json_encode($topTenPostsDone);
              echo json_encode($topTenPostsDone);   
             }
 
-} else { 
-echo 'Sorry... you are not allowed to view this data.';
-}
-} else {
-echo 'Sorry... you are not allowed to view this data.';
-
-$oldBruteForceCheck = intval(get_option('tidywp_brute_force_check'));
-update_option('tidywp_brute_force_check', strval($oldBruteForceCheck + 1), 'no' );
-}
-} else {
-echo 'Sorry... you are not allowed to view this data.';
-
-include ABSPATH . 'wp-content/plugins/tidy-wp/tidywp-main-page.php';
-resetTokenAndPath();
-
-update_option('tidywp_brute_force_check', '0', 'no' );
 }
 } 
 
@@ -262,10 +236,13 @@ add_action('rest_api_init', function()
 
 
 function top_referrers($data) {
-   if (intval(get_option('tidywp_brute_force_check')) <= 3) {
-    if (isset($_SERVER['HTTP_TOKEN'])) {
-	$arrayHeaderHTTP = explode(',', $_SERVER['HTTP_TOKEN']);
-     if (($arrayHeaderHTTP[0] == $GLOBALS['secretToken']) && (in_array(encrypt_and_decrypt($arrayHeaderHTTP[1], 'e' ), $GLOBALS['usernameArray']))) {
+include str_replace('app', 'plugin', plugin_dir_path(__FILE__)) . 'class-tidy-wp-auth.php';
+if (isset($_SERVER['HTTP_TOKEN'])) {
+$apiAuthOK = tidyWPAuth($_SERVER['HTTP_TOKEN']);
+} else { 
+echo 'Sorry... you are not allowed to view this data.';
+}
+if ($apiAuthOK == true) {
     
     if (in_array('koko-analytics/koko-analytics.php', apply_filters('active_plugins', get_option('active_plugins')))) {
     
@@ -322,22 +299,6 @@ echo stripslashes(json_encode($top15ReferrersDone));
         echo json_encode($top15ReferrersDone);
     }
       
-    } else { 
-echo 'Sorry... you are not allowed to view this data.';
-}
-} else {
-echo 'Sorry... you are not allowed to view this data.';
-
-$oldBruteForceCheck = intval(get_option('tidywp_brute_force_check'));
-update_option('tidywp_brute_force_check', strval($oldBruteForceCheck + 1), 'no' );
-}
-} else {
-echo 'Sorry... you are not allowed to view this data.';
-
-include ABSPATH . 'wp-content/plugins/tidy-wp/tidywp-main-page.php';
-resetTokenAndPath();
-
-update_option('tidywp_brute_force_check', '0', 'no' );
 }
 }  
 

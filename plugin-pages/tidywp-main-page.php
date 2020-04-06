@@ -165,6 +165,7 @@ function tidywp_main_page(  ) {
     <div class="wrap">
     <h1>Tidy WP</h1>
 <hr>
+<p style="margin-bottom: 15px;">Login with your Tidy WP account to add this website! </br> You can activate your license key <a href="<?php get_bloginfo('wpurl') ?>/wp-admin/admin.php?page=tidy-wp-license">right here.</a></p>
 <?php
 if (strpos(get_bloginfo( 'wpurl' ), 'localhost') !== false) {
    ?>

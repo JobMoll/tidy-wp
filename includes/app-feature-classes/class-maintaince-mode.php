@@ -7,10 +7,13 @@
     
 // true and false statement handler
 function maintaince_mode($data) {
-   if (intval(get_option('tidywp_brute_force_check')) <= 3) {
-    if (isset($_SERVER['HTTP_TOKEN'])) {
-	$arrayHeaderHTTP = explode(',', $_SERVER['HTTP_TOKEN']);
-     if (($arrayHeaderHTTP[0] == $GLOBALS['secretToken']) && (in_array(encrypt_and_decrypt($arrayHeaderHTTP[1], 'e' ), $GLOBALS['usernameArray']))) {
+include str_replace('app', 'plugin', plugin_dir_path(__FILE__)) . 'class-tidy-wp-auth.php';
+if (isset($_SERVER['HTTP_TOKEN'])) {
+$apiAuthOK = tidyWPAuth($_SERVER['HTTP_TOKEN']);
+} else { 
+echo 'Sorry... you are not allowed to view this data.';
+}
+if ($apiAuthOK == true) {
         
         if ($data->get_param('enabled') == 'true') {
             update_option( 'tidywp_maintaince_mode', 'true', 'no' );
@@ -27,22 +30,6 @@ function maintaince_mode($data) {
             echo '{"ModeEnabled":"' . get_option('tidywp_maintaince_mode') . '"}';
         }
         
-} else { 
-echo 'Sorry... you are not allowed to view this data.';
-}
-} else {
-echo 'Sorry... you are not allowed to view this data.';
-
-$oldBruteForceCheck = intval(get_option('tidywp_brute_force_check'));
-update_option('tidywp_brute_force_check', strval($oldBruteForceCheck + 1), 'no' );
-}
-} else {
-echo 'Sorry... you are not allowed to view this data.';
-
-include ABSPATH . 'wp-content/plugins/tidy-wp/tidywp-main-page.php';
-resetTokenAndPath();
-
-update_option('tidywp_brute_force_check', '0', 'no' );
 }
 } 
 

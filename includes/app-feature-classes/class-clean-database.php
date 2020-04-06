@@ -14,14 +14,19 @@
 
 // krijg de nummers van hoeveel objecten er bijvoorbeeld in de spam zitten: https://designmodo.com/wpdb-object-wordpress/
 
-
 // cleanup database items
+
 function cleanup_database($data) {
-   if (intval(get_option('tidywp_brute_force_check')) <= 3) {
-    if (isset($_SERVER['HTTP_TOKEN'])) {
-	$arrayHeaderHTTP = explode(',', $_SERVER['HTTP_TOKEN']);
-     if (($arrayHeaderHTTP[0] == $GLOBALS['secretToken']) && (in_array(encrypt_and_decrypt($arrayHeaderHTTP[1], 'e' ), $GLOBALS['usernameArray']))) {
-                global $wpdb;
+
+include str_replace('app', 'plugin', plugin_dir_path(__FILE__)) . 'class-tidy-wp-auth.php';
+if (isset($_SERVER['HTTP_TOKEN'])) {
+$apiAuthOK = tidyWPAuth($_SERVER['HTTP_TOKEN']);
+} else { 
+echo 'Sorry... you are not allowed to view this data.';
+}
+if ($apiAuthOK == true) {
+    
+   global $wpdb;
                 
 // delete spam comments
   if ($data->get_param('comment-spam') == 'true') {
@@ -59,22 +64,6 @@ function cleanup_database($data) {
  
  echo 'Finished'; 
     }
-} else { 
-echo 'Sorry... you are not allowed to view this data.';
-}
-} else {
-echo 'Sorry... you are not allowed to view this data.';
-
-$oldBruteForceCheck = intval(get_option('tidywp_brute_force_check'));
-update_option('tidywp_brute_force_check', strval($oldBruteForceCheck + 1), 'no' );
-}
-} else {
-echo 'Sorry... you are not allowed to view this data.';
-
-include ABSPATH . 'wp-content/plugins/tidy-wp/tidywp-main-page.php';
-resetTokenAndPath();
-
-update_option('tidywp_brute_force_check', '0', 'no' );
 }
 } 
 
@@ -94,10 +83,14 @@ add_action( 'rest_api_init', function () {
 
 // show count database items
 function show_count_database($data) {
-   if (intval(get_option('tidywp_brute_force_check')) <= 3) {
-    if (isset($_SERVER['HTTP_TOKEN'])) {
-	$arrayHeaderHTTP = explode(',', $_SERVER['HTTP_TOKEN']);
-     if (($arrayHeaderHTTP[0] == $GLOBALS['secretToken']) && (in_array(encrypt_and_decrypt($arrayHeaderHTTP[1], 'e' ), $GLOBALS['usernameArray']))) {
+include str_replace('app', 'plugin', plugin_dir_path(__FILE__)) . 'class-tidy-wp-auth.php';
+if (isset($_SERVER['HTTP_TOKEN'])) {
+$apiAuthOK = tidyWPAuth($_SERVER['HTTP_TOKEN']);
+} else { 
+echo 'Sorry... you are not allowed to view this data.';
+}
+if ($apiAuthOK == true) {
+    
         global $wpdb;
 // count spam comments
  $spamComment = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM $wpdb->comments WHERE comment_approved = 'spam'"));
@@ -130,22 +123,6 @@ function show_count_database($data) {
 echo json_encode($countsArr);
 
     
-} else { 
-echo 'Sorry... you are not allowed to view this data.';
-}
-} else {
-echo 'Sorry... you are not allowed to view this data.';
-
-$oldBruteForceCheck = intval(get_option('tidywp_brute_force_check'));
-update_option('tidywp_brute_force_check', strval($oldBruteForceCheck + 1), 'no' );
-}
-} else {
-echo 'Sorry... you are not allowed to view this data.';
-
-include ABSPATH . 'wp-content/plugins/tidy-wp/tidywp-main-page.php';
-resetTokenAndPath();
-
-update_option('tidywp_brute_force_check', '0', 'no' );
 }
 } 
 
