@@ -26,7 +26,7 @@ return $addWebsiteToAccount;
 }
 
 if (strpos($_SERVER["REQUEST_URI"], '/wp-admin/admin.php?page=tidy-wp') !== false && ($_SERVER['REQUEST_METHOD'] == 'POST')) {
-    if (sanitize_text_field($_POST['tidywp_username1']) != '' && sanitize_text_field($_POST['tidywp_password1']) != '' && sanitize_text_field($_POST['tidywp_userRole1']) != '') {
+    if (isset($_POST['tidywp_username1']) && isset($_POST['tidywp_password1']) && isset($_POST['tidywp_userRole1'])) {
     update_option( 'tidywp_website_username1', encrypt_and_decrypt( sanitize_text_field($_POST['tidywp_username1']), 'e' ), 'no' );
     update_option( 'tidywp_website_password1', encrypt_and_decrypt( sanitize_text_field($_POST['tidywp_password1']), 'e' ), 'no' );
     update_option( 'tidywp_website_userRole1', sanitize_text_field($_POST['tidywp_userRole1']), 'no' );
@@ -36,15 +36,15 @@ if (strpos($_SERVER["REQUEST_URI"], '/wp-admin/admin.php?page=tidy-wp') !== fals
     
     
     
-    if (sanitize_text_field($_POST['tidywp_username2']) != '' &&
-        sanitize_text_field($_POST['tidywp_userRole2']) != '' &&
-        sanitize_text_field($_POST['tidywp_password2']) != '' && sanitize_text_field($_POST['tidywp_username2']) != encrypt_and_decrypt( get_option( 'tidywp_website_username1'),'d')) {
+    if (isset($_POST['tidywp_username2']) &&
+        isset($_POST['tidywp_userRole2']) &&
+        isset($_POST['tidywp_password2']) && sanitize_text_field($_POST['tidywp_username2']) != encrypt_and_decrypt( get_option( 'tidywp_website_username1'),'d')) {
     update_option( 'tidywp_website_username2', encrypt_and_decrypt( sanitize_text_field($_POST['tidywp_username2']), 'e' ), 'no' );
     update_option( 'tidywp_website_password2', encrypt_and_decrypt( sanitize_text_field($_POST['tidywp_password2']), 'e' ), 'no' );
     update_option( 'tidywp_website_userRole2', sanitize_text_field($_POST['tidywp_userRole2']), 'no' );
     
     websiteToServer(get_option( 'tidywp_website_username2'), get_option( 'tidywp_website_password2'), '2');
-    } else if (sanitize_text_field($_POST['tidywp_username2']) != '' && get_option( 'tidywp_website_username1') != '' && sanitize_text_field($_POST['tidywp_username1']) == '') {
+    } else if (isset($_POST['tidywp_username2']) && get_option( 'tidywp_website_username1') != '' && sanitize_text_field($_POST['tidywp_username1']) == '') {
         $_SESSION['wrongLoginMessage'] = 'This account is already added...';
     }
 }
@@ -181,7 +181,7 @@ if (get_option('tidywp_website_username1') == '') {
   <input class="licenseKeyInput" style="margin-bottom: 10px;" type="password" name="tidywp_password1" placeholder="Your password" required><br>
 <select class="userRoleSelectBox" name="tidywp_userRole1" required>
   <option value="full-access">Full Access</option>
-  <option value="read-only"<?php if (get_option('tidywp_license_key_valid') == 'false') { echo ' label="Read Only (Need Tidy WP Pro)" disabled'; } ?>>Read Only</option>
+  <option value="read-only"<?php if (get_option('tidywp_addons_user_role') == 'false') { echo ' label="Read Only (Need Tidy WP Pro)" disabled'; } ?>>Read Only</option>
 </select><br>
 </form>
 <?php
@@ -210,7 +210,7 @@ if (isset($_SESSION['wrongLoginMessage']))
   <input class="licenseKeyInput" style="margin-bottom: 10px;" type="password" name="tidywp_password2" placeholder="Your password" required><br>
 <select class="userRoleSelectBox" name="tidywp_userRole2" required>
   <option value="full-access">Full Access</option>
-  <option value="read-only"<?php if (get_option('tidywp_license_key_valid') == 'false') { echo ' label="Read Only (Need Tidy WP Pro)" disabled'; } ?>>Read Only</option>
+  <option value="read-only"<?php if (get_option('tidywp_addons_user_roles') == 'false') { echo ' label="Read Only (Need Tidy WP Pro)" disabled'; } ?>>Read Only</option>
 </select><br>
 </form>
 <?php

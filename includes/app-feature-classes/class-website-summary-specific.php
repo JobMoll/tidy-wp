@@ -25,8 +25,14 @@ if ($apiAuthOK == true) {
             
             $showWebsiteSummarySpecific = array(
             'LicenseKeyValid' => get_option('tidywp_license_key_valid'), 
+            
+            // plugins
             'KokoAnalyticsActive' => $kokoAnalyticsActive, 
             'WoocommerceAdminActive' => $woocommerceAdminActive,
+            
+            // addons
+            'SnackbarAddon' => get_option('tidywp_addons_snackbar'), 
+            'UserRolesAddon' => get_option('tidywp_addons_user_roles'), 
            );
            
            echo json_encode($showWebsiteSummarySpecific);

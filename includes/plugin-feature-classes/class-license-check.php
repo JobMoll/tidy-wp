@@ -12,11 +12,14 @@ $data = json_decode($json);
 
 if ($data->{'license'} == 'valid' && $data->{'expires'} > date("Y-m-d")) {
 // license is valid
+
+update_option('tidywp_license_key_last_checked' , strtotime('now'));
+
 return 'true';
 } else {
 // license is invalid:(
 deactivate_license_key();
-    return 'false';
+return 'false';
 }
 }
 }
@@ -32,9 +35,9 @@ $data = json_decode($json);
 
 if ($data->{'license'} == 'valid') {
     // succesfully activated
-update_option( 'tidywp_license_key', $licenseKey, 'no' );
-update_option( 'tidywp_license_key_valid', 'true', 'no' );
-update_option( 'tidywp_license_key_expired', $data->{'expires'}, 'no' );
+update_option('tidywp_license_key_last_checked' , strtotime('now'));
+update_option('tidywp_license_key', $licenseKey, 'no');
+update_option('tidywp_license_key_valid', 'true', 'no');
 
 return 'true';
 } else {
@@ -60,7 +63,11 @@ if ($data->{'license'} == 'deactivated' || $data->{'license'} == 'failed') {
 // succesfully deativated
 update_option( 'tidywp_license_key', '', 'no' );
 update_option( 'tidywp_license_key_valid', 'false', 'no' );
-update_option( 'tidywp_license_key_expire_date', '', 'no' );
+
+// disable all addons
+update_option( 'tidywp_addons_snackbar', 'false', 'no' );
+update_option( 'tidywp_addons_user_roles', 'false', 'no' );
+
 return 'true';
 } else {
 // something went wrong

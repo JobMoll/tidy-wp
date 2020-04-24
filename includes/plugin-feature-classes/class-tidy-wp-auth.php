@@ -1,9 +1,14 @@
 <?php
 
 function tidyWPAuth($http_token) {
-   if (intval(get_option('tidywp_brute_force_check')) <= 3) {
+   if (intval(get_option('tidywp_brute_force_check')) <= 15) {
 	$arrayHeaderHTTP = explode(',', $http_token);
      if (($arrayHeaderHTTP[0] == $GLOBALS['secretToken']) && (in_array(encrypt_and_decrypt($arrayHeaderHTTP[1], 'e' ), $GLOBALS['usernameArray']))) {
+         
+         if (strtotime(get_option('tidywp_license_key_last_checked')) <= strtotime('-12 hours') && get_option('tidywp_license_key_valid') == 'true' && get_option('tidywp_license_key_valid') != '') {
+             include 'class-license-check.php';
+             check_if_license_is_valid();
+         }
          
          return true;
 

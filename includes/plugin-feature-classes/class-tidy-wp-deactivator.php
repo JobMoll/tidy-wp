@@ -68,7 +68,7 @@ class Tidy_Wp_Deactivator {
     deactivate_license_key();
     delete_option( 'tidywp_license_key');
     delete_option( 'tidywp_license_key_valid');
-    delete_option( 'tidywp_license_key_expire_date');
+    delete_option( 'tidywp_license_key_last_checked');
     
     // tidywp login details
     removeWebsite(1);
@@ -86,6 +86,10 @@ class Tidy_Wp_Deactivator {
     
     // anti brute force check
     delete_option('tidywp_brute_force_check');
+    
+    // addons
+    delete_option('tidywp_addons_snackbar');
+    delete_option('tidywp_addons_user_roles');
 	}
 
 }

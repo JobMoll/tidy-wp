@@ -158,7 +158,6 @@ p {
     background-color: #323941;
     right: 20px;
     box-shadow: 0px 10px 10px #1C1B20;
-    float: left;
     display: inline-block;
     margin-right: 20px;
     margin-top: 20px;
@@ -180,6 +179,10 @@ p {
     background: #26252B;
 }
 
+.pluginsComingSoon .addonBlock {
+    pointer-events: none;
+    filter: brightness(60%);   
+}
 
 
 
