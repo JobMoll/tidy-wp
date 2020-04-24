@@ -178,8 +178,11 @@ add_action( 'send_headers', 'add_security_headers', 1 );
 
 
 // force ssl
-define('FORCE_SSL_LOGIN', true);
-define( 'FORCE_SSL_ADMIN', true );
+// define('FORCE_SSL_ADMIN', true);
+// a comma-separated list e.g. http,https
+if (strpos($_SERVER['HTTP_X_FORWARDED_PROTO'], 'https') !== false) {
+       $_SERVER['HTTPS']='on';
+}
 
 // DisablePHPErrorReporting
 error_reporting(0);
@@ -388,8 +391,8 @@ if(!isset($_COOKIE['tidyWPSnackbarCookie'])) {
 function tidywp_snackbar_load_scripts($hook) {
 
     // create my own version codes
-    $tidywp_snackbar_js_ver  = date("ymd-Gis", filemtime( 'front-end-assets/js/snackbar.min.js' ));
-    $tidywp_snackbar_css_ver = date("ymd-Gis", filemtime( 'front-end-assets/css/snackbar.min.css' ));
+    $tidywp_snackbar_js_ver  = date("ymd-Gis", filemtime( plugin_dir_path( __DIR__ ) . 'front-end-assets/js/snackbar.min.js' ));
+    $tidywp_snackbar_css_ver = date("ymd-Gis", filemtime( plugin_dir_path( __DIR__ ) . 'front-end-assets/css/snackbar.min.css' ));
      
     // 
     wp_enqueue_script( 'custom_js', plugins_url( 'front-end-assets/js/snackbar.min.js', __DIR__ ), array(), $tidywp_snackbar_js_ver );

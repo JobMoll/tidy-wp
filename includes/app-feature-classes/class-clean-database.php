@@ -22,6 +22,7 @@ include str_replace('app', 'plugin', plugin_dir_path(__FILE__)) . 'class-tidy-wp
 if (isset($_SERVER['HTTP_TOKEN'])) {
 $apiAuthOK = tidyWPAuth($_SERVER['HTTP_TOKEN']);
 } else { 
+$apiAuthOK = false;
 echo 'Sorry... you are not allowed to view this data.';
 }
 if ($apiAuthOK == true) {
@@ -30,24 +31,24 @@ if ($apiAuthOK == true) {
                 
 // delete spam comments
   if ($data->get_param('comment-spam') == 'true') {
- $wpdb->query($wpdb->prepare("DELETE FROM $wpdb->comments WHERE comment_approved = 'spam'"));
+ $wpdb->query($wpdb->prepare("DELETE FROM %1s WHERE comment_approved = 'spam'", $wpdb->comments));
   }
  // delete unapproved comments
    if ($data->get_param('comment-unapproved') == 'true') {
- $wpdb->query($wpdb->prepare("DELETE FROM $wpdb->comments WHERE comment_approved = '0'"));
+ $wpdb->query($wpdb->prepare("DELETE FROM %1s WHERE comment_approved = '0'", $wpdb->comments));
    }
  // delete trash comments
    if ($data->get_param('comment-trash') == 'true') {
- $wpdb->query($wpdb->prepare("DELETE FROM $wpdb->comments WHERE comment_approved = 'trash'"));
+ $wpdb->query($wpdb->prepare("DELETE FROM %1s WHERE comment_approved = 'trash'", $wpdb->comments));
    }
  
  // delete post revisions
    if ($data->get_param('post-revision') == 'true') {
-  $wpdb->query($wpdb->prepare("DELETE FROM $wpdb->posts WHERE post_type = 'revision'"));
+  $wpdb->query($wpdb->prepare("DELETE FROM %1s WHERE post_type = 'revision'", $wpdb->posts));
    }
  // delete all posts in the trash
    if ($data->get_param('post-trash') == 'true') {
- $wpdb->query($wpdb->prepare("DELETE FROM $wpdb->posts WHERE post_status = 'trash'"));
+ $wpdb->query($wpdb->prepare("DELETE FROM %1s WHERE post_status = 'trash'", $wpdb->posts));
    }
  // delete all posts in draft
 //   if ($data->get_param('post-draft') == 'true') {
@@ -56,11 +57,11 @@ if ($apiAuthOK == true) {
  
  // delete transients
    if ($data->get_param('transients') == 'true') {
- $wpdb->query($wpdb->prepare("DELETE FROM $wpdb->options WHERE `option_name` LIKE ('%\_transient\_%')"));
+ $wpdb->query($wpdb->prepare("DELETE FROM %1s WHERE `option_name` LIKE ('%\_transient\_%')", $wpdb->options));
    }
   // delete site transients
     if ($data->get_param('site-transients') == 'true') {
- $wpdb->query($wpdb->prepare("DELETE FROM $wpdb->options WHERE `option_name` LIKE ('_site_transient_%')"));
+ $wpdb->query($wpdb->prepare("DELETE FROM %1s WHERE `option_name` LIKE ('_site_transient_%')", $wpdb->options));
  
  echo 'Finished'; 
     }
@@ -87,42 +88,42 @@ include str_replace('app', 'plugin', plugin_dir_path(__FILE__)) . 'class-tidy-wp
 if (isset($_SERVER['HTTP_TOKEN'])) {
 $apiAuthOK = tidyWPAuth($_SERVER['HTTP_TOKEN']);
 } else { 
+$apiAuthOK = false;
 echo 'Sorry... you are not allowed to view this data.';
 }
 if ($apiAuthOK == true) {
     
-        global $wpdb;
+ global $wpdb;
 // count spam comments
- $spamComment = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM $wpdb->comments WHERE comment_approved = 'spam'"));
+ $spamComment = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM %1s WHERE comment_approved = 'spam'", $wpdb->comments));
 
  // count unapproved comments
- $unapprovedComment = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM $wpdb->comments WHERE comment_approved = '0'"));
+ $unapprovedComment = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM %1s WHERE comment_approved = '0'", $wpdb->comments));
    
  // count trash comments
- $trashComment = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM $wpdb->comments WHERE comment_approved = 'trash'"));
+ $trashComment = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM %1s WHERE comment_approved = 'trash'", $wpdb->comments));
    
  
  // count post revisions
-  $postRevisions = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM $wpdb->posts WHERE post_type = 'revision'"));
+  $postRevisions = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM %1s WHERE post_type = 'revision'", $wpdb->posts));
    
  // count all posts in the trash
- $postTrash = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM $wpdb->posts WHERE post_status = 'trash'"));
+ $postTrash = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM %1s WHERE post_status = 'trash'", $wpdb->posts));
    
  // count all posts in draft
 // $postDraft = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM $wpdb->posts WHERE post_status = 'draft'"));
   
  
  // count transients
- $transients = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM $wpdb->options WHERE `option_name` LIKE ('%\_transient\_%')"));
+ $transients = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM %1s WHERE `option_name` LIKE ('%\_transient\_%')", $wpdb->options));
    
   // count site transients
- $siteTransients = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM $wpdb->options WHERE `option_name` LIKE ('_site_transient_%')"));
+ $siteTransients = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM %1s WHERE `option_name` LIKE ('_site_transient_%')", $wpdb->options));
    
-   $countsArr = array('SpamComment' => $spamComment, 'UnapprovedComment' => $unapprovedComment, 'TrashComment' => $trashComment, 'PostRevisions' => $postRevisions, 'PostTrash' => $postTrash, 'PostDraft' => $postDraft, 'Transients' => $transients, 'SiteTransients' => $siteTransients, );
+   $countsArr = array('SpamComment' => $spamComment, 'UnapprovedComment' => $unapprovedComment, 'TrashComment' => $trashComment, 'PostRevisions' => $postRevisions, 'PostTrash' => $postTrash, 'Transients' => $transients, 'SiteTransients' => $siteTransients, );
 
 echo json_encode($countsArr);
 
-    
 }
 } 
 

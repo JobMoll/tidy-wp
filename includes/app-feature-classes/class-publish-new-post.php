@@ -36,6 +36,7 @@ include str_replace('app', 'plugin', plugin_dir_path(__FILE__)) . 'class-tidy-wp
 if (isset($_SERVER['HTTP_TOKEN'])) {
 $apiAuthOK = tidyWPAuth($_SERVER['HTTP_TOKEN']);
 } else { 
+$apiAuthOK = false;
 echo 'Sorry... you are not allowed to view this data.';
 }
 if ($apiAuthOK == true) {

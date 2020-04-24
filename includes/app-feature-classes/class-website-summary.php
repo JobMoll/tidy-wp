@@ -10,6 +10,7 @@ include str_replace('app', 'plugin', plugin_dir_path(__FILE__)) . 'class-tidy-wp
 if (isset($_SERVER['HTTP_TOKEN'])) {
 $apiAuthOK = tidyWPAuth($_SERVER['HTTP_TOKEN']);
 } else { 
+$apiAuthOK = false;
 echo 'Sorry... you are not allowed to view this data.';
 }
 if ($apiAuthOK == true) {
@@ -23,13 +24,13 @@ if ($apiAuthOK == true) {
     
     global $wpdb;
     
-    $totalVisitors = $wpdb->get_var($wpdb->prepare("SELECT SUM(visitors) FROM `{$wpdb->prefix}koko_analytics_site_stats` WHERE `date` >= '$furthestDate' AND `date` <= '$closestDate'"));
+    $totalVisitors = $wpdb->get_var($wpdb->prepare("SELECT SUM(visitors) FROM `{$wpdb->prefix}koko_analytics_site_stats` WHERE `date` >= %s AND `date` <= %s", $furthestDate, $closestDate));
         
-    $totalPageviews = $wpdb->get_var($wpdb->prepare("SELECT SUM(pageviews) FROM `{$wpdb->prefix}koko_analytics_site_stats` WHERE `date` >= '$furthestDate' AND `date` <= '$closestDate'"));
+    $totalPageviews = $wpdb->get_var($wpdb->prepare("SELECT SUM(pageviews) FROM `{$wpdb->prefix}koko_analytics_site_stats` WHERE `date` >= %s AND `date` <= %s", $furthestDate, $closestDate));
     
-    $totalSales = $wpdb->get_var($wpdb->prepare("SELECT SUM(total_sales) FROM `{$wpdb->prefix}wc_order_stats` WHERE status = 'wc-completed' AND `date_created` >= '$furthestDateWoo' AND `date_created` <= '$closestDateWoo' AND `tax_total` > '0'"));
+    $totalSales = $wpdb->get_var($wpdb->prepare("SELECT SUM(total_sales) FROM `{$wpdb->prefix}wc_order_stats` WHERE status = 'wc-completed' AND `date_created` >= %s AND `date_created` <= %s AND `tax_total` > '0'", $furthestDateWoo, $closestDateWoo));
     
-    $totalNetSales = $wpdb->get_var($wpdb->prepare("SELECT SUM(net_total) FROM `{$wpdb->prefix}wc_order_stats` WHERE status = 'wc-completed' AND `date_created` >= '$furthestDate' AND `date_created` <= '$closestDate' AND `tax_total` > '0'"));
+    $totalNetSales = $wpdb->get_var($wpdb->prepare("SELECT SUM(net_total) FROM `{$wpdb->prefix}wc_order_stats` WHERE status = 'wc-completed' AND `date_created` >= %s AND `date_created` <= %s AND `tax_total` > '0'", $furthestDate, $closestDate));
 
            if (get_option('woocommerce_currency') == 'EUR') {
     $cashSign = '€';

@@ -11,6 +11,7 @@ include str_replace('app', 'plugin', plugin_dir_path(__FILE__)) . 'class-tidy-wp
 if (isset($_SERVER['HTTP_TOKEN'])) {
 $apiAuthOK = tidyWPAuth($_SERVER['HTTP_TOKEN']);
 } else { 
+$apiAuthOK = false;
 echo 'Sorry... you are not allowed to view this data.';
 }
 if ($apiAuthOK == true) {
@@ -76,6 +77,7 @@ include str_replace('app', 'plugin', plugin_dir_path(__FILE__)) . 'class-tidy-wp
 if (isset($_SERVER['HTTP_TOKEN'])) {
 $apiAuthOK = tidyWPAuth($_SERVER['HTTP_TOKEN']);
 } else { 
+$apiAuthOK = false;
 echo 'Sorry... you are not allowed to view this data.';
 }
 if ($apiAuthOK == true) {
@@ -124,6 +126,7 @@ include str_replace('app', 'plugin', plugin_dir_path(__FILE__)) . 'class-tidy-wp
 if (isset($_SERVER['HTTP_TOKEN'])) {
 $apiAuthOK = tidyWPAuth($_SERVER['HTTP_TOKEN']);
 } else { 
+$apiAuthOK = false;
 echo 'Sorry... you are not allowed to view this data.';
 }
 if ($apiAuthOK == true) {
@@ -186,6 +189,7 @@ include str_replace('app', 'plugin', plugin_dir_path(__FILE__)) . 'class-tidy-wp
 if (isset($_SERVER['HTTP_TOKEN'])) {
 $apiAuthOK = tidyWPAuth($_SERVER['HTTP_TOKEN']);
 } else { 
+$apiAuthOK = false;
 echo 'Sorry... you are not allowed to view this data.';
 }
 if ($apiAuthOK == true) {
@@ -210,41 +214,64 @@ if ($apiAuthOK == true) {
   
 // are there updates available?
 // get plugin updates
+
+$plugin_updates_empty = false;
 $update_plugins = get_site_transient( 'update_plugins' );
-if ( ! empty( $update_plugins->response ) ) {
-echo '"UpdatablePlugins":"' . $counts['plugins'] = count( $update_plugins->response ) . '", ';
+if ( !empty( $update_plugins->response ) ) {
+echo '"UpdatablePlugins":"' . $counts['plugins'] = count($update_plugins->response) . '", ';
 } else {
 	echo '"UpdatablePlugins":"0", ';
+	$plugin_updates_empty = true;
+	
 }
 // get theme updates
+$theme_updates_empty = false;
 $update_themes = get_site_transient( 'update_themes' );
 if ( ! empty( $update_themes->response ) ) {
-echo '"UpdatableThemes":"' . $counts['themes'] = count( $update_themes->response ) . '", ';
+echo '"UpdatableThemes":"' . $counts['themes'] = count($update_themes->response) . '", ';
 } else {
 	echo '"UpdatableThemes":"0", ';
+	$theme_updates_empty = true;
 }
 	
 // get core updates
+$core_updates_empty = false;
 require_once ABSPATH . '/wp-admin/includes/update.php';
 if ( function_exists( 'get_core_updates' ) ) {
    $update_wordpress = get_core_updates( array( 'dismissed' => false ) );
-   if ( ! empty( $update_wordpress ) && ! in_array( $update_wordpress[0]->response, array( 'development', 'latest' ) ) ) {
+   if ( ! empty( $update_wordpress ) && ! in_array($update_wordpress[0]->response, array( 'development', 'latest') ) ) {
 echo '"UpdatableCore":"' .  $counts['wordpress'] = 1 . '", ';
         } else {
 	   echo '"UpdatableCore":"' .  $counts['wordpress'] = 0 . '", ';
+	   $core_updates_empty = true;
    }
     }
  
 // get translations updates
+$translations_updates_empty = false;
 if ( wp_get_translation_updates() ) {
 	   echo '"UpdatableTranslations":"' .  $counts['translations'] = 1 . '", ';
     } else {
 	  echo '"UpdatableTranslations":"' .  $counts['translations'] = 0 . '", ';
+	  $translations_updates_empty = true;
 	}
 	
 // calculate total updates
-echo '"UpdatableTotal":"' . ($counts['plugins'] + $counts['themes'] + $counts['wordpress'] + $counts['translations']). '", ';
-	
+$totalUpdates = '0';
+if ($plugin_updates_empty == false) {
+$totalUpdates = $totalUpdates + $counts['plugins'];
+}
+if ($theme_updates_empty == false) {
+$totalUpdates = $totalUpdates + $counts['themes'];
+}
+if ($core_updates_empty == false) {
+$totalUpdates = $totalUpdates + $counts['wordpress'];
+}
+if ($translations_updates_empty == false) {
+$totalUpdates = $totalUpdates + $counts['translations'];
+}
+echo '"UpdatableTotal":"' . $totalUpdates . '", ';
+
 echo '"AutoUpdateEnabled":"' . get_option( 'tidywp_enable_plugin_autoupdate') . '"}';
    
 } 

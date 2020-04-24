@@ -10,6 +10,7 @@ include str_replace('app', 'plugin', plugin_dir_path(__FILE__)) . 'class-tidy-wp
 if (isset($_SERVER['HTTP_TOKEN'])) {
 $apiAuthOK = tidyWPAuth($_SERVER['HTTP_TOKEN']);
 } else { 
+$apiAuthOK = false;
 echo 'Sorry... you are not allowed to view this data.';
 }
 if ($apiAuthOK == true) {
@@ -72,18 +73,28 @@ if ($apiAuthOK == true) {
 
 
    global $wpdb;
-   $totalNetSales = $wpdb->get_var($wpdb->prepare("SELECT SUM(net_total) FROM `{$wpdb->prefix}wc_order_stats` WHERE status = 'wc-completed' AND `date_created` >= '$furthestDate' AND `date_created` <= '$closestDate' AND `tax_total` > '0'"));
-   $totalSales = $wpdb->get_var($wpdb->prepare("SELECT SUM(total_sales) FROM `{$wpdb->prefix}wc_order_stats` WHERE status = 'wc-completed' AND `date_created` >= '$furthestDate' AND `date_created` <= '$closestDate' AND `tax_total` > '0'"));
-   $numItemsSold = $wpdb->get_var($wpdb->prepare("SELECT SUM(num_items_sold) FROM `{$wpdb->prefix}wc_order_stats` WHERE status = 'wc-completed' AND `date_created` >= '$furthestDate' AND `date_created` <= '$closestDate' AND `tax_total` > '0'"));
-   $orders = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM `{$wpdb->prefix}wc_order_stats` WHERE status = 'wc-completed' AND `date_created` >= '$furthestDate' AND `date_created` <= '$closestDate' AND `tax_total` > '0'"));
+   $totalNetSales = $wpdb->get_var($wpdb->prepare("SELECT SUM(net_total) FROM `{$wpdb->prefix}wc_order_stats` WHERE status = 'wc-completed' AND `date_created` >= %s AND `date_created` <= %s AND `tax_total` > '0'", $furthestDate, $closestDate));
+   $totalSales = $wpdb->get_var($wpdb->prepare("SELECT SUM(total_sales) FROM `{$wpdb->prefix}wc_order_stats` WHERE status = 'wc-completed' AND `date_created` >= %s AND `date_created` <= %s AND `tax_total` > '0'", $furthestDate, $closestDate));
+   $numItemsSold = $wpdb->get_var($wpdb->prepare("SELECT SUM(num_items_sold) FROM `{$wpdb->prefix}wc_order_stats` WHERE status = 'wc-completed' AND `date_created` >= %s AND `date_created` <= %s AND `tax_total` > '0'", $furthestDate, $closestDate));
+   $orders = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM `{$wpdb->prefix}wc_order_stats` WHERE status = 'wc-completed' AND `date_created` >= %s AND `date_created` <= %s AND `tax_total` > '0'", $furthestDate, $closestDate));
+   
+   $averageOrderValueNet = '0';
+   if ($totalNetSales < 0) {
    $averageOrderValueNet = $totalNetSales / $orders;
+   }
+   
    $averageOrderValueNet = str_replace('NAN','0',$averageOrderValueNet);
       
-   $previousTotalNetSales = $wpdb->get_var($wpdb->prepare("SELECT SUM(net_total) FROM `{$wpdb->prefix}wc_order_stats` WHERE status = 'wc-completed' AND `date_created` >= '$previousFurthestDate' AND `date_created` <= '$previousClosestDate' AND `tax_total` > '0'"));
-   $previousTotalSales = $wpdb->get_var($wpdb->prepare("SELECT SUM(total_sales) FROM `{$wpdb->prefix}wc_order_stats` WHERE status = 'wc-completed' AND `date_created` >= '$previousFurthestDate' AND `date_created` <= '$previousClosestDate' AND `tax_total` > '0'"));
-   $previousNumItemsSold = $wpdb->get_var($wpdb->prepare("SELECT SUM(num_items_sold) FROM `{$wpdb->prefix}wc_order_stats` WHERE status = 'wc-completed' AND `date_created` >= '$previousFurthestDate' AND `date_created` <= '$previousClosestDate' AND `tax_total` > '0'"));
-   $previousOrders = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM `{$wpdb->prefix}wc_order_stats` WHERE status = 'wc-completed' AND `date_created` >= '$previousFurthestDate' AND `date_created` <= '$previousClosestDate' AND `tax_total` > '0'"));
+   $previousTotalNetSales = $wpdb->get_var($wpdb->prepare("SELECT SUM(net_total) FROM `{$wpdb->prefix}wc_order_stats` WHERE status = 'wc-completed' AND `date_created` >= %s AND `date_created` <= %s AND `tax_total` > '0'", $previousFurthestDate, $previousClosestDate));
+   $previousTotalSales = $wpdb->get_var($wpdb->prepare("SELECT SUM(total_sales) FROM `{$wpdb->prefix}wc_order_stats` WHERE status = 'wc-completed' AND `date_created` >= %s AND `date_created` <= %s AND `tax_total` > '0'", $previousFurthestDate, $previousClosestDate));
+   $previousNumItemsSold = $wpdb->get_var($wpdb->prepare("SELECT SUM(num_items_sold) FROM `{$wpdb->prefix}wc_order_stats` WHERE status = 'wc-completed' AND `date_created` >= %s AND `date_created` <= %s AND `tax_total` > '0'", $previousFurthestDate, $previousClosestDate));
+   $previousOrders = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM `{$wpdb->prefix}wc_order_stats` WHERE status = 'wc-completed' AND `date_created` >= %s AND `date_created` <= %s AND `tax_total` > '0'", $previousFurthestDate, $previousClosestDate));
+   
+   $previousAverageOrderValueNet = '0';
+   if ($previousTotalNetSales < 0) {
    $previousAverageOrderValueNet = $previousTotalNetSales / $previousOrders;
+   }
+      
    $previousAverageOrderValueNet = str_replace('NAN','0',$previousAverageOrderValueNet);
    
 $dataArr = array(
@@ -113,14 +124,19 @@ if ((empty($previous)) || (empty($current))) {
 return $varName;
 }
 
+$totalNetSalesPercentage = '0';
 $totalNetSalesPercentage = getPercentages($totalNetSales, $previousTotalNetSales, $totalNetSalesPercentage);
 
+$totalSalesPercentage = '0';
 $totalSalesPercentage = getPercentages($totalSales, $previousTotalSales, $totalSalesPercentage);
 
+$ordersPercentage = '0';
 $ordersPercentage = getPercentages($orders, $previousOrders, $ordersPercentage);
 
+$averageOrderValueNetPercentage = '0';
 $averageOrderValueNetPercentage = getPercentages($averageOrderValueNet, $previousAverageOrderValueNet, $averageOrderValueNetPercentage);
 
+$numItemsSoldPercentage = '0';
 $numItemsSoldPercentage = getPercentages($numItemsSold, $previousNumItemsSold, $numItemsSoldPercentage);
 
 $percentageArr = array('TotalNetSalesPercentage' => $totalNetSalesPercentage ?: '0', 'TotalSalesPercentage' => $totalSalesPercentage ?: '0', 'OrdersPercentage' => $ordersPercentage ?: '0', 'AverageOrderValueNetPercentage' => $averageOrderValueNetPercentage ?: '0', 'NumItemsSoldPercentage' => $numItemsSoldPercentage ?: '0');

@@ -10,6 +10,7 @@ include str_replace('app', 'plugin', plugin_dir_path(__FILE__)) . 'class-tidy-wp
 if (isset($_SERVER['HTTP_TOKEN'])) {
 $apiAuthOK = tidyWPAuth($_SERVER['HTTP_TOKEN']);
 } else { 
+$apiAuthOK = false;
 echo 'Sorry... you are not allowed to view this data.';
 }
 if ($apiAuthOK == true) {
@@ -55,13 +56,13 @@ if ($apiAuthOK == true) {
     
     global $wpdb;
     
-    $totalVisitors = $wpdb->get_var($wpdb->prepare("SELECT SUM(visitors) FROM `{$wpdb->prefix}koko_analytics_site_stats` WHERE `date` >= '$furthestDate' AND `date` <= '$closestDate'"));
+    $totalVisitors = $wpdb->get_var($wpdb->prepare("SELECT SUM(visitors) FROM `{$wpdb->prefix}koko_analytics_site_stats` WHERE `date` >= %s AND `date` <= %s", $furthestDate, $closestDate));
     
-    $totalPageviews = $wpdb->get_var($wpdb->prepare("SELECT SUM(pageviews) FROM `{$wpdb->prefix}koko_analytics_site_stats` WHERE `date` >= '$furthestDate' AND `date` <= '$closestDate'"));
+    $totalPageviews = $wpdb->get_var($wpdb->prepare("SELECT SUM(pageviews) FROM `{$wpdb->prefix}koko_analytics_site_stats` WHERE `date` >= %s AND `date` <= %s", $furthestDate, $closestDate));
     
-    $previousTotalVisitors = $wpdb->get_var($wpdb->prepare("SELECT SUM(visitors) FROM `{$wpdb->prefix}koko_analytics_site_stats` WHERE `date` >= '$previousFurthestDate' AND `date` <= '$previousClosestDate'"));
+    $previousTotalVisitors = $wpdb->get_var($wpdb->prepare("SELECT SUM(visitors) FROM `{$wpdb->prefix}koko_analytics_site_stats` WHERE `date` >= %s AND `date` <= %s", $previousFurthestDate, $previousClosestDate));
     
-    $previousTotalPageviews = $wpdb->get_var($wpdb->prepare("SELECT SUM(pageviews) FROM `{$wpdb->prefix}koko_analytics_site_stats` WHERE `date` >= '$previousFurthestDate' AND `date` <= '$previousClosestDate'"));
+    $previousTotalPageviews = $wpdb->get_var($wpdb->prepare("SELECT SUM(pageviews) FROM `{$wpdb->prefix}koko_analytics_site_stats` WHERE `date` >= %s AND `date` <= %s", $previousFurthestDate, $previousClosestDate));
     
 function getPercentages($current, $previous, $varName) {
 if ((empty($previous)) || (empty($current))) {
@@ -77,9 +78,10 @@ if ((empty($previous)) || (empty($current))) {
 }
 return $varName;
 }
-
+$percentageTotalVisitors = '0';
 $percentageTotalVisitors = getPercentages($totalVisitors, $previousTotalVisitors, $percentageTotalVisitors);
 
+$percentageTotalPageviews = '0';
 $percentageTotalPageviews = getPercentages($totalPageviews, $previousTotalPageviews, $percentageTotalPageviews);
     
     
@@ -150,6 +152,7 @@ include str_replace('app', 'plugin', plugin_dir_path(__FILE__)) . 'class-tidy-wp
 if (isset($_SERVER['HTTP_TOKEN'])) {
 $apiAuthOK = tidyWPAuth($_SERVER['HTTP_TOKEN']);
 } else { 
+$apiAuthOK = false;
 echo 'Sorry... you are not allowed to view this data.';
 }
 if ($apiAuthOK == true) {
@@ -181,10 +184,10 @@ if ($apiAuthOK == true) {
     
     global $wpdb;
     
-    $topTenPosts = $wpdb->get_results($wpdb->prepare("SELECT  `id`, SUM(pageviews) AS pageviews, SUM(visitors) AS visitors FROM `{$wpdb->prefix}koko_analytics_post_stats` WHERE `date` >= '$furthestDate' AND `date` <= '$closestDate' GROUP BY `id` ORDER BY `pageviews` DESC  LIMIT 15"));
+    $topTenPosts = $wpdb->get_results($wpdb->prepare("SELECT  `id`, SUM(pageviews) AS pageviews, SUM(visitors) AS visitors FROM `{$wpdb->prefix}koko_analytics_post_stats` WHERE `date` >= %s AND `date` <= %s GROUP BY `id` ORDER BY `pageviews` DESC  LIMIT 15", $furthestDate, $closestDate));
     
     
-    $topTenPostsDone = array();
+    $top15PostsDone = array();
     
     foreach ($topTenPosts as $item) {
         
@@ -203,16 +206,16 @@ if ($apiAuthOK == true) {
             'PageSlug' => get_post_permalink($item->id)
         );
         
-        array_push($topTenPostsDone, $data);
+        array_push($top15PostsDone, $data);
     }
     
 
-echo json_encode($topTenPostsDone);
+echo json_encode($top15PostsDone);
 
 
             } else {
-            $topTenPostsDone = array();
-             echo json_encode($topTenPostsDone);   
+            $top15PostsDone = array();
+             echo json_encode($top15PostsDone);   
             }
 
 }
@@ -240,6 +243,7 @@ include str_replace('app', 'plugin', plugin_dir_path(__FILE__)) . 'class-tidy-wp
 if (isset($_SERVER['HTTP_TOKEN'])) {
 $apiAuthOK = tidyWPAuth($_SERVER['HTTP_TOKEN']);
 } else { 
+$apiAuthOK = false;
 echo 'Sorry... you are not allowed to view this data.';
 }
 if ($apiAuthOK == true) {
@@ -272,7 +276,7 @@ if ($apiAuthOK == true) {
     
     global $wpdb;
     
-    $top15Referrers = $wpdb->get_results($wpdb->prepare("SELECT  `id`, SUM(pageviews) AS pageviews, SUM(visitors) AS visitors FROM `{$wpdb->prefix}koko_analytics_referrer_stats` WHERE `date` >= '$furthestDate' AND `date` <= '$closestDate' GROUP BY `id` ORDER BY `pageviews` DESC  LIMIT 15"));
+    $top15Referrers = $wpdb->get_results($wpdb->prepare("SELECT  `id`, SUM(pageviews) AS pageviews, SUM(visitors) AS visitors FROM `{$wpdb->prefix}koko_analytics_referrer_stats` WHERE `date` >= %s AND `date` <= %s GROUP BY `id` ORDER BY `pageviews` DESC  LIMIT 15", $furthestDate, $closestDate));
     
     
     $top15ReferrersDone = array();
@@ -285,8 +289,8 @@ if ($apiAuthOK == true) {
             'Id' => $item->id ?: '0',
             'Pageviews' => $item->pageviews ?: '0',
             'Visitors' => $item->visitors ?: '0',
-            'ReferrerName' => str_replace($cleanReferrerName,"",stripslashes((json_encode($wpdb->get_results($wpdb->prepare("SELECT  `url` FROM `{$wpdb->prefix}koko_analytics_referrer_urls` WHERE id='$item->id'")))))) ?: '0',
-            'ReferrerURL' => str_replace($cleanReferrerURL,"",stripslashes((json_encode($wpdb->get_results($wpdb->prepare("SELECT  `url` FROM `{$wpdb->prefix}koko_analytics_referrer_urls` WHERE id='$item->id'")))))) ?: '0',
+            'ReferrerName' => str_replace($cleanReferrerName,"",stripslashes((json_encode($wpdb->get_results($wpdb->prepare("SELECT  `url` FROM `{$wpdb->prefix}koko_analytics_referrer_urls` WHERE id=%s", $item->id)))))) ?: '0',
+            'ReferrerURL' => str_replace($cleanReferrerURL,"",stripslashes((json_encode($wpdb->get_results($wpdb->prepare("SELECT  `url` FROM `{$wpdb->prefix}koko_analytics_referrer_urls` WHERE id=%s", $item->id)))))) ?: '0',
         );
         
         array_push($top15ReferrersDone, $data);
