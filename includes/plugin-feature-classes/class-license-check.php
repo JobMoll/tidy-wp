@@ -21,6 +21,8 @@ return 'true';
 deactivate_license_key();
 return 'false';
 }
+} else {
+    exit('no key found');
 }
 }
 
@@ -38,6 +40,10 @@ if ($data->{'license'} == 'valid') {
 update_option('tidywp_license_key_last_checked' , strtotime('now'));
 update_option('tidywp_license_key', $licenseKey, 'no');
 update_option('tidywp_license_key_valid', 'true', 'no');
+
+// enable all addons
+update_option( 'tidywp_addons_snackbar', 'true', 'no' );
+update_option( 'tidywp_addons_user_roles', 'true', 'no' );
 
 return 'true';
 } else {
@@ -60,7 +66,7 @@ $json = url_get_contents($urlToCheck);
 $data = json_decode($json);
 
 if ($data->{'license'} == 'deactivated' || $data->{'license'} == 'failed') {
-// succesfully deativated
+// succesfully deactivated
 update_option( 'tidywp_license_key', '', 'no' );
 update_option( 'tidywp_license_key_valid', 'false', 'no' );
 
@@ -77,32 +83,32 @@ return 'false';
 
 
 
-// only check if these conditions are met (Saves request to the license server checker)
-if (get_option('tidywp_license_key_valid') == 'true' && get_option('tidywp_license_key_valid') != '') {
-check_if_license_is_valid(); // return == true then the license is active!!
-}
+// // only check if these conditions are met (Saves request to the license server checker)
+// if (get_option('tidywp_license_key_valid') == 'true' && get_option('tidywp_license_key_valid') != '') {
+// check_if_license_is_valid(); // return == true then the license is active!!
+// }
 
-// cron to check license
-function tidywp_custom_license_cron_schedule( $schedules ) {
-    $schedules['every_24_hours'] = array(
-        'interval' => 86400, // Every 6 hours
-        'display'  => __( 'Every 24 hours' ),
-    );
-    return $schedules;
-}
-add_filter( 'cron_schedules', 'tidywp_custom_license_cron_schedule' );
+// // cron to check license
+// function tidywp_custom_license_cron_schedule( $schedules ) {
+//     $schedules['every_24_hours'] = array(
+//         'interval' => 86400, // Every 6 hours
+//         'display'  => __( 'Every 24 hours' ),
+//     );
+//     return $schedules;
+// }
+// add_filter( 'cron_schedules', 'tidywp_custom_license_cron_schedule' );
 
-//Schedule an action if it's not already scheduled
-if ( ! wp_next_scheduled( 'tidywp_cron_hook_license' ) ) {
-    wp_schedule_event( time(), 'every_24_hours', 'tidywp_cron_hook_license' );
-}
+// //Schedule an action if it's not already scheduled
+// if ( ! wp_next_scheduled( 'tidywp_cron_hook_license' ) ) {
+//     wp_schedule_event( time(), 'every_24_hours', 'tidywp_cron_hook_license' );
+// }
 
-///Hook into that action that'll fire every six hours
- add_action( 'tidywp_cron_hook_license', 'tidywp_cron_function_license_check' );
+// ///Hook into that action that'll fire every six hours
+//  add_action( 'tidywp_cron_hook_license', 'tidywp_cron_function_license_check' );
 
-//create your function, that runs on cron
-function tidywp_cron_function_license_check() {
-if (get_option('tidywp_license_key_valid') == 'true' && get_option('tidywp_license_key_valid') != '') {
-check_if_license_is_valid(); // return == true then the license is active!!
-}
-}
+// //create your function, that runs on cron
+// function tidywp_cron_function_license_check() {
+// if (get_option('tidywp_license_key_valid') == 'true' && get_option('tidywp_license_key_valid') != '') {
+// check_if_license_is_valid(); // return == true then the license is active!!
+// }
+// }

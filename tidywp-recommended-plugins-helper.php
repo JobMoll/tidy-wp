@@ -66,9 +66,8 @@ function register_required_plugins() {
 			'slug'      => 'koko-analytics',
 			'required'  => false,
 		),
-
-
-        array(
+		
+		array(
 			'name'      => 'Woocommerce Admin',
 			'slug'      => 'woocommerce-admin',
 			'required'  => false,

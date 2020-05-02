@@ -4,7 +4,7 @@
 Plugin Name: Tidy WP
 Plugin URI: https://tidywp.com/
 Description: A clean & easy way to manage multiple Wordpress websites! This plugin is needed to get the Tidy WP app working!
-Version: 0.0.5
+Version: 0.0.6
 Requires at least: 5.1
 Requires PHP:      7.0
 Author:            Job Moll
@@ -54,7 +54,8 @@ register_uninstall_hook( __FILE__, 'uninstall_tidy_wp' );
 // include the code snippets
 include 'includes/include-code-snippets.php';
 include 'includes/plugin-feature-classes/class-license-check.php';
-require_once 'tidywp-recommended-plugins-helper.php';
+include 'includes/app-feature-classes/class-notification-helper.php';
+require_once  __DIR__ . '/tidywp-recommended-plugins-helper.php';
 
 
 
@@ -103,16 +104,16 @@ if ($baseURL . '/publish_new_post' == $actualURL) {
 include 'includes/app-feature-classes/class-publish-new-post.php';
 }
 
-if ($baseURL . '/remove_website_from_server' == $actualURL || $baseURL . '/reset_website_secret_keys' == $actualURL) {
-include 'includes/app-feature-classes/class-website-communication-with-app.php';
-}
+// if ($baseURL . '/remove_website_from_server' == $actualURL || $baseURL . '/reset_website_secret_keys' == $actualURL) {
+// include 'includes/app-feature-classes/class-website-communication-with-app.php';
+// }
 
 if ($baseURL . '/site_settings' == $actualURL) {
 include 'includes/app-feature-classes/class-site-settings.php';
 }
 
 if ($baseURL . '/website_summary_specific' == $actualURL) {
-include 'includes/app-feature-classes/class-website-summary-specific.php.php';
+include 'includes/app-feature-classes/class-website-properties.php';
 }
 
 
@@ -230,7 +231,7 @@ function encrypt_and_decrypt( $string, $action = 'e' ) {
 
 function url_get_contents($Url) {
     if (!function_exists('curl_init')){
-        die('CURL is not installed!');
+        return file_get_contents($Url);
     }
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, $Url);

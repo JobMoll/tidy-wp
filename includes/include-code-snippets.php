@@ -448,10 +448,10 @@ add_action( 'wp_footer', 'tidyWP_add_onload' );
 // is-dismissible
 
 function tidywp_backend_notice() {
-    ?>
+  ?>
     <div class="notice notice-warning is-dismissible">
         <p><?php _e( 'There has been an error. Bummer!', 'my_plugin_textdomain' ); ?></p>
     </div>
-    <?php
+  <?php
 }
-add_action( 'admin_notices', 'tidywp_backend_notice' );
+// add_action( 'admin_notices', 'tidywp_backend_notice' );

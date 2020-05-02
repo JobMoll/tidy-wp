@@ -90,6 +90,9 @@ class Tidy_Wp_Deactivator {
     // addons
     delete_option('tidywp_addons_snackbar');
     delete_option('tidywp_addons_user_roles');
+    
+    // cron jobs
+    wp_clear_scheduled_hook("tidy_wp_pageview_notification_cron_job");
 	}
 
 }

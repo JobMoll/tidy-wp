@@ -83,6 +83,10 @@ class Tidy_Wp_Activator {
     
     // anti brute force check
     add_option('tidywp_brute_force_check', '0', 'no' );
+    
+    // addons
+    add_option('tidywp_addons_snackbar', 'false', 'no');
+    add_option('tidywp_addons_user_roles', 'false', 'no');
 	}
 
 }
