@@ -9,7 +9,7 @@
     
 // enable or disable maintaince mode
 
-if (get_option('tidywp_maintaince_mode') == 'true') {
+if (get_option('tidy_wp_maintaince_mode') == 'true') {
 function maintenance_mode_switch() {
 // Activate WordPress Maintenance Mode
 function wp_maintenance_mode() {
@@ -26,7 +26,7 @@ maintenance_mode_switch();
 
 // smart security
 
-if (get_option('tidywp_smart_security') == 'true') {
+if (get_option('tidy_wp_smart_security') == 'true') {
 // hide wordpress login errors
 function no_wordpress_errors(){
   return 'Something is wrong!';
@@ -280,9 +280,9 @@ remove_action( 'template_redirect', 'rest_output_link_header', 11 );
 
 
 // change login url
-if (get_option('tidywp_hide_login') != 'false') {
+if (get_option('tidy_wp_hide_login') != 'false') {
 function redirect_to_nonexistent_page(){
-     $new_login=  get_option('tidywp_hide_login');
+     $new_login=  get_option('tidy_wp_hide_login');
     if(strpos($_SERVER['REQUEST_URI'], $new_login) === false){
                 wp_safe_redirect( home_url( 'NonExistentPage' ), 302 );
       exit();
@@ -291,7 +291,7 @@ function redirect_to_nonexistent_page(){
 add_action( 'login_head', 'redirect_to_nonexistent_page');
 
 function redirect_to_actual_login(){
-  $new_login =  get_option('tidywp_hide_login');
+  $new_login =  get_option('tidy_wp_hide_login');
   if(parse_url($_SERVER['REQUEST_URI'],PHP_URL_QUERY) == $new_login&& ($_GET['redirect'] !== false)){
                  wp_safe_redirect(home_url("wp-login.php?$new_login&redirect=false"));
      exit();
@@ -305,12 +305,12 @@ add_action( 'init', 'redirect_to_actual_login');
 
 // autoupdate plugins or not and exclude some
 
-if (get_option( 'tidywp_enable_plugin_autoupdate') == 'true') {
+if (get_option( 'tidy_wp_enable_plugin_autoupdate') == 'true') {
 function filter_autoupdate_plugins($update, $plugin)
 {
     $pluginsNotToUpdate = [];
                
-    $pluginsNotToUpdate  =  is_array(get_option('tidywp_exclude_plugin_from_autoupdate')) ? get_option('tidywp_exclude_plugin_from_autoupdate') : [];
+    $pluginsNotToUpdate  =  is_array(get_option('tidy_wp_exclude_plugin_from_autoupdate')) ? get_option('tidy_wp_exclude_plugin_from_autoupdate') : [];
 
     if (is_object($plugin))
     {
@@ -337,11 +337,11 @@ add_filter( 'auto_update_plugin', 'filter_autoupdate_plugins' ,20  /* priority  
 
 // autoupdate themes and core
 
-if (get_option( 'tidywp_enable_theme_autoupdate') == 'true') {
+if (get_option( 'tidy_wp_enable_theme_autoupdate') == 'true') {
 add_filter( 'auto_update_theme', '__return_true' );
 }
 
-if (get_option( 'tidywp_enable_theme_autoupdate') == 'true') {
+if (get_option( 'tidy_wp_enable_theme_autoupdate') == 'true') {
 define( 'WP_AUTO_UPDATE_CORE', true );
 }
 
@@ -361,10 +361,10 @@ add_filter( 'auto_update_plugin', 'include_plugins_from_auto_update', 10, 2 );
 // redirection
 
 // 301 redirect
-if (get_option('tidywp_redirect_website_url') != '' && get_option('tidywp_redirect_type') == '301') {
+if (get_option('tidy_wp_redirect_website_url') != '' && get_option('tidy_wp_redirect_type') == '301') {
 function redirect_301(){
 if ( ! is_admin() ) {
-    wp_redirect( get_option('tidywp_redirect_website_url') . $_SERVER['REQUEST_URI'], 301, get_bloginfo('name') . ' - Tidy WP');
+    wp_redirect( get_option('tidy_wp_redirect_website_url') . $_SERVER['REQUEST_URI'], 301, get_bloginfo('name') . ' - Tidy WP');
     exit;
 }
  }
@@ -372,10 +372,10 @@ add_action( 'login_head', 'redirect_301');
 }
 
 // 302 redirect
-if (get_option('tidywp_redirect_website_url') != '' && get_option('tidywp_redirect_type') == '302') {
+if (get_option('tidy_wp_redirect_website_url') != '' && get_option('tidy_wp_redirect_type') == '302') {
 function redirect_302(){
 if ( ! is_admin() ) {
-    wp_redirect( get_option('tidywp_redirect_website_url') . $_SERVER['REQUEST_URI'], 302, get_bloginfo('name') . ' - Tidy WP');
+    wp_redirect( get_option('tidy_wp_redirect_website_url') . $_SERVER['REQUEST_URI'], 302, get_bloginfo('name') . ' - Tidy WP');
     exit;
 }
  }
@@ -386,28 +386,28 @@ add_action( 'login_head', 'redirect_302');
 
 // snackbar
 
-if (get_option('tidywp_custom_website_snackbar_mode') == 'true') {
+if (get_option('tidy_wp_custom_website_snackbar_mode') == 'true') {
 if(!isset($_COOKIE['tidyWPSnackbarCookie'])) {
-function tidywp_snackbar_load_scripts($hook) {
+function tidy_wp_snackbar_load_scripts($hook) {
 
     // create my own version codes
-    $tidywp_snackbar_js_ver  = date("ymd-Gis", filemtime( plugin_dir_path( __DIR__ ) . 'front-end-assets/js/snackbar.min.js' ));
-    $tidywp_snackbar_css_ver = date("ymd-Gis", filemtime( plugin_dir_path( __DIR__ ) . 'front-end-assets/css/snackbar.min.css' ));
+    $tidy_wp_snackbar_js_ver  = date("ymd-Gis", filemtime( plugin_dir_path( __DIR__ ) . 'front-end-assets/js/snackbar.min.js' ));
+    $tidy_wp_snackbar_css_ver = date("ymd-Gis", filemtime( plugin_dir_path( __DIR__ ) . 'front-end-assets/css/snackbar.min.css' ));
      
     // 
-    wp_enqueue_script( 'custom_js', plugins_url( 'front-end-assets/js/snackbar.min.js', __DIR__ ), array(), $tidywp_snackbar_js_ver );
-    wp_register_style( 'my_css',    plugins_url( 'front-end-assets/css/snackbar.min.css',    __DIR__ ), false,   $tidywp_snackbar_css_ver );
+    wp_enqueue_script( 'custom_js', plugins_url( 'front-end-assets/js/snackbar.min.js', __DIR__ ), array(), $tidy_wp_snackbar_js_ver );
+    wp_register_style( 'my_css',    plugins_url( 'front-end-assets/css/snackbar.min.css',    __DIR__ ), false,   $tidy_wp_snackbar_css_ver );
     wp_enqueue_style ( 'my_css' );
  
 }
-add_action('wp_enqueue_scripts', 'tidywp_snackbar_load_scripts');
+add_action('wp_enqueue_scripts', 'tidy_wp_snackbar_load_scripts');
 
 // https://www.polonel.com/snackbar/
-function tidyWP_add_onload() {
+function tidy_wp_add_onload() {
 ?>
 <script type="text/javascript">
 function tidyWPSnackbar() {
-var tidyWPSnackbarDuration = <?php echo get_option('tidywp_custom_website_snackbar_show_duration_in_sec'); ?> * 600;
+var tidyWPSnackbarDuration = <?php echo get_option('tidy_wp_custom_website_snackbar_show_duration_in_sec'); ?> * 600;
 
 var tidyWPSnackbarPosition = ['bottom-left', 'bottom-center', 'bottom-right', 'top-left', 'top-center', 'top-right'];
 var tidyWPSnackbarTextColorTheme = ["#ffffff", "#323941"];
@@ -415,17 +415,17 @@ var tidyWPSnackbarActionTextColorTheme = ["#00d2ff", "#3a7bd5"];
 var tidyWPSnackbarBackgroundColorTheme = ["#323941", "#ececec"];
 
 Snackbar.show({
-    pos: tidyWPSnackbarPosition[<?php echo intval(get_option('tidywp_custom_website_snackbar_position')); ?>],
-    text: <?php echo json_encode(get_option('tidywp_custom_website_snackbar_text')); ?>,
-    textColor: tidyWPSnackbarTextColorTheme[<?php echo intval(get_option('tidywp_custom_website_snackbar_theme')); ?>],
-    actionText: <?php echo json_encode(get_option('tidywp_custom_website_snackbar_action_text')); ?>,
-    actionTextAria: <?php echo json_encode(get_option('tidywp_custom_website_snackbar_action_text')); ?>,
-    actionTextColor: tidyWPSnackbarActionTextColorTheme[<?php echo intval(get_option('tidywp_custom_website_snackbar_theme')); ?>],
-    backgroundColor: tidyWPSnackbarBackgroundColorTheme[<?php echo intval(get_option('tidywp_custom_website_snackbar_theme')); ?>],
+    pos: tidyWPSnackbarPosition[<?php echo intval(get_option('tidy_wp_custom_website_snackbar_position')); ?>],
+    text: <?php echo json_encode(get_option('tidy_wp_custom_website_snackbar_text')); ?>,
+    textColor: tidyWPSnackbarTextColorTheme[<?php echo intval(get_option('tidy_wp_custom_website_snackbar_theme')); ?>],
+    actionText: <?php echo json_encode(get_option('tidy_wp_custom_website_snackbar_action_text')); ?>,
+    actionTextAria: <?php echo json_encode(get_option('tidy_wp_custom_website_snackbar_action_text')); ?>,
+    actionTextColor: tidyWPSnackbarActionTextColorTheme[<?php echo intval(get_option('tidy_wp_custom_website_snackbar_theme')); ?>],
+    backgroundColor: tidyWPSnackbarBackgroundColorTheme[<?php echo intval(get_option('tidy_wp_custom_website_snackbar_theme')); ?>],
     duration: tidyWPSnackbarDuration.toString(),
     alertScreenReader: 'true',
     customClass: 'snackbarTidyWP',
-    onClose: function dontShowSnackbarAgain() {<?php if (intval(get_option('tidywp_custom_website_snackbar_cookie_duration')) != 0) { ?> setCookie('tidyWPSnackbarCookie', 'true', <?php echo intval(get_option('tidywp_custom_website_snackbar_cookie_duration')); ?>) <?php } ?> },
+    onClose: function dontShowSnackbarAgain() {<?php if (intval(get_option('tidy_wp_custom_website_snackbar_cookie_duration')) != 0) { ?> setCookie('tidyWPSnackbarCookie', 'true', <?php echo intval(get_option('tidy_wp_custom_website_snackbar_cookie_duration')); ?>) <?php } ?> },
 });
 };
 window.onload = tidyWPSnackbar();
@@ -433,7 +433,7 @@ window.onload = tidyWPSnackbar();
 <?php
 }
 
-add_action( 'wp_footer', 'tidyWP_add_onload' );
+add_action( 'wp_footer', 'tidy_wp_add_onload' );
 }
 }
 
@@ -447,11 +447,11 @@ add_action( 'wp_footer', 'tidyWP_add_onload' );
 
 // is-dismissible
 
-function tidywp_backend_notice() {
+function tidy_wp_backend_notice() {
   ?>
     <div class="notice notice-warning is-dismissible">
         <p><?php _e( 'There has been an error. Bummer!', 'my_plugin_textdomain' ); ?></p>
     </div>
   <?php
 }
-// add_action( 'admin_notices', 'tidywp_backend_notice' );
+// add_action( 'admin_notices', 'tidy_wp_backend_notice' );

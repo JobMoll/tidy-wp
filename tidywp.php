@@ -40,13 +40,19 @@ function activate_tidy_wp() {
 	Tidy_Wp_Activator::activate();
 }
 
-function uninstall_tidy_wp() {
+function deactivator_tidy_wp() {
 	require_once plugin_dir_path( __FILE__ ) . 'includes/plugin-feature-classes/class-tidy-wp-deactivator.php';
 	Tidy_Wp_Deactivator::deactivate();
 }
 
-register_activation_hook( __FILE__, 'activate_tidy_wp' );
-register_uninstall_hook( __FILE__, 'uninstall_tidy_wp' );
+function uninstall_tidy_wp() {
+	require_once plugin_dir_path( __FILE__ ) . 'includes/plugin-feature-classes/class-tidy-wp-uninstaller.php';
+	Tidy_Wp_Uninstaller::uninstall();
+}
+
+register_activation_hook(__FILE__, 'activate_tidy_wp');
+register_deactivation_hook(__FILE__, 'deactivator_tidy_wp');
+register_uninstall_hook(__FILE__, 'uninstall_tidy_wp');
 
 
 
@@ -59,7 +65,7 @@ require_once  __DIR__ . '/tidywp-recommended-plugins-helper.php';
 
 
 
-$baseURL = get_bloginfo('wpurl') . '/wp-json/' . get_option('tidywp_secret_path');
+$baseURL = get_bloginfo('wpurl') . '/wp-json/' . get_option('tidy_wp_secret_path');
 $actualURL = $_SERVER['REQUEST_SCHEME'] .'://'. $_SERVER['HTTP_HOST'] 
      . explode('?', $_SERVER['REQUEST_URI'], 2)[0];
 
@@ -119,8 +125,8 @@ include 'includes/app-feature-classes/class-website-properties.php';
 
 
 // secretToken key and path
-$secretToken = get_option('tidywp_secret_token');
-$usernameArray = array(get_option('tidywp_website_username1'), get_option('tidywp_website_username2'));
+$secretToken = get_option('tidy_wp_secret_token');
+$usernameArray = array(get_option('tidy_wp_website_username1'), get_option('tidy_wp_website_username2'));
 
 function generateRandomString($length) {
     $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -146,14 +152,14 @@ function generateRandomNumber($length) {
 
 // add plugin page to sidebar menu
 if (strpos($_SERVER["REQUEST_URI"], 'wp-admin') !== false) {
-add_action( 'admin_menu', 'tidywp_add_admin_menu' );
-function tidywp_add_admin_menu(  ) { 
+add_action( 'admin_menu', 'tidy_wp_add_admin_menu' );
+function tidy_wp_add_admin_menu(  ) { 
 	add_menu_page( 
 	'Tidy WP', 
 	'Tidy WP', 
 	'manage_options', 
 	'tidy-wp', 
-	'tidywp_main_page', 
+	'tidy_wp_main_page', 
 	// add the tidy wp logo
 	plugin_dir_url( __FILE__ ) . '/backend-assets/images/TidyWP-Icon.png' );
 	
@@ -163,7 +169,7 @@ function tidywp_add_admin_menu(  ) {
     'Addons',             // menu title
     'manage_options',           // capability
     'tidy-wp-addon', // slug
-    'tidywp_addon_page' // callback
+    'tidy_wp_addon_page' // callback
 ); 
 	add_submenu_page(
     'tidy-wp',       // parent slug
@@ -171,7 +177,7 @@ function tidywp_add_admin_menu(  ) {
     'License',             // menu title
     'manage_options',           // capability
     'tidy-wp-license', // slug
-    'tidywp_license_page' // callback
+    'tidy_wp_license_page' // callback
 ); 
 
 
@@ -210,8 +216,8 @@ $myUpdateChecker->setBranch('master');
 
 // encryption to be used
 function encrypt_and_decrypt( $string, $action = 'e' ) {
-    $secret_key = get_option('tidywp_encrypt_key');
-    $secret_iv = get_option('tidywp_encrypt_iv');
+    $secret_key = get_option('tidy_wp_encrypt_key');
+    $secret_iv = get_option('tidy_wp_encrypt_iv');
  
     $output = false;
     $encrypt_method = "AES-256-CBC";

@@ -1,11 +1,11 @@
 <?php
 
 function tidyWPAuth($http_token) {
-   if (intval(get_option('tidywp_brute_force_check')) <= 15) {
+   if (intval(get_option('tidy_wp_brute_force_check')) <= 15) {
 	$arrayHeaderHTTP = explode(',', $http_token);
      if (($arrayHeaderHTTP[0] == $GLOBALS['secretToken']) && (in_array(encrypt_and_decrypt($arrayHeaderHTTP[1], 'e' ), $GLOBALS['usernameArray']))) {
          
-         if (strtotime(get_option('tidywp_license_key_last_checked')) <= strtotime('-12 hours') && get_option('tidywp_license_key_valid') == 'true' && get_option('tidywp_license_key_valid') != '') {
+         if (strtotime(get_option('tidy_wp_license_key_last_checked')) <= strtotime('-12 hours') && get_option('tidy_wp_license_key_valid') == 'true' && get_option('tidy_wp_license_key_valid') != '') {
              include 'class-license-check.php';
              check_if_license_is_valid();
          }
@@ -15,8 +15,8 @@ function tidyWPAuth($http_token) {
 } else {
 echo 'Sorry... you are not allowed to view this data.';
 
-$oldBruteForceCheck = intval(get_option('tidywp_brute_force_check'));
-update_option('tidywp_brute_force_check', strval($oldBruteForceCheck + 1), 'no' );
+$oldBruteForceCheck = intval(get_option('tidy_wp_brute_force_check'));
+update_option('tidy_wp_brute_force_check', strval($oldBruteForceCheck + 1), 'no' );
 }
 } else {
 echo 'Sorry... you are not allowed to view this data.';
@@ -24,6 +24,6 @@ echo 'Sorry... you are not allowed to view this data.';
 include ABSPATH . 'wp-content/plugins/tidy-wp/tidywp-main-page.php';
 resetTokenAndPath();
 
-update_option('tidywp_brute_force_check', '0', 'no' );
+update_option('tidy_wp_brute_force_check', '0', 'no' );
 }
 }

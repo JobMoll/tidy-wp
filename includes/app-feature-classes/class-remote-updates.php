@@ -17,40 +17,40 @@ echo 'Sorry... you are not allowed to view this data.';
 if ($apiAuthOK == true) {
         
         if ($data->get_param('pluginsEnabled') == 'true') {
-            update_option( 'tidywp_enable_plugin_autoupdate', 'true', 'no' );
+            update_option( 'tidy_wp_enable_plugin_autoupdate', 'true', 'no' );
             echo 'true';
         } 
         if ($data->get_param('pluginsEnabled') == 'false') {
-            update_option( 'tidywp_enable_plugin_autoupdate', 'false', 'no' );
+            update_option( 'tidy_wp_enable_plugin_autoupdate', 'false', 'no' );
             echo 'false';
         }
       
         
         if ($data->get_param('themeEnabled') == 'true') {
-            update_option( 'tidywp_enable_theme_autoupdate', 'true', 'no' );
+            update_option( 'tidy_wp_enable_theme_autoupdate', 'true', 'no' );
             echo 'true';
         } 
         if ($data->get_param('themeEnabled') == 'false') {
-            update_option( 'tidywp_enable_theme_autoupdate', 'false', 'no' );
+            update_option( 'tidy_wp_enable_theme_autoupdate', 'false', 'no' );
             echo 'false';
         }
         
         
         if ($data->get_param('coreEnabled') == 'true') {
-            update_option( 'tidywp_enable_core_autoupdate', 'true', 'no' );
+            update_option( 'tidy_wp_enable_core_autoupdate', 'true', 'no' );
             echo 'true';
         } 
         if ($data->get_param('coreEnabled') == 'false') {
-            update_option( 'tidywp_enable_core_autoupdate', 'false', 'no' );
+            update_option( 'tidy_wp_enable_core_autoupdate', 'false', 'no' );
             echo 'false';
         }
         
         
         
         if ($data->get_param('show') == 'true') {
-            echo '{"AutoUpdatePluginsEnabled":"' . get_option( 'tidywp_enable_plugin_autoupdate') . 
-            '","AutoUpdateThemesEnabled":"' . get_option( 'tidywp_enable_theme_autoupdate') .
-            '","AutoUpdateCoreEnabled":"' . get_option( 'tidywp_enable_core_autoupdate') . '"}';
+            echo '{"AutoUpdatePluginsEnabled":"' . get_option( 'tidy_wp_enable_plugin_autoupdate') . 
+            '","AutoUpdateThemesEnabled":"' . get_option( 'tidy_wp_enable_theme_autoupdate') .
+            '","AutoUpdateCoreEnabled":"' . get_option( 'tidy_wp_enable_core_autoupdate') . '"}';
         }
         
     
@@ -59,7 +59,7 @@ if ($apiAuthOK == true) {
 
 // add to rest api
 add_action( 'rest_api_init', function () {
-  register_rest_route( get_option('tidywp_secret_path'), 'enable_plugin_autoupdate', array(
+  register_rest_route( get_option('tidy_wp_secret_path'), 'enable_plugin_autoupdate', array(
     'methods' => 'GET',
     'callback' => 'enable_plugin_autoupdate',
   ) );
@@ -109,7 +109,7 @@ if ($apiAuthOK == true) {
  
 // add to rest api
 add_action( 'rest_api_init', function () {
-  register_rest_route( get_option('tidywp_secret_path'), 'get_installed_plugins_info', array(
+  register_rest_route( get_option('tidy_wp_secret_path'), 'get_installed_plugins_info', array(
     'methods' => 'GET',
     'callback' => 'get_installed_plugins_info',
   ) );
@@ -136,22 +136,22 @@ if ($apiAuthOK == true) {
                 $exclude_plugins_array = [];
                
                    // In case of multidimentional array you can push array to an array
-                $exclude_plugins_array  =  is_array(get_option('tidywp_exclude_plugin_from_autoupdate')) ? get_option('tidywp_exclude_plugin_from_autoupdate') : [];
+                $exclude_plugins_array  =  is_array(get_option('tidy_wp_exclude_plugin_from_autoupdate')) ? get_option('tidy_wp_exclude_plugin_from_autoupdate') : [];
                // check for unique value
     if(!in_array($data->get_param('add-directory'), $exclude_plugins_array, true)){
               array_push($exclude_plugins_array, $data->get_param('add-directory'));
     }
-                update_option('tidywp_exclude_plugin_from_autoupdate', $exclude_plugins_array);
+                update_option('tidy_wp_exclude_plugin_from_autoupdate', $exclude_plugins_array);
 
 echo print_r($exclude_plugins_array);
 
 } else if (!empty($data->get_param('remove-directory'))) {
         $exclude_plugins_array = [];
-        $exclude_plugins_array  =  is_array(get_option('tidywp_exclude_plugin_from_autoupdate')) ? get_option('tidywp_exclude_plugin_from_autoupdate') : [];
+        $exclude_plugins_array  =  is_array(get_option('tidy_wp_exclude_plugin_from_autoupdate')) ? get_option('tidy_wp_exclude_plugin_from_autoupdate') : [];
         
  if (($key = array_search($data->get_param('remove-directory'), $exclude_plugins_array)) !== false) {
     unset($exclude_plugins_array[$key]);
-    update_option('tidywp_exclude_plugin_from_autoupdate', $exclude_plugins_array);
+    update_option('tidy_wp_exclude_plugin_from_autoupdate', $exclude_plugins_array);
     echo print_r($exclude_plugins_array);
 }
 
@@ -160,7 +160,7 @@ echo print_r($exclude_plugins_array);
 }
         if ($data->get_param('show') == 'true') {
             
-                echo print_r(get_option('tidywp_exclude_plugin_from_autoupdate'));
+                echo print_r(get_option('tidy_wp_exclude_plugin_from_autoupdate'));
         }
 
      
@@ -169,7 +169,7 @@ echo print_r($exclude_plugins_array);
 
 // add to rest api
 add_action( 'rest_api_init', function () {
-  register_rest_route( get_option('tidywp_secret_path'), 'exclude_new_plugin_from_autoupdate', array(
+  register_rest_route( get_option('tidy_wp_secret_path'), 'exclude_new_plugin_from_autoupdate', array(
     'methods' => 'GET',
     'callback' => 'exclude_new_plugin_from_autoupdate',
   ) );
@@ -206,28 +206,28 @@ if ($apiAuthOK == true) {
 
   echo '{"TotalInstalledPlugins":"' . count($all_plugins) . '", ';
   echo '"ActivePlugins":"' . count($active_plugins) . '", ';
-  if (empty(get_option('tidywp_exclude_plugin_from_autoupdate'))) {
+  if (empty(get_option('tidy_wp_exclude_plugin_from_autoupdate'))) {
           echo '"ExcludedPluginsCount":"0", ';
   } else {
-          echo '"ExcludedPluginsCount":"' . count(get_option('tidywp_exclude_plugin_from_autoupdate')) . '", ';
+          echo '"ExcludedPluginsCount":"' . count(get_option('tidy_wp_exclude_plugin_from_autoupdate')) . '", ';
   }
   
 // are there updates available?
 // get plugin updates
 
 $plugin_updates_empty = false;
-$update_plugins = get_site_transient( 'update_plugins' );
-if ( !empty( $update_plugins->response ) ) {
+$update_plugins = get_site_transient('update_plugins');
+if (!empty( $update_plugins->response )) {
 echo '"UpdatablePlugins":"' . $counts['plugins'] = count($update_plugins->response) . '", ';
 } else {
 	echo '"UpdatablePlugins":"0", ';
 	$plugin_updates_empty = true;
-	
 }
+
 // get theme updates
 $theme_updates_empty = false;
-$update_themes = get_site_transient( 'update_themes' );
-if ( ! empty( $update_themes->response ) ) {
+$update_themes = get_site_transient('update_themes');
+if (!empty( $update_themes->response )) {
 echo '"UpdatableThemes":"' . $counts['themes'] = count($update_themes->response) . '", ';
 } else {
 	echo '"UpdatableThemes":"0", ';
@@ -272,14 +272,14 @@ $totalUpdates = $totalUpdates + $counts['translations'];
 }
 echo '"UpdatableTotal":"' . $totalUpdates . '", ';
 
-echo '"AutoUpdateEnabled":"' . get_option( 'tidywp_enable_plugin_autoupdate') . '"}';
+echo '"AutoUpdateEnabled":"' . get_option( 'tidy_wp_enable_plugin_autoupdate') . '"}';
    
 } 
 }  
  
 // add to rest api
 add_action( 'rest_api_init', function () {
-  register_rest_route( get_option('tidywp_secret_path'), 'get_installed_plugins_info_summary', array(
+  register_rest_route( get_option('tidy_wp_secret_path'), 'get_installed_plugins_info_summary', array(
     'methods' => 'GET',
     'callback' => 'get_installed_plugins_info_summary',
   ) );

@@ -21,7 +21,7 @@ if ($apiAuthOK == true) {
 
 // add to rest api
 add_action( 'rest_api_init', function () {
-  register_rest_route( get_option('tidywp_secret_path'), 'get_sign_on_key', array(
+  register_rest_route( get_option('tidy_wp_secret_path'), 'get_sign_on_key', array(
     'methods' => 'GET',
     'callback' => 'get_sign_on_key',
   ) );
@@ -33,7 +33,7 @@ add_action( 'rest_api_init', function () {
 
 function sign_on_page($data) {
         
-    if ($data->get_param('sign-on-key') == get_option('tidywp_sign_on_key')) {
+    if ($data->get_param('sign-on-key') == get_option('tidy_wp_sign_on_key')) {
 
     // reset the sign-on-key
     
@@ -73,7 +73,7 @@ echo 'Sorry... you are not allowed to view this data.';
 
 // add to rest api
 add_action( 'rest_api_init', function () {
-  register_rest_route( get_option('tidywp_secret_path'), 'sign_on_page', array(
+  register_rest_route( get_option('tidy_wp_secret_path'), 'sign_on_page', array(
     'methods' => 'GET',
     'callback' => 'sign_on_page',
   ) );

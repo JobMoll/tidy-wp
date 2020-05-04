@@ -62,8 +62,10 @@ if ($apiAuthOK == true) {
     $previousClosestDateShowInApp  = date($dateFormat, strtotime("now"));
     $previousFurthestDateShowInApp = date($dateFormat, strtotime("first day of last month"));
     }
-       
-       if (get_option('woocommerce_currency') == 'EUR') {
+  
+
+// if you add a new option here also add it to WoocommerceEmpty in the app  
+if (get_option('woocommerce_currency') == 'EUR') {
     $cashSign = '€';
 } else if (get_option('woocommerce_currency') == 'USD') {
     $cashSign = '$';
@@ -157,7 +159,7 @@ echo '"Strings": ' . json_encode($stringsArr) . '}';
     $furthestDateShowInApp = date($dateFormat, strtotime("first day of this month"));
     
                 $dataArr = array(
-    'TotalNetSales' => '0', 
+'TotalNetSales' => '0', 
 'TotalSales' => '0', 
 'Orders' => '0', 
 'AverageOrderValueNet' => '0', 
@@ -181,7 +183,7 @@ echo '"Strings": ' . json_encode($stringsArr) . '}';
 
 // add to rest api
 add_action( 'rest_api_init', function () {
-  register_rest_route( get_option('tidywp_secret_path'), 'woocommerce_data', array(
+  register_rest_route( get_option('tidy_wp_secret_path'), 'woocommerce_data', array(
     'methods' => 'GET',
     'callback' => 'woocommerce_data',
   ) );

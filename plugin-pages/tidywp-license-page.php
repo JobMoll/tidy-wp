@@ -20,7 +20,7 @@ if ($_GET['deativateLicense'] == 'yes') {
 }
  
 // content of the page 
-function tidywp_license_page() {
+function tidy_wp_license_page() {
     ?>
     <div class="wrap">
     <h1>Tidy WP License</h1>
@@ -29,7 +29,7 @@ function tidywp_license_page() {
 
 
 <?php
-if (get_option('tidywp_license_key_valid') == 'false') {
+if (get_option('tidy_wp_license_key_valid') == 'false') {
 ?>
 <form id="licenseForm" action="" method="post">
   <h3 class="licenseKeyH3">License Key:</h3>
@@ -38,9 +38,9 @@ if (get_option('tidywp_license_key_valid') == 'false') {
 </form>
   <button type="submit" form="licenseForm" style="margin-top: 20px;" class="tidy-wp-button">Activate license</button> <a style="margin-left: 10px;" href="https://tidywp.com/pricing" target="_blank">Or get yourself a license.</a>
 <?php
-} if (get_option('tidywp_license_key_valid') == 'true') {
+} if (get_option('tidy_wp_license_key_valid') == 'true') {
     echo '<h3 class="licenseKeyH3"> Current active license key:</h3>';
-    echo '<p>' . get_option('tidywp_license_key') . '</p>';
+    echo '<p>' . get_option('tidy_wp_license_key') . '</p>';
 ?>
 <a href="admin.php?page=tidy-wp-license&deativateLicense=yes">
  <button class="tidy-wp-button">Deactivate license key</button>

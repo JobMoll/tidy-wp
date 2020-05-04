@@ -30,21 +30,21 @@ if ($apiAuthOK == true) {
 
         // send the redirect URL and which redirect type
         if ($data->get_param('redirectWebsiteURL') != '' && $data->get_param('redirectWebsiteType') != '') {
-            update_option('tidywp_redirect_website_url', $data->get_param('redirectWebsiteURL'), 'no' );
-            update_option('tidywp_redirect_type', $data->get_param('redirectWebsiteType'), 'no' );
+            update_option('tidy_wp_redirect_website_url', $data->get_param('redirectWebsiteURL'), 'no' );
+            update_option('tidy_wp_redirect_type', $data->get_param('redirectWebsiteType'), 'no' );
         } 
         // set to true to empty the option
         if ($data->get_param('redirectWebsiteURLDisable') != '') {
-            update_option('tidywp_redirect_website_url', '', 'no' );
-            update_option('tidywp_redirect_type', '', 'no' );
+            update_option('tidy_wp_redirect_website_url', '', 'no' );
+            update_option('tidy_wp_redirect_type', '', 'no' );
         }
 
 
 echo '{"SiteTitle":"' . get_option('blogname') . '", ';
 echo '"Tagline":"' . get_option('blogdescription') . '", ';
 echo '"UsersCanRegister":"' . get_option('users_can_register') . '", ';
-echo '"RedirectWebsiteURL":"' . get_option('tidywp_redirect_website_url') . '", ';
-echo '"RedirectWebsiteType":"' . get_option('tidywp_redirect_type') . '", ';
+echo '"RedirectWebsiteURL":"' . get_option('tidy_wp_redirect_website_url') . '", ';
+echo '"RedirectWebsiteType":"' . get_option('tidy_wp_redirect_type') . '", ';
 echo '"BlogPublic":"' . get_option('blog_public') . '"}';
 
    
@@ -53,7 +53,7 @@ echo '"BlogPublic":"' . get_option('blog_public') . '"}';
  
 // add to rest api
 add_action( 'rest_api_init', function () {
-  register_rest_route( get_option('tidywp_secret_path'), 'site_settings', array(
+  register_rest_route( get_option('tidy_wp_secret_path'), 'site_settings', array(
     'methods' => 'GET',
     'callback' => 'site_settings',
   ) );

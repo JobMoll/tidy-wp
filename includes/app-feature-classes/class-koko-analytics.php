@@ -130,7 +130,7 @@ echo '{"Stats": ' . json_encode($dataArr) . '}';
 // add to rest api
 add_action('rest_api_init', function()
 {
-    register_rest_route(get_option('tidywp_secret_path'), 'visitors_pageviews', array(
+    register_rest_route(get_option('tidy_wp_secret_path'), 'visitors_pageviews', array(
         'methods' => 'GET',
         'callback' => 'visitors_pageviews'
     ));
@@ -224,7 +224,7 @@ echo json_encode($top15PostsDone);
 // add to rest api
 add_action('rest_api_init', function()
 {
-    register_rest_route(get_option('tidywp_secret_path'), 'populair_pages', array(
+    register_rest_route(get_option('tidy_wp_secret_path'), 'populair_pages', array(
         'methods' => 'GET',
         'callback' => 'populair_pages'
     ));
@@ -309,7 +309,7 @@ echo stripslashes(json_encode($top15ReferrersDone));
 // add to rest api
 add_action('rest_api_init', function()
 {
-    register_rest_route(get_option('tidywp_secret_path'), 'top_referrers', array(
+    register_rest_route(get_option('tidy_wp_secret_path'), 'top_referrers', array(
         'methods' => 'GET',
         'callback' => 'top_referrers'
     ));

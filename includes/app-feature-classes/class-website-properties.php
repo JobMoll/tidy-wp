@@ -25,15 +25,15 @@ if ($apiAuthOK == true) {
             }
             
             $showWebsiteSummarySpecific = array(
-            'LicenseKeyValid' => get_option('tidywp_license_key_valid'), 
+            'LicenseKeyValid' => get_option('tidy_wp_license_key_valid'), 
             
             // plugins
             'KokoAnalyticsActive' => $kokoAnalyticsActive, 
             'WoocommerceAdminActive' => $woocommerceAdminActive,
             
             // addons
-            'SnackbarAddon' => get_option('tidywp_addons_snackbar'), 
-            'UserRolesAddon' => get_option('tidywp_addons_user_roles'), 
+            'SnackbarAddon' => get_option('tidy_wp_addons_snackbar'), 
+            'UserRolesAddon' => get_option('tidy_wp_addons_user_roles'), 
            );
            
            echo json_encode($showWebsiteSummarySpecific);
@@ -44,7 +44,7 @@ if ($apiAuthOK == true) {
 
 // add to rest api
 add_action( 'rest_api_init', function () {
-  register_rest_route( get_option('tidywp_secret_path'), 'website_summary_specific', array(
+  register_rest_route( get_option('tidy_wp_secret_path'), 'website_summary_specific', array(
     'methods' => 'GET',
     'callback' => 'website_summary_specific',
   ) );

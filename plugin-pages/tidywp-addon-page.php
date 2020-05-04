@@ -10,7 +10,7 @@
 
 if (isset($_GET['which_addon']) && isset($_GET['enable'])) {
     
-if (get_option('tidywp_license_key_valid') == 'true' && get_option('tidywp_license_key_valid') != '' && strtotime(get_option('tidywp_license_key_last_checked')) <= strtotime('-12 hours')) {
+if (get_option('tidy_wp_license_key_valid') == 'true' && get_option('tidy_wp_license_key_valid') != '' && strtotime(get_option('tidy_wp_license_key_last_checked')) <= strtotime('-12 hours')) {
   if (check_if_license_is_valid() == 'true') {
   addon_activate_or_deactivate(sanitize_text_field($_GET['which_addon']), sanitize_text_field($_GET['enable']));
   }
@@ -21,8 +21,8 @@ if (get_option('tidywp_license_key_valid') == 'true' && get_option('tidywp_licen
 
 function addon_activate_or_deactivate($addonName, $enable) {
     
-if (get_option('tidywp_license_key_valid') == 'true' && get_option('tidywp_license_key_valid') != '') {
-   update_option('tidywp_addons_' . $addonName, $enable);
+if (get_option('tidy_wp_license_key_valid') == 'true' && get_option('tidy_wp_license_key_valid') != '') {
+   update_option('tidy_wp_addons_' . $addonName, $enable);
    header("Refresh:0; url=admin.php?page=tidy-wp-addon");
 } else {
    header("Refresh:0; url=admin.php?page=tidy-wp-addon");
@@ -31,9 +31,9 @@ if (get_option('tidywp_license_key_valid') == 'true' && get_option('tidywp_licen
 
 
 // content of the page 
-function tidywp_addon_page() {
+function tidy_wp_addon_page() {
     
-if (get_option('tidywp_license_key_valid') == 'false') {
+if (get_option('tidy_wp_license_key_valid') == 'false') {
     ?>
     <style>
     .notAddonPro {
@@ -48,7 +48,7 @@ if (get_option('tidywp_license_key_valid') == 'false') {
     <div class="wrap">
 <h1>Tidy WP Addons
 <?php
-if (get_option('tidywp_license_key_valid') == 'false') {
+if (get_option('tidy_wp_license_key_valid') == 'false') {
     echo '(You don\'t have Tidy WP Pro)';
 }
     ?>
@@ -63,7 +63,7 @@ if (get_option('tidywp_license_key_valid') == 'false') {
     <p>Gives you the option to change the theme, gives you more 'how often' options & allows you to exclude pages within the app.</p>
 
 <?php
-if (get_option('tidywp_addons_snackbar') == 'true') {
+if (get_option('tidy_wp_addons_snackbar') == 'true') {
 ?>
 <a href="admin.php?page=tidy-wp-addon&which_addon=snackbar&enable=false" class="notAddonPro">  
  <button class="tidy-wp-button">Disable snackbar</button>
@@ -84,7 +84,7 @@ if (get_option('tidywp_addons_snackbar') == 'true') {
     <p>When adding a new account you can choose a user role for the user. This allows you to limit some features for certain users.</p>
     
 <?php
-if (get_option('tidywp_addons_user_roles') == 'true') {
+if (get_option('tidy_wp_addons_user_roles') == 'true') {
 ?>
 <a href="admin.php?page=tidy-wp-addon&which_addon=user_roles&enable=false" class="notAddonPro">  
  <button class="tidy-wp-button">Disable user roles</button>

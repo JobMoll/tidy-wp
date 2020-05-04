@@ -70,7 +70,7 @@ if ($apiAuthOK == true) {
 
 // add to rest api
 add_action( 'rest_api_init', function () {
-  register_rest_route( get_option('tidywp_secret_path'), 'cleanup_database', array(
+  register_rest_route( get_option('tidy_wp_secret_path'), 'cleanup_database', array(
     'methods' => 'GET',
     'callback' => 'cleanup_database',
   ) );
@@ -129,7 +129,7 @@ echo json_encode($countsArr);
 
 // add to rest api
 add_action( 'rest_api_init', function () {
-  register_rest_route( get_option('tidywp_secret_path'), 'show_count_database', array(
+  register_rest_route( get_option('tidy_wp_secret_path'), 'show_count_database', array(
     'methods' => 'GET',
     'callback' => 'show_count_database',
   ) );

@@ -68,7 +68,7 @@ wp_insert_post( $post_array );
 
 // add to rest api
 add_action( 'rest_api_init', function () {
-  register_rest_route( get_option('tidywp_secret_path'), 'publish_new_post', array(
+  register_rest_route( get_option('tidy_wp_secret_path'), 'publish_new_post', array(
     'methods' => 'GET',
     'callback' => 'publish_new_post',
   ) );

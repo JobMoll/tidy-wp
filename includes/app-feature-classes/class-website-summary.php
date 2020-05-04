@@ -57,7 +57,7 @@ echo json_encode($dataArr);
 // add to rest api
 add_action('rest_api_init', function()
 {
-    register_rest_route(get_option('tidywp_secret_path'), 'website_summary', array(
+    register_rest_route(get_option('tidy_wp_secret_path'), 'website_summary', array(
         'methods' => 'GET',
         'callback' => 'website_summary'
     ));
