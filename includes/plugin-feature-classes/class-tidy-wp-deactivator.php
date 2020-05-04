@@ -32,8 +32,13 @@ class Tidy_Wp_Deactivator {
 	public static function deactivate() {
     // cron jobs
     wp_clear_scheduled_hook('tidy_wp_website_analytics_notification');
-    wp_clear_scheduled_hook('tidy_wp_woocommerce_sales_notification');
+    update_option('tidy_wp_website_analytics_notification', 'false');
     
+    wp_clear_scheduled_hook('tidy_wp_woocommerce_sales_notification');
+    update_option('tidy_wp_woocommerce_sales_notification', 'false');
+    
+    wp_clear_scheduled_hook('tidy_wp_update_notification');
+    update_option('tidy_wp_update_notification', 'false');
 	}
 
 }

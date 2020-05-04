@@ -56,9 +56,9 @@ if (get_option('tidy_wp_woocommerce_low_stock_notification') == 'true') {
 // woocommerce new order
 add_action('woocommerce_new_order', 'woocommerce_new_order_tidy_wp_notification');
 function woocommerce_new_order_tidy_wp_notification($order_id){
-// if (get_option('tidy_wp_woocommerce_new_order_notification') == 'true') {
+if (get_option('tidy_wp_woocommerce_new_order_notification') == 'true') {
   sendNotification('You have a new order!', 'Yess! You have received a new order with the id ' . $order_id . ' on ' . get_bloginfo('name') . '!');
-// }
+}
 }
 
 
@@ -196,11 +196,12 @@ if ($apiAuthOK == true) {
         }
         
         if ($data->get_param('enabled') == 'true' && ($data->get_param('cron_job_name') == 'tidy_wp_weekly_update_notification_cron_job' || $data->get_param('cron_job_name') == 'tidy_wp_weekly_website_notification_cron_job'  || $data->get_param('cron_job_name') == 'tidy_wp_weekly_woocommerce_sales_notification_cron_job')) {
+            add_action('wp', $data->get_param('cron_job_name'));
             update_option($data->get_param('option_name'), 'true', 'no');
         }
         
         if ($data->get_param('enabled') == 'false' && ($data->get_param('cron_job_name') == 'tidy_wp_weekly_update_notification_cron_job' || $data->get_param('cron_job_name') == 'tidy_wp_weekly_website_notification_cron_job'  || $data->get_param('cron_job_name') == 'tidy_wp_weekly_woocommerce_sales_notification_cron_job')) {
-            wp_clear_scheduled_hook($data->get_param('cron_job_name'));
+            wp_clear_scheduled_hook($data->get_param('option_name'));
             update_option($data->get_param('option_name'), 'false', 'no');
         }
         
