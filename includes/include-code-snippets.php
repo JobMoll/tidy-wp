@@ -282,7 +282,7 @@ remove_action( 'template_redirect', 'rest_output_link_header', 11 );
 // change login url
 if (get_option('tidy_wp_hide_login') != 'false') {
 function redirect_to_nonexistent_page(){
-     $new_login=  get_option('tidy_wp_hide_login');
+     $new_login = get_option('tidy_wp_hide_login');
     if(strpos($_SERVER['REQUEST_URI'], $new_login) === false){
                 wp_safe_redirect( home_url( 'NonExistentPage' ), 302 );
       exit();
