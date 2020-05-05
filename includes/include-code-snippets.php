@@ -403,12 +403,13 @@ function tidy_wp_snackbar_load_scripts($hook) {
 add_action('wp_enqueue_scripts', 'tidy_wp_snackbar_load_scripts');
 
 // https://www.polonel.com/snackbar/
+// https://plainjs.com/javascript/utilities/set-cookie-get-cookie-and-delete-cookie-5/
 function tidy_wp_add_onload() {
 ?>
 <script type="text/javascript">
+
 function tidyWPSnackbar() {
 var tidyWPSnackbarDuration = <?php echo get_option('tidy_wp_custom_website_snackbar_show_duration_in_sec'); ?> * 600;
-
 var tidyWPSnackbarPosition = ['bottom-left', 'bottom-center', 'bottom-right', 'top-left', 'top-center', 'top-right'];
 var tidyWPSnackbarTextColorTheme = ["#ffffff", "#323941"];
 var tidyWPSnackbarActionTextColorTheme = ["#00d2ff", "#3a7bd5"];
@@ -425,14 +426,35 @@ Snackbar.show({
     duration: tidyWPSnackbarDuration.toString(),
     alertScreenReader: 'true',
     customClass: 'snackbarTidyWP',
-    onClose: function dontShowSnackbarAgain() {<?php if (intval(get_option('tidy_wp_custom_website_snackbar_cookie_duration')) != 0) { ?> setCookie('tidyWPSnackbarCookie', 'true', <?php echo intval(get_option('tidy_wp_custom_website_snackbar_cookie_duration')); ?>) <?php } ?> },
+    onClose: function(element) {
+    function setCookie(name, value, seconds) {
+    var d = new Date;
+    d.setTime(d.getTime() + 1000*seconds);
+    document.cookie = name + "=" + value + ";path=/;expires=" + d.toGMTString();
+    }
+    <?php if (intval(get_option('tidy_wp_custom_website_snackbar_cookie_duration')) != 0) { ?> 
+    setCookie('tidyWPSnackbarCookie', 'true', <?php echo intval(get_option('tidy_wp_custom_website_snackbar_cookie_duration')); ?>);
+    <?php 
+    } ?>
+    }
 });
 };
-window.onload = tidyWPSnackbar();
+
+function getCookie(name) {
+    var v = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
+    return v ? v[2] : null;
+}
+
+var tidyWPSnackbarCookie = getCookie('tidyWPSnackbarCookie');
+if (tidyWPSnackbarCookie) {
+    function deleteCookie(name) { setCookie(name, '', -1); }
+    deleteCookie('tidyWPSnackbarCookie');
+} else {
+    window.onload = tidyWPSnackbar();
+}
 </script>
 <?php
 }
-
 add_action( 'wp_footer', 'tidy_wp_add_onload' );
 }
 }

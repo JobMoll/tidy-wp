@@ -87,13 +87,13 @@ class Tidy_Wp_Activator {
     add_option('tidy_wp_addons_user_roles', 'false', '', 'no');
     
     // notifications
-    add_option('tidy_wp_woocommerce_sales_notification', 'false', '', 'no');
-    add_option('tidy_wp_woocommerce_new_order_notification', 'false', '', 'no');
-    add_option('tidy_wp_woocommerce_low_stock_notification', 'false', '', 'no');
-    add_option('tidy_wp_woocommerce_no_stock_notification', 'false', '', 'no');
-    add_option('tidy_wp_website_analytics_notification', 'false', '', 'no');
-    add_option('tidy_wp_user_register_notification', 'false', '', 'no');
-    add_option('tidy_wp_update_notification', 'false', '', 'no');
+    add_option('tidy_wp_woocommerce_sales_notification', 'true', '', 'no');
+    add_option('tidy_wp_woocommerce_new_order_notification', 'true', '', 'no');
+    add_option('tidy_wp_woocommerce_low_stock_notification', 'true', '', 'no');
+    add_option('tidy_wp_woocommerce_no_stock_notification', 'true', '', 'no');
+    add_option('tidy_wp_website_analytics_notification', 'true', '', 'no');
+    add_option('tidy_wp_user_register_notification', 'true', '', 'no');
+    add_option('tidy_wp_update_notification', 'true', '', 'no');
 	}
 
 }

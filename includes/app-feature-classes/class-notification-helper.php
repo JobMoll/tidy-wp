@@ -188,21 +188,21 @@ echo 'Sorry... you are not allowed to view this data.';
 if ($apiAuthOK == true) {
 
         if ($data->get_param('enabled') == 'true') {
-            update_option($data->get_param('option_name'), 'true', 'no');
+            update_option(sanitize_text_field($data->get_param('option_name')), 'true', 'no');
         } 
         
         if ($data->get_param('enabled') == 'false') {
-            update_option($data->get_param('option_name'), 'false', 'no');
+            update_option(sanitize_text_field($data->get_param('option_name')), 'false', 'no');
         }
         
         if ($data->get_param('enabled') == 'true' && ($data->get_param('cron_job_name') == 'tidy_wp_weekly_update_notification_cron_job' || $data->get_param('cron_job_name') == 'tidy_wp_weekly_website_notification_cron_job'  || $data->get_param('cron_job_name') == 'tidy_wp_weekly_woocommerce_sales_notification_cron_job')) {
-            add_action('wp', $data->get_param('cron_job_name'));
-            update_option($data->get_param('option_name'), 'true', 'no');
+            add_action('wp', sanitize_text_field($data->get_param('cron_job_name')));
+            update_option(sanitize_text_field($data->get_param('option_name')), 'true', 'no');
         }
         
         if ($data->get_param('enabled') == 'false' && ($data->get_param('cron_job_name') == 'tidy_wp_weekly_update_notification_cron_job' || $data->get_param('cron_job_name') == 'tidy_wp_weekly_website_notification_cron_job'  || $data->get_param('cron_job_name') == 'tidy_wp_weekly_woocommerce_sales_notification_cron_job')) {
-            wp_clear_scheduled_hook($data->get_param('option_name'));
-            update_option($data->get_param('option_name'), 'false', 'no');
+            wp_clear_scheduled_hook(sanitize_text_field($data->get_param('option_name')));
+            update_option(sanitize_text_field($data->get_param('option_name')), 'false', 'no');
         }
         
         
