@@ -136,8 +136,9 @@ function tidy_wp_weekly_woocommerce_sales_notification_cron_job() {
 		wp_schedule_event(strtotime('next sunday 14 hours'), 'weekly', 'tidy_wp_woocommerce_sales_notification');
 	}
 }
-if (get_option('tidy_wp_woocommerce_sales_notification') == 'true') {
-add_action('wp', 'tidy_wp_weekly_woocommerce_sales_notification_cron_job');
+if (get_option('tidy_wp_woocommerce_sales_notification') == 'true' && in_array('woocommerce-admin/woocommerce-admin.php', apply_filters('active_plugins', get_option('active_plugins')))) {
+      add_action('wp', 'tidy_wp_weekly_woocommerce_sales_notification_cron_job');
+
 }
 
 function tidy_wp_weekly_website_notification_cron_job() {

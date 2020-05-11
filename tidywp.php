@@ -4,7 +4,7 @@
 Plugin Name: Tidy WP
 Plugin URI: https://tidywp.com/
 Description: A clean & easy way to manage multiple Wordpress websites! This plugin is needed to get the Tidy WP app working!
-Version: 0.0.6
+Version: 0.0.7
 Requires at least: 5.1
 Requires PHP:      7.0
 Author:            Job Moll

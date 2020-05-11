@@ -27,44 +27,76 @@ echo 'Sorry... you are not allowed to view this data.';
 }
 if ($apiAuthOK == true) {
     
-   global $wpdb;
+  global $wpdb;
                 
-// delete spam comments
-  if ($data->get_param('comment-spam') == 'true') {
- $wpdb->query($wpdb->prepare("DELETE FROM %1s WHERE comment_approved = 'spam'", $wpdb->comments));
-  }
+ if ($data->get_param('comments') == 'true') {
+ // delete spam comments
+  $wpdb->query($wpdb->prepare("DELETE FROM %1s WHERE comment_approved = 'spam'", $wpdb->comments));
  // delete unapproved comments
-   if ($data->get_param('comment-unapproved') == 'true') {
- $wpdb->query($wpdb->prepare("DELETE FROM %1s WHERE comment_approved = '0'", $wpdb->comments));
-   }
+   $wpdb->query($wpdb->prepare("DELETE FROM %1s WHERE comment_approved = '0'", $wpdb->comments));
  // delete trash comments
-   if ($data->get_param('comment-trash') == 'true') {
- $wpdb->query($wpdb->prepare("DELETE FROM %1s WHERE comment_approved = 'trash'", $wpdb->comments));
-   }
+   $wpdb->query($wpdb->prepare("DELETE FROM %1s WHERE comment_approved = 'trash'", $wpdb->comments));
+ }
  
+
+ if ($data->get_param('posts') == 'true') {
  // delete post revisions
-   if ($data->get_param('post-revision') == 'true') {
   $wpdb->query($wpdb->prepare("DELETE FROM %1s WHERE post_type = 'revision'", $wpdb->posts));
-   }
+ // delete auto draft
+   $wpdb->query($wpdb->prepare("DELETE FROM %1s WHERE post_status = 'auto-draft'", $wpdb->posts));
  // delete all posts in the trash
-   if ($data->get_param('post-trash') == 'true') {
- $wpdb->query($wpdb->prepare("DELETE FROM %1s WHERE post_status = 'trash'", $wpdb->posts));
-   }
- // delete all posts in draft
-//   if ($data->get_param('post-draft') == 'true') {
-//  $wpdb->query($wpdb->prepare("DELETE FROM $wpdb->posts WHERE post_status = 'draft'"));
-//   }
+   $wpdb->query($wpdb->prepare("DELETE FROM %1s WHERE post_status = 'trash'", $wpdb->posts));
+ }
  
+ // delete all orphaned data
+ if ($data->get_param('orphaned') == 'true') {
+ // Orphaned post meta
+  $wpdb->query($wpdb->prepare("DELETE pm FROM %1s pm LEFT JOIN %2s wp ON wp.ID = pm.post_id WHERE wp.ID IS NULL", $wpdb->postmeta, $wpdb->posts));
+ // Orphaned relationships
+  $wpdb->query($wpdb->prepare("DELETE FROM %1s WHERE term_taxonomy_id=1 AND object_id NOT IN (SELECT id FROM %2s)", $wpdb->term_relationships, $wpdb->posts));
+ // Orphaned term meta
+  $wpdb->query($wpdb->prepare("DELETE FROM %1s WHERE term_id NOT IN (SELECT term_id FROM %2s)", $wpdb->termmeta, $wpdb->terms));
+ // Orphaned user meta
+  $wpdb->query($wpdb->prepare("DELETE FROM %1s WHERE user_id NOT IN (SELECT ID FROM %2s)", $wpdb->usermeta, $wpdb->users));
+ //  Orphaned comment meta
+  $wpdb->query($wpdb->prepare("DELETE FROM %1s WHERE comment_id NOT IN (SELECT comment_id FROM %2s)", $wpdb->commentmeta, $wpdb->comments));
+ }
+
+ if ($data->get_param('remaining') == 'true') {
  // delete transients
-   if ($data->get_param('transients') == 'true') {
- $wpdb->query($wpdb->prepare("DELETE FROM %1s WHERE `option_name` LIKE ('%\_transient\_%')", $wpdb->options));
+   $wpdb->query($wpdb->prepare("DELETE FROM %1s WHERE `option_name` LIKE ('%\_transient\_%')", $wpdb->options));
+ // delete site transients
+   $wpdb->query($wpdb->prepare("DELETE FROM %1s WHERE `option_name` LIKE ('_site_transient_%')", $wpdb->options));
+ // delete pingbacks
+   $wpdb->query($wpdb->prepare("DELETE FROM %1s WHERE comment_type = 'pingback'", $wpdb->comments));
+ // delete trackbacks
+   $wpdb->query($wpdb->prepare("DELETE FROM %1s WHERE comment_type = 'trackback'", $wpdb->comments));
+ // delete feed cache
+  $wpdb->query($wpdb->prepare("DELETE FROM %1s WHERE `option_name` LIKE ('_transient%_feed_%')", $wpdb->options));
+ }
+    
+   if ($data->get_param('other-improvements') == 'true') {
+    // clean up weird characters: https://digwp.com/2011/07/clean-up-weird-characters-in-database/
+    $wpdb->query($wpdb->prepare("UPDATE %1s SET post_content = REPLACE(post_content, 'â€œ', '“');", $wpdb->posts));
+    $wpdb->query($wpdb->prepare("UPDATE %1s SET post_content = REPLACE(post_content, 'â€', '”');", $wpdb->posts));
+    $wpdb->query($wpdb->prepare("UPDATE %1s SET post_content = REPLACE(post_content, 'â€™', '’');", $wpdb->posts));
+    $wpdb->query($wpdb->prepare("UPDATE %1s SET post_content = REPLACE(post_content, 'â€˜', '‘');", $wpdb->posts));
+    $wpdb->query($wpdb->prepare("UPDATE %1s SET post_content = REPLACE(post_content, 'â€”', '–');", $wpdb->posts));
+    $wpdb->query($wpdb->prepare("UPDATE %1s SET post_content = REPLACE(post_content, 'â€“', '—');", $wpdb->posts));
+    $wpdb->query($wpdb->prepare("UPDATE %1s SET post_content = REPLACE(post_content, 'â€¢', '-');", $wpdb->posts));
+    $wpdb->query($wpdb->prepare("UPDATE %1s SET post_content = REPLACE(post_content, 'â€¦', '…');", $wpdb->posts));
+
+    $wpdb->query($wpdb->prepare("UPDATE %1s SET comment_content = REPLACE(comment_content, 'â€œ', '“');", $wpdb->comments));
+    $wpdb->query($wpdb->prepare("UPDATE %1s SET comment_content = REPLACE(comment_content, 'â€', '”');", $wpdb->comments));
+    $wpdb->query($wpdb->prepare("UPDATE %1s SET comment_content = REPLACE(comment_content, 'â€™', '’');", $wpdb->comments));
+    $wpdb->query($wpdb->prepare("UPDATE %1s SET comment_content = REPLACE(comment_content, 'â€˜', '‘');", $wpdb->comments));
+    $wpdb->query($wpdb->prepare("UPDATE %1s SET comment_content = REPLACE(comment_content, 'â€”', '–');", $wpdb->comments));
+    $wpdb->query($wpdb->prepare("UPDATE %1s SET comment_content = REPLACE(comment_content, 'â€“', '—');", $wpdb->comments));
+    $wpdb->query($wpdb->prepare("UPDATE %1s SET comment_content = REPLACE(comment_content, 'â€¢', '-');", $wpdb->comments));
+    $wpdb->query($wpdb->prepare("UPDATE %1s SET comment_content = REPLACE(comment_content, 'â€¦', '…');", $wpdb->comments));
    }
-  // delete site transients
-    if ($data->get_param('site-transients') == 'true') {
- $wpdb->query($wpdb->prepare("DELETE FROM %1s WHERE `option_name` LIKE ('_site_transient_%')", $wpdb->options));
- 
- echo 'Finished'; 
-    }
+   
+   echo 'Finished';
 }
 } 
 
@@ -76,8 +108,7 @@ add_action( 'rest_api_init', function () {
   ) );
 } );
 
-//  https://tidywp.sparknowmedia.com/wp-json/tidywp/cleanup_database?comment-spam=true&comment-unapproved=true&comment-trash=true&post-revision=true&post-trash=true&post-draft=true&transients=true&site-transients=true&token=123
-
+//  https://tidywp.sparknowmedia.com/wp-json/tidywp/cleanup_database?comments=true&posts=true&orphaned=true&remaining=true&other-improvements=true
 
 
 
@@ -94,36 +125,50 @@ echo 'Sorry... you are not allowed to view this data.';
 if ($apiAuthOK == true) {
     
  global $wpdb;
-// count spam comments
+ 
+ // count spam comments
  $spamComment = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM %1s WHERE comment_approved = 'spam'", $wpdb->comments));
-
  // count unapproved comments
  $unapprovedComment = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM %1s WHERE comment_approved = '0'", $wpdb->comments));
-   
  // count trash comments
  $trashComment = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM %1s WHERE comment_approved = 'trash'", $wpdb->comments));
-   
+ $allCommentsCount = $spamComment + $unapprovedComment + $trashComment;
  
  // count post revisions
-  $postRevisions = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM %1s WHERE post_type = 'revision'", $wpdb->posts));
-   
+ $postRevisions = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM %1s WHERE post_type = 'revision'", $wpdb->posts));
  // count all posts in the trash
  $postTrash = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM %1s WHERE post_status = 'trash'", $wpdb->posts));
-   
- // count all posts in draft
-// $postDraft = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM $wpdb->posts WHERE post_status = 'draft'"));
-  
+ // count auto-draft posts
+ $postAutoDraft = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM %1s WHERE post_status = 'auto-draft'", $wpdb->posts));
+ $allPostsCount = $postRevisions + $postTrash + $postAutoDraft;
+ 
+ // Orphaned post meta
+ $orphanedPostMeta = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) pm FROM %1s pm LEFT JOIN %2s wp ON wp.ID = pm.post_id WHERE wp.ID IS NULL", $wpdb->postmeta, $wpdb->posts));
+ // Orphaned relationships
+ $orphanedRelationships = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM %1s WHERE term_taxonomy_id=1 AND object_id NOT IN (SELECT id FROM %2s)", $wpdb->term_relationships, $wpdb->posts));
+ // Orphaned term meta
+ $orphanedTermMeta = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM %1s WHERE term_id NOT IN (SELECT term_id FROM %2s)", $wpdb->termmeta, $wpdb->terms));
+ // Orphaned user meta
+ $orphanedUserMeta = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM %1s WHERE user_id NOT IN (SELECT ID FROM %2s)", $wpdb->usermeta, $wpdb->users));
+ //  Orphaned comment meta
+ $orphanedCommentMeta = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM %1s WHERE comment_id NOT IN (SELECT comment_id FROM %2s)", $wpdb->commentmeta, $wpdb->comments));
+ $allOrphanedCount = $orphanedPostMeta + $orphanedRelationships + $orphanedTermMeta + $orphanedUserMeta + $orphanedCommentMeta;
  
  // count transients
- $transients = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM %1s WHERE `option_name` LIKE ('%\_transient\_%')", $wpdb->options));
-   
-  // count site transients
- $siteTransients = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM %1s WHERE `option_name` LIKE ('_site_transient_%')", $wpdb->options));
-   
-   $countsArr = array('SpamComment' => $spamComment, 'UnapprovedComment' => $unapprovedComment, 'TrashComment' => $trashComment, 'PostRevisions' => $postRevisions, 'PostTrash' => $postTrash, 'Transients' => $transients, 'SiteTransients' => $siteTransients, );
+ $remainingTransients = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM %1s WHERE `option_name` LIKE ('%\_transient\_%')", $wpdb->options));
+ // count site transients
+ $remainingSiteTransients = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM %1s WHERE `option_name` LIKE ('_site_transient_%')", $wpdb->options));
+ // count pingbacks
+ $remainingPingback = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM %1s WHERE comment_type = 'pingback'", $wpdb->comments));
+ // count trackbacks
+ $remainingTrackback = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM %1s WHERE comment_type = 'trackback'", $wpdb->comments));
+ // count feed cache
+ $remainingFeedCache = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM %1s WHERE `option_name` LIKE ('_transient%_feed_%')", $wpdb->options));
+ $allRemainingCount = $remainingTransients + $remainingSiteTransients + $remainingPingback + $remainingTrackback + $remainingFeedCache;
 
-echo json_encode($countsArr);
+ $allTheCountsArray = array('CertainComments' => $allCommentsCount, 'CertainPP' => $allPostsCount, 'OrphanedData' => $allOrphanedCount, 'RemainingData' => $allRemainingCount);
 
+ echo json_encode($allTheCountsArray);
 }
 } 
 
