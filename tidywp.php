@@ -35,6 +35,8 @@ if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
+define('TIDY_WP_CURRENT_PLUGIN_VERSION', '0.0.7');
+
 function activate_tidy_wp() {
 	require_once plugin_dir_path( __FILE__ ) . 'includes/plugin-feature-classes/class-tidy-wp-activator.php';
 	Tidy_Wp_Activator::activate();
@@ -53,8 +55,6 @@ function uninstall_tidy_wp() {
 register_activation_hook(__FILE__, 'activate_tidy_wp');
 register_deactivation_hook(__FILE__, 'deactivator_tidy_wp');
 register_uninstall_hook(__FILE__, 'uninstall_tidy_wp');
-
-
 
 
 // include the code snippets

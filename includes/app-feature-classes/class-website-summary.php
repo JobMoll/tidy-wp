@@ -39,12 +39,14 @@ if ($apiAuthOK == true) {
 } else {
     $cashSign = '';
 }
-        
+       
+    
     $dataArr = array(
         'TotalSales' => $cashSign . strval(round($totalSales, 2)) ?: '0',
         'TotalNetSales' => $cashSign . strval(round($totalNetSales, 2)) ?: '0',
         'TotalPageviews' => strval(round($totalPageviews, 2)) ?: '0',
         'TotalVisitors' => strval(round($totalVisitors, 2)) ?: '0',
+        'LatestPluginVersion' => TIDY_WP_CURRENT_PLUGIN_VERSION ?? '0.0.1',
     );
     
 
