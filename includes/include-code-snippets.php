@@ -284,7 +284,7 @@ if (get_option('tidy_wp_hide_login') != 'false') {
 function redirect_to_nonexistent_page(){
      $new_login = get_option('tidy_wp_hide_login');
     if(strpos($_SERVER['REQUEST_URI'], $new_login) === false){
-                wp_safe_redirect( home_url( 'NonExistentPage' ), 302 );
+                wp_safe_redirect( home_url( 'no-access' ), 302 );
       exit();
     }
  }

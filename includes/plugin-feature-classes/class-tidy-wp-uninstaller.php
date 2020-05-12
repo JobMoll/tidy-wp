@@ -71,8 +71,6 @@ class Tidy_Wp_Uninstaller {
     delete_option( 'tidy_wp_license_key_last_checked');
     
     // tidywp login details
-    removeWebsite(1);
-    removeWebsite(2);
     delete_option( 'tidy_wp_website_username1');
     delete_option( 'tidy_wp_website_password1');
     delete_option( 'tidy_wp_website_userRole1');
