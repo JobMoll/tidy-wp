@@ -233,16 +233,3 @@ function encrypt_and_decrypt( $string, $action = 'e' ) {
  
     return $output;
 }
-
-
-function url_get_contents($Url) {
-    if (!function_exists('curl_init')){
-        return file_get_contents($Url);
-    }
-    $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, $Url);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    $output = curl_exec($ch);
-    curl_close($ch);
-    return $output;
-}

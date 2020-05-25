@@ -8,18 +8,18 @@
 
 function generateWebsiteDetails($accountNumber) {
 $domainURL = get_bloginfo( 'wpurl' ) . '/wp-json/' . get_option('tidy_wp_secret_path');
-$websiteName = get_bloginfo( 'name' );
+$websiteName = get_bloginfo('name');
 $adminEmail = get_bloginfo( 'admin_email' );
 
 require_once(ABSPATH.'wp-includes/pluggable.php');
 
 // get website details to add
 $addWebsiteToAccount = '{"BaseDomainURL":"' . get_bloginfo( 'wpurl' ) .
-'","DomainURL":"' . $domainURL .
+'","DomainURL":"' . esc_url_raw($domainURL) .
 '","SecretToken":"' . get_option('tidy_wp_secret_token') .
 '","UserRole":"' . get_option('tidy_wp_website_userRole' . $accountNumber) .
-'","WebsiteName":"' . $websiteName .
-'","AdminEmail":"' . $adminEmail .
+'","WebsiteName":"' . sanitize_user($websiteName) .
+'","AdminEmail":"' . sanitize_email($adminEmail) .
 '"}';
 
 return $addWebsiteToAccount;
@@ -33,8 +33,6 @@ if (strpos($_SERVER["REQUEST_URI"], '/wp-admin/admin.php?page=tidy-wp') !== fals
         
     websiteToServer(get_option( 'tidy_wp_website_username1'), get_option( 'tidy_wp_website_password1'), '1');
     }
-    
-    
     
     if (isset($_POST['tidy_wp_username2']) &&
         isset($_POST['tidy_wp_userRole2']) &&
@@ -53,29 +51,28 @@ if (strpos($_SERVER["REQUEST_URI"], '/wp-admin/admin.php?page=tidy-wp') !== fals
 
 function websiteToServer($username, $password, $accountNumber) {
 // generate cookie for user
-$jsonRequest = url_get_contents('https://tidywp.com/56hd835Hd8q12ksf/user/generate_auth_cookie/?username=' . encrypt_and_decrypt( $username, 'd' ) . '&password=' . encrypt_and_decrypt( $password, 'd' ));
+$jsonRequest = wp_remote_get('https://tidywp.com/56hd835Hd8q12ksf/user/generate_auth_cookie/?username=' . encrypt_and_decrypt($username, 'd') . '&password=' . encrypt_and_decrypt($password, 'd'));
 
 $addWebsiteToAccount = generateWebsiteDetails($accountNumber);
 
 // get cookie and old description (old websites)
-$credentialsStatus = json_decode($jsonRequest)->{'status'};
+$credentialsStatus = json_decode($jsonRequest['body'])->{'status'};
 
 if ($credentialsStatus == 'ok') {
-$authCookie = json_decode($jsonRequest)->{'cookie'};
-$userDescription = json_decode($jsonRequest)->{'user'}->{'description'};
+$authCookie = json_decode($jsonRequest['body'])->{'cookie'};
+$userDescription = json_decode($jsonRequest['body'])->{'user'}->{'description'};
 
 if ($userDescription == '') {
-url_get_contents('https://tidywp.com/56hd835Hd8q12ksf/user/update_user_meta_vars/?cookie=' . $authCookie . '&description=' . $addWebsiteToAccount . '');
+wp_remote_get('https://tidywp.com/56hd835Hd8q12ksf/user/update_user_meta_vars/?cookie=' . $authCookie . '&description=' . $addWebsiteToAccount . '');
 } else if (strpos($userDescription, $addWebsiteToAccount) === false)  {
-url_get_contents('https://tidywp.com/56hd835Hd8q12ksf/user/update_user_meta_vars/?cookie=' . $authCookie . '&description='. $userDescription . ',' . $addWebsiteToAccount . '');
+wp_remote_get('https://tidywp.com/56hd835Hd8q12ksf/user/update_user_meta_vars/?cookie=' . $authCookie . '&description='. $userDescription . ',' . $addWebsiteToAccount . '');
 } else {
-// already added
+    $_SESSION['wrongLoginMessage'] = 'This domain is already added to the this Tidy WP Account...';
 }
 } else {
     update_option( 'tidy_wp_website_username' . $accountNumber, '', 'no' );
     update_option( 'tidy_wp_website_password' . $accountNumber, '', 'no' );
     $_SESSION['wrongLoginMessage'] = 'We didn\'t find an account with these login credentials...';
-    
 }
 }
 
@@ -101,13 +98,13 @@ header("refresh: 0; url = " . get_bloginfo('url') . "/wp-admin/admin.php?page=ti
 
 function removeWebsiteStringFromServer($username, $password, $accountNumber) {
 // generate cookie for user
-$jsonRequest = url_get_contents('https://tidywp.com/56hd835Hd8q12ksf/user/generate_auth_cookie/?username=' . encrypt_and_decrypt( $username, 'd' ) . '&password=' . encrypt_and_decrypt( $password, 'd' ));
+$jsonRequest = wp_remote_get('https://tidywp.com/56hd835Hd8q12ksf/user/generate_auth_cookie/?username=' . encrypt_and_decrypt( $username, 'd' ) . '&password=' . encrypt_and_decrypt( $password, 'd' ));
 
 $removeThisWebsiteString = generateWebsiteDetails($accountNumber);
 
 // get cookie and old description (old websites)
-$authCookie = json_decode($jsonRequest)->{'cookie'};
-$userDescription = json_decode($jsonRequest)->{'user'}->{'description'};
+$authCookie = json_decode($jsonRequest['body'])->{'cookie'};
+$userDescription = json_decode($jsonRequest['body'])->{'user'}->{'description'};
 
 $removedUserDescription = str_replace($removeThisWebsiteString, '', $userDescription);
 
@@ -122,7 +119,7 @@ if (substr($removedUserDescription, -1) == ',') {
     $removedUserDescription = substr($removedUserDescription, 0, -1);
 }
 
-url_get_contents('https://tidywp.com/56hd835Hd8q12ksf/user/update_user_meta_vars/?cookie=' . $authCookie . '&description=' . $removedUserDescription . '');
+wp_remote_get('https://tidywp.com/56hd835Hd8q12ksf/user/update_user_meta_vars/?cookie=' . $authCookie . '&description=' . $removedUserDescription . '');
 }
 
 
