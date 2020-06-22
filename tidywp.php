@@ -4,7 +4,7 @@
 Plugin Name: Tidy WP
 Plugin URI: https://tidywp.com/
 Description: A clean & easy way to manage multiple Wordpress websites! This plugin is needed to get the Tidy WP app working!
-Version: 0.0.7
+Version: 0.0.8
 Requires at least: 5.1
 Requires PHP:      7.0
 Author:            Job Moll
@@ -35,7 +35,7 @@ if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
-define('TIDY_WP_CURRENT_PLUGIN_VERSION', '0.0.7');
+define('TIDY_WP_CURRENT_PLUGIN_VERSION', '0.0.8');
 
 function activate_tidy_wp() {
 	require_once plugin_dir_path( __FILE__ ) . 'includes/plugin-feature-classes/class-tidy-wp-activator.php';
@@ -110,10 +110,6 @@ if ($baseURL . '/publish_new_post' == $actualURL) {
 include 'includes/app-feature-classes/class-publish-new-post.php';
 }
 
-// if ($baseURL . '/remove_website_from_server' == $actualURL || $baseURL . '/reset_website_secret_keys' == $actualURL) {
-// include 'includes/app-feature-classes/class-website-communication-with-app.php';
-// }
-
 if ($baseURL . '/site_settings' == $actualURL) {
 include 'includes/app-feature-classes/class-site-settings.php';
 }
@@ -122,6 +118,13 @@ if ($baseURL . '/website_summary_specific' == $actualURL) {
 include 'includes/app-feature-classes/class-website-properties.php';
 }
 
+if ($baseURL . '/backend_notice' == $actualURL) {
+include 'includes/app-feature-classes/class-backend-notice.php';
+}
+
+if ($baseURL . '/duplicate_pages_and_posts' == $actualURL) {
+include 'includes/app-feature-classes/class-duplicate-pages-and-posts.php';
+}
 
 
 // secretToken key and path

@@ -97,6 +97,15 @@ class Tidy_Wp_Uninstaller {
     delete_option('tidy_wp_website_analytics_notification');
     delete_option('tidy_wp_user_register_notification');
     delete_option('tidy_wp_update_notification');
+    
+    // backend notice
+    delete_option('tidy_wp_backend_notice');
+    delete_option('tidy_wp_backend_notice_dismissible');
+    delete_option('tidy_wp_backend_notice_type');
+    delete_option('tidy_wp_backend_notice_content');
+    
+    // duplicate pages and posts
+    delete_option('tidy_wp_duplicate_pages_and_posts');
 	}
 
 }

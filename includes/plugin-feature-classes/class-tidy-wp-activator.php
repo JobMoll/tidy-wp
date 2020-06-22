@@ -94,6 +94,15 @@ class Tidy_Wp_Activator {
     add_option('tidy_wp_website_analytics_notification', 'true', '', 'no');
     add_option('tidy_wp_user_register_notification', 'true', '', 'no');
     add_option('tidy_wp_update_notification', 'true', '', 'no');
+    
+    // backend notice
+    add_option('tidy_wp_backend_notice', 'false', '', 'no');
+    add_option('tidy_wp_backend_notice_dismissible', 'true', '', 'no');
+    add_option('tidy_wp_backend_notice_type', 'notice-info', '', 'no'); // notice-success, notice-error, notice-warning, notice-info
+    add_option('tidy_wp_backend_notice_content', '', '', 'no');
+    
+    // duplicate pages and posts
+    add_option('tidy_wp_duplicate_pages_and_posts', 'true', '', 'no');
 	}
 
 }
