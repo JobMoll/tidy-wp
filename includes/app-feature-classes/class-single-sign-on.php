@@ -14,7 +14,7 @@ if ($apiAuthOK == true) {
         
     $data->get_param('username');
   
-  // generate a random key that only can be used once! Then it changed.
+  // generate a random key that only can be used once! Then it changes.
 
      }
 }
