@@ -1,7 +1,7 @@
 <?php
 
 function tidyWPAuth($http_token) {
-   if (intval(get_option('tidy_wp_brute_force_check')) <= 15) {
+   if (intval(get_option('tidy_wp_brute_force_check')) <= 20) {
 	$arrayHeaderHTTP = explode(',', $http_token);
      if (($arrayHeaderHTTP[0] == $GLOBALS['secretToken']) && (in_array(encrypt_and_decrypt($arrayHeaderHTTP[1], 'e' ), $GLOBALS['usernameArray']))) {
          
