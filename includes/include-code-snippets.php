@@ -461,27 +461,29 @@ add_action( 'wp_footer', 'tidy_wp_add_onload' );
 
 
 
+
+
+
 // backend notice
-
-// notice-success
-// notice-error
-// notice-warning
-
-// is-dismissible
-
+if (get_option('tidy_wp_backend_notice') == 'true') {
+$dismissibleOrNot = '';
+if (get_option('tidy_wp_backend_notice_dismissible') == 'true') {
+   $dismissibleOrNot = 'is-dismissible'; 
+}
 function tidy_wp_backend_notice() {
   ?>
-    <div class="notice notice-warning is-dismissible">
-        <p><?php _e( 'There has been an error. Bummer!', 'my_plugin_textdomain' ); ?></p>
+    <div class="notice <?php echo get_option('tidy_wp_backend_notice_type') . ' ' . $dismissibleOrNot; ?>">
+        <p><?php _e(get_option('tidy_wp_backend_notice_content'), 'tidy_wp_backend_notice'); ?></p>
     </div>
   <?php
 }
-// add_action( 'admin_notices', 'tidy_wp_backend_notice' );
-
+add_action( 'admin_notices', 'tidy_wp_backend_notice' );
+}
 
 
 // duplicate pages and posts
 // code from: https://www.hostinger.com/tutorials/how-to-duplicate-wordpress-page-or-post
+if (get_option('tidy_wp_duplicate_pages_and_posts') == 'true') {
 function tidy_wp_duplicate_post_as_draft(){
   global $wpdb;
   if (! ( isset( $_GET['post']) || isset( $_POST['post'])  || ( isset($_REQUEST['action']) && 'tidy_wp_duplicate_post_as_draft' == $_REQUEST['action'] ) ) ) {
@@ -588,3 +590,4 @@ function tidy_wp_duplicate_post_link( $actions, $post ) {
  
 add_filter( 'post_row_actions', 'tidy_wp_duplicate_post_link', 10, 2 );
 add_filter('page_row_actions', 'tidy_wp_duplicate_post_link', 10, 2);
+}
