@@ -178,7 +178,7 @@ if (get_option('tidy_wp_website_username1') == '') {
   <input class="licenseKeyInput" style="margin-bottom: 10px;" type="password" name="tidy_wp_password1" placeholder="Your password" required><br>
 <select class="userRoleSelectBox" name="tidy_wp_userRole1" required>
   <option value="full-access">Full Access</option>
-  <option value="read-only"<?php if (get_option('tidy_wp_addons_user_roles') == 'false' || get_option('tidy_wp_addons_user_roles') == '') { echo ' label="Read Only (Need Tidy WP Pro)" disabled'; } ?>>Read Only</option>
+  <option value="read-only"<?php if (get_option('tidy_wp_addon_user_roles_license_key_valid') == 'false' || get_option('tidy_wp_addon_user_roles_license_key_valid') == '') { echo ' label="Read Only (Need Tidy WP Pro)" disabled'; } ?>>Read Only</option>
 </select><br>
 </form>
 <?php
@@ -207,7 +207,7 @@ if (isset($_SESSION['wrongLoginMessage']))
   <input class="licenseKeyInput" style="margin-bottom: 10px;" type="password" name="tidy_wp_password2" placeholder="Your password" required><br>
 <select class="userRoleSelectBox" name="tidy_wp_userRole2" required>
   <option value="full-access">Full Access</option>
-  <option value="read-only"<?php if (get_option('tidy_wp_addons_user_roles') == 'false' || get_option('tidy_wp_addons_user_roles') == '') { echo ' label="Read Only (Need Tidy WP Pro)" disabled'; } ?>>Read Only</option>
+  <option value="read-only"<?php if (get_option('tidy_wp_addon_user_roles_license_key_valid') == 'false' || get_option('tidy_wp_addon_user_roles_license_key_valid') == '') { echo ' label="Read Only (Need Tidy WP Pro)" disabled'; } ?>>Read Only</option>
 </select><br>
 </form>
 <?php

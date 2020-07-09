@@ -5,59 +5,19 @@
     * @author Job Moll
     */
 
-// voeg addon option name toe aan plugin activate en deactivate
-// tidy-wp/includes/plugin-feature-classes/class-license-check.php op lijn 67 voeg toe zodat ie wordt gedeactiveerd als de licensie is verlopen
-
-if (isset($_GET['which_addon']) && isset($_GET['enable'])) {
-    
-if (get_option('tidy_wp_license_key_valid') == 'true' && get_option('tidy_wp_license_key_valid') != '' && strtotime(get_option('tidy_wp_license_key_last_checked')) <= strtotime('-12 hours')) {
-  if (check_if_license_is_valid() == 'true') {
-  addon_activate_or_deactivate(sanitize_text_field($_GET['which_addon']), sanitize_text_field($_GET['enable']));
-  }
-} else {
-  addon_activate_or_deactivate(sanitize_text_field($_GET['which_addon']), sanitize_text_field($_GET['enable']));
-}
-}
-
-function addon_activate_or_deactivate($addonName, $enable) {
-    
-if (get_option('tidy_wp_license_key_valid') == 'true' && get_option('tidy_wp_license_key_valid') != '') {
-   update_option('tidy_wp_addons_' . $addonName, $enable);
-   header("Refresh:0; url=admin.php?page=tidy-wp-addon");
-} else {
-   header("Refresh:0; url=admin.php?page=tidy-wp-addon");
-}
-}
-
-
 // content of the page 
 function tidy_wp_addon_page() {
-    
-if (get_option('tidy_wp_license_key_valid') == 'false') {
-    ?>
-    <style>
-    .notAddonPro {
-        cursor: not-allowed;
-        pointer-events: none;
-    }    
-    </style>
-    <?php
-}
     ?>
     
     <div class="wrap">
 <h1>Tidy WP Addons
-<?php
-if (get_option('tidy_wp_license_key_valid') == 'false') {
-    echo '(You don\'t have Tidy WP Pro)';
-}
-    ?>
 </h1>
 
 <hr>
 <p style="margin-bottom: 15px;">You can enable / disable Tidy WP addons right here! </br> To use the pro addons you need to submit a valid license key <a href="<?php get_bloginfo('wpurl') ?>/wp-admin/admin.php?page=tidy-wp-license">right here.</a></p>
 
 <div class="pluginsAvailable">
+<!--snackbar addon-->
 <div class="addonBlock">
     <h2 class="titlenospace" style="display: inline;">Snackbar </h2><a style="text-decoration: none;" href="https://tidywp.com/pricing/" target="_blank"><h2 class="proBadge">- Tidy WP Pro</h2></a>
     <p>Gives you the option to change the theme, gives you more 'how often' options & allows you to exclude pages within the app.</p>
@@ -79,26 +39,34 @@ if (get_option('tidy_wp_addons_snackbar') == 'true') {
 ?>
 </div> 
 
+<!--user roles addon-->
 <div class="addonBlock">
     <h2 class="titlenospace" style="display: inline;">User roles </h2><a style="text-decoration: none;" href="https://tidywp.com/pricing/" target="_blank"><h2 class="proBadge">- Tidy WP Pro</h2></a>
     <p>When adding a new account you can choose a user role for the user. This allows you to limit some features for certain users.</p>
     
 <?php
-if (get_option('tidy_wp_addons_user_roles') == 'true') {
+if (get_option('tidy_wp_addon_user_roles_license_key_valid') == 'true') {
 ?>
-<a href="admin.php?page=tidy-wp-addon&which_addon=user_roles&enable=false" class="notAddonPro">  
- <button class="tidy-wp-button">Disable user roles</button>
- </a> 
+<a href="admin.php?page=tidy-wp-addon-user-roles">
+ <button class="tidy-wp-button">Addon is active</button>
+</a>
+<?php
+} else if (is_plugin_active('tidy-wp-addon-user-roles/tidy-wp-addons-user-roles.php')) {
+?>
+<a href="admin.php?page=tidy-wp-addon-user-roles">
+ <button class="tidy-wp-button">Activate the license key</button>
+ </a>   
 <?php
 } else {
 ?>
-<a href="admin.php?page=tidy-wp-addon&which_addon=user_roles&enable=true" class="notAddonPro">
- <button class="tidy-wp-button">Enable user roles</button>
+<a href="https://tidywp.com/tidy-wp-pro/" target='_blank'>
+ <button class="tidy-wp-button">Get this addon</button>
  </a> 
 <?php
 }
 ?>
 </div> 
+
 </div>
 
 
