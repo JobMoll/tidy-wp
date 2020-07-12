@@ -103,6 +103,7 @@ class Tidy_Wp_Uninstaller {
     delete_option('tidy_wp_backend_notice_dismissible');
     delete_option('tidy_wp_backend_notice_type');
     delete_option('tidy_wp_backend_notice_content');
+    delete_option('tidy_wp_backend_notice_header_text');
     
     // duplicate pages and posts
     delete_option('tidy_wp_duplicate_pages_and_posts');

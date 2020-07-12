@@ -100,6 +100,7 @@ class Tidy_Wp_Activator {
     add_option('tidy_wp_backend_notice_dismissible', 'true', '', 'no');
     add_option('tidy_wp_backend_notice_type', 'notice-info', '', 'no'); // notice-success, notice-error, notice-warning, notice-info
     add_option('tidy_wp_backend_notice_content', '', '', 'no');
+    add_option('tidy_wp_backend_notice_header_text', '', '', 'no');
     
     // duplicate pages and posts
     add_option('tidy_wp_duplicate_pages_and_posts', 'true', '', 'no');
