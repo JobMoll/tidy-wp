@@ -42,9 +42,6 @@ add_action( 'rest_api_init', function () {
   ) );
 } );
 
-// https://tidywp.sparknowmedia.com/wp-json/tidywp/maintaince_mode?enabled=false&token=123
-// https://tidywp.sparknowmedia.com/wp-json/tidywp/maintaince_mode?show=true&token=123
-
 
 
 
