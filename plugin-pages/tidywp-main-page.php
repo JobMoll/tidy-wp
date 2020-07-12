@@ -162,6 +162,7 @@ function tidy_wp_main_page(  ) {
     <div class="wrap">
     <h1>Tidy WP</h1>
 <hr>
+<?php if (is_ssl() == true) { ?>
 <p style="margin-bottom: 15px;">Login with your Tidy WP account to add this website! </br> You can activate your license key <a href="<?php get_bloginfo('wpurl') ?>/wp-admin/admin.php?page=tidy-wp-license">right here.</a></p>
 <?php
 if (strpos(get_bloginfo( 'wpurl' ), 'localhost') !== false) {
@@ -290,4 +291,9 @@ if (isset($_SESSION['wrongLoginMessage']))
     </div>
     <?php
 }
+} else {
+    ?>
+   <p style="margin-bottom: 15px;">Your website doesn't have a valid SSL connection... </br> You need a valid SSL cartificate for a secure connection with the Tidy WP App.</p>
+<?php
 }
+} 
