@@ -466,20 +466,29 @@ add_action( 'wp_footer', 'tidy_wp_add_onload' );
 
 // backend notice
 if (get_option('tidy_wp_backend_notice') == 'true') {
+if ((get_option('tidy_wp_backend_notice_header_text') || get_option('tidy_wp_backend_notice_content')) == '' || null) { 
+} else {
 $dismissibleOrNot = '';
 if (get_option('tidy_wp_backend_notice_dismissible') == 'true') {
    $dismissibleOrNot = 'is-dismissible'; 
 }
 function tidy_wp_backend_notice() {
   ?>
-    <div class="notice <?php echo get_option('tidy_wp_backend_notice_type') . ' ' . $dismissibleOrNot; ?>">
-        <p><?php _e(get_option('tidy_wp_backend_notice_content'), 'tidy_wp_backend_notice'); ?></p>
+    <div class="notice <?php echo get_option('tidy_wp_backend_notice_type') . ' ' . 'is-dismissible'; ?>">
+       
+       <?php if (get_option('tidy_wp_backend_notice_header_text') != '') { ?>
+        <h2><?php _e(get_option('tidy_wp_backend_notice_header_text'), 'tidy_wp_backend_notice_header_text'); ?></h2>
+        <?php } ?>
+       <?php if (get_option('tidy_wp_backend_notice_content') != '') { ?>
+        <p><?php _e(get_option('tidy_wp_backend_notice_content'), 'tidy_wp_backend_notice_content'); ?></p>
+        <?php } ?>
+
     </div>
   <?php
 }
 add_action( 'admin_notices', 'tidy_wp_backend_notice' );
 }
-
+}
 
 // duplicate pages and posts
 // code from: https://www.hostinger.com/tutorials/how-to-duplicate-wordpress-page-or-post
