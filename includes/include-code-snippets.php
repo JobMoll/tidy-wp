@@ -394,7 +394,7 @@ function tidy_wp_snackbar_load_scripts($hook) {
     $tidy_wp_snackbar_js_ver  = date("ymd-Gis", filemtime( plugin_dir_path( __DIR__ ) . 'front-end-assets/js/snackbar.min.js' ));
     $tidy_wp_snackbar_css_ver = date("ymd-Gis", filemtime( plugin_dir_path( __DIR__ ) . 'front-end-assets/css/snackbar.min.css' ));
      
-    // 
+    //
     wp_enqueue_script( 'custom_js', plugins_url( 'front-end-assets/js/snackbar.min.js', __DIR__ ), array(), $tidy_wp_snackbar_js_ver );
     wp_register_style( 'my_css',    plugins_url( 'front-end-assets/css/snackbar.min.css',    __DIR__ ), false,   $tidy_wp_snackbar_css_ver );
     wp_enqueue_style ( 'my_css' );
@@ -432,9 +432,9 @@ Snackbar.show({
     d.setTime(d.getTime() + 1000*seconds);
     document.cookie = name + "=" + value + ";path=/;expires=" + d.toGMTString();
     }
-    <?php if (intval(get_option('tidy_wp_custom_website_snackbar_cookie_duration')) != 0) { ?> 
+    <?php if (intval(get_option('tidy_wp_custom_website_snackbar_cookie_duration')) != 0) { ?>
     setCookie('tidyWPSnackbarCookie', 'true', <?php echo intval(get_option('tidy_wp_custom_website_snackbar_cookie_duration')); ?>);
-    <?php 
+    <?php
     } ?>
     }
 });
@@ -461,20 +461,16 @@ add_action( 'wp_footer', 'tidy_wp_add_onload' );
 
 
 
-
-
-
 // backend notice
 if (get_option('tidy_wp_backend_notice') == 'true') {
-if ((get_option('tidy_wp_backend_notice_header_text') || get_option('tidy_wp_backend_notice_content')) == '' || null) { 
+if ((get_option('tidy_wp_backend_notice_header_text') || get_option('tidy_wp_backend_notice_content')) == '' || null) {
 } else {
-$dismissibleOrNot = '';
-if (get_option('tidy_wp_backend_notice_dismissible') == 'true') {
-   $dismissibleOrNot = 'is-dismissible'; 
-}
 function tidy_wp_backend_notice() {
   ?>
-    <div class="notice <?php echo get_option('tidy_wp_backend_notice_type') . ' ' . 'is-dismissible'; ?>">
+    <div class="notice <?php echo get_option('tidy_wp_backend_notice_type') . ' ';
+    if (get_option('tidy_wp_backend_notice_dismissible') == 'true') {
+        echo 'is-dismissible';
+    }; ?>">
        
        <?php if (get_option('tidy_wp_backend_notice_header_text') != '') { ?>
         <h2><?php _e(get_option('tidy_wp_backend_notice_header_text'), 'tidy_wp_backend_notice_header_text'); ?></h2>
@@ -489,6 +485,8 @@ function tidy_wp_backend_notice() {
 add_action( 'admin_notices', 'tidy_wp_backend_notice' );
 }
 }
+
+
 
 // duplicate pages and posts
 // code from: https://www.hostinger.com/tutorials/how-to-duplicate-wordpress-page-or-post
