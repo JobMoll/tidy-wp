@@ -133,11 +133,11 @@ if ($_GET['reset'] == 'yes') {
 
 function resetTokenAndPath() {
   if (get_option( 'tidy_wp_website_username1') != '' && get_option( 'tidy_wp_website_password1') != '') {
-  removeWebsiteStringFromServer(get_option( 'tidy_wp_website_username1'), get_option( 'tidy_wp_website_password1'));
+  removeWebsiteStringFromServer(get_option( 'tidy_wp_website_username1'), get_option( 'tidy_wp_website_password1'), 1);
   }
   
   if (get_option( 'tidy_wp_website_username2') != '' && get_option( 'tidy_wp_website_password2') != '') {
-    removeWebsiteStringFromServer(get_option( 'tidy_wp_website_username2'), get_option( 'tidy_wp_website_password2'));
+    removeWebsiteStringFromServer(get_option( 'tidy_wp_website_username2'), get_option( 'tidy_wp_website_password2'), 2);
   }
   
   update_option( 'tidy_wp_secret_path', generateRandomString(64), 'no' );
