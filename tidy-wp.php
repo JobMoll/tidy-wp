@@ -9,8 +9,8 @@ When changing the version here also change it here below in the define variable
 Version: 0.0.8
 
 Requires PHP: 7.0
-Author:            Tidy WP
-Author URI:        https://tidywp.com/
+Author:            Mollup
+Author URI:        https://mollup.nl/
 License: GPL-3.0
 License URI: https://www.gnu.org/licenses/gpl-3.0.txt
 Text Domain:       tidy-wp

@@ -1,12 +1,21 @@
 === Tidy WP ===
-Contributors: Job Moll Plugin Name: Tidy WP
-Plugin URI: https://tidywp.com/ Tags: tidy wp, dashboard, all in one, multiple wordpress sites in one Author URI: https://tidywp.com/ Author: Tidy WP
+License: GPL-3.0+
+Requires PHP: 7.0
 Requires at least: 5.0
-Tested up to: 5.5 beta 1 Stable tag: 0.0.8 Version: 0.0.8
+Tested up to: 5.5 
+Stable tag: master
+Contributors: jobmoll
+Plugin Name: Tidy WP
+Plugin URI: https://tidywp.com/ 
+Tags: tidy wp, dashboard, all in one, multiple wordpress sites in one 
+Author URI: https://mollup.nl/ 
+Author: Mollup
 
+Version: 0.0.8
+License: GPL-3.0+
 
 == Description ==
-With Tidy WP you can manage all your Wordpress Sites in one place!
+With Tidy WP you can manage all your WordPress Sites in one place!
 
 In a clear dashboard you can quickly see how often your site is visited and how your Woocommerce shop is doing.
 
@@ -22,7 +31,7 @@ Tidy WP also has some nice addons like the site snackbar. With this addon you ca
 
 
 == Installation ==
-Install the Tidy WP plugin on your Wordpress website.
+Install the Tidy WP plugin on your WordPress website.
 Create an Tidy WP account on tidywp.com
 Login with your Tidy WP account and you should see your website in your app!
 
