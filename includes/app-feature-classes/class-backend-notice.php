@@ -37,9 +37,15 @@ if ($apiAuthOK == true) {
             update_option( 'tidy_wp_backend_notice_type', sanitize_text_field($data->get_param('type')), 'no' );
         }
         
+        if ($data->get_param('header') !== null) {
+            update_option( 'tidy_wp_backend_notice_header_text', sanitize_text_field($data->get_param('header')), 'no' );
+        }
+        
         if ($data->get_param('content') !== null) {
             update_option( 'tidy_wp_backend_notice_content', sanitize_text_field($data->get_param('content')), 'no' );
         }
+        
+        
         
         if ($data->get_param('show') == 'true') {
             $showBackendNoticeData = array(
@@ -47,6 +53,7 @@ if ($apiAuthOK == true) {
             'BackendNoticeDismissible' => get_option('tidy_wp_backend_notice_dismissible'), 
             'BackendNoticeType' => get_option('tidy_wp_backend_notice_type'),
             'BackendNoticeContent' => get_option('tidy_wp_backend_notice_content'),
+            'BackendNoticeHeaderText' => get_option('tidy_wp_backend_notice_header_text'),
            );
            
            echo json_encode($showBackendNoticeData);
