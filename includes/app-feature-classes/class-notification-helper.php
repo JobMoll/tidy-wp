@@ -37,6 +37,11 @@ if (get_option('tidy_wp_user_register_notification') == 'true') {
 
 // woocommerce hooks: https://docs.woocommerce.com/wc-apidocs/hook-docs.html
 
+
+// only push these notifications if woocommerce is installed
+
+if(in_array('woocommerce-admin/woocommerce-admin.php', apply_filters('active_plugins', get_option('active_plugins')))){ 
+
 // woocommerce no stock notification
 add_action('woocommerce_no_stock','woocommerce_no_stock_tidy_wp_notification');
 function woocommerce_no_stock_tidy_wp_notification($product){
@@ -61,19 +66,6 @@ if (get_option('tidy_wp_woocommerce_new_order_notification') == 'true') {
 }
 }
 
-
-
-// visitors and pageviews last 7 days
-// Scheduled Action Hook
-function tidy_wp_website_analytics_notification( ) {
-global $wpdb;
-sendNotification('Visitor & pageviews last 7 days.', 'You have received ' . 
-$wpdb->get_var($wpdb->prepare("SELECT SUM(visitors) FROM `{$wpdb->prefix}koko_analytics_site_stats` WHERE `date` >= %s AND `date` <= %s", date('Y-m-d', strtotime('-7 days')), date("Y-m-d", strtotime("now")))) . ' visitors & ' . 
-$wpdb->get_var($wpdb->prepare("SELECT SUM(pageviews) FROM `{$wpdb->prefix}koko_analytics_site_stats` WHERE `date` >= %s AND `date` <= %s", date('Y-m-d', strtotime('-7 days')), date("Y-m-d", strtotime("now")))) . ' pageviews from ' . date('d M', strtotime('-7 days')) . ' till ' . date('d M', strtotime('now')) . ' on ' . get_bloginfo('name') . '!');
-}
-add_action( 'tidy_wp_website_analytics_notification', 'tidy_wp_website_analytics_notification' );
-
-
 function tidy_wp_woocommerce_sales_notification( ) {
 global $wpdb;
 if (get_option('woocommerce_currency') == 'EUR') {
@@ -88,6 +80,43 @@ $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM `{$wpdb->prefix}wc_order_sta
 $cashSign . round($wpdb->get_var($wpdb->prepare("SELECT SUM(total_sales) FROM `{$wpdb->prefix}wc_order_stats` WHERE status = 'wc-completed' AND `date_created` >= %s AND `date_created` <= %s AND `tax_total` > '0'", date('Y-m-d', strtotime('-7 days') . ' 00:00:00'), date("Y-m-d", strtotime("now")))), 2) . ' from ' . date('d M', strtotime('-7 days')) . ' till ' . date('d M', strtotime('now')) . ' on ' . get_bloginfo('name') . '!');
 }
 add_action( 'tidy_wp_woocommerce_sales_notification', 'tidy_wp_woocommerce_sales_notification' );
+
+// Schedule Cron Job Event
+function tidy_wp_weekly_woocommerce_sales_notification_cron_job() {
+    if (!wp_next_scheduled( 'tidy_wp_woocommerce_sales_notification')) {
+		wp_schedule_event(strtotime('next sunday 14 hours'), 'weekly', 'tidy_wp_woocommerce_sales_notification');
+	}
+}
+if (get_option('tidy_wp_woocommerce_sales_notification') == 'true' && in_array('woocommerce-admin/woocommerce-admin.php', apply_filters('active_plugins', get_option('active_plugins')))) {
+      add_action('wp', 'tidy_wp_weekly_woocommerce_sales_notification_cron_job');
+
+}
+}
+
+// only push these notifications if Koko analytics is installed
+if(in_array('koko-analytics/koko-analytics.php', apply_filters('active_plugins', get_option('active_plugins')))){ 
+    
+// visitors and pageviews last 7 days
+// Scheduled Action Hook
+function tidy_wp_website_analytics_notification( ) {
+global $wpdb;
+sendNotification('Visitor & pageviews last 7 days.', 'You have received ' . 
+$wpdb->get_var($wpdb->prepare("SELECT SUM(visitors) FROM `{$wpdb->prefix}koko_analytics_site_stats` WHERE `date` >= %s AND `date` <= %s", date('Y-m-d', strtotime('-7 days')), date("Y-m-d", strtotime("now")))) . ' visitors & ' . 
+$wpdb->get_var($wpdb->prepare("SELECT SUM(pageviews) FROM `{$wpdb->prefix}koko_analytics_site_stats` WHERE `date` >= %s AND `date` <= %s", date('Y-m-d', strtotime('-7 days')), date("Y-m-d", strtotime("now")))) . ' pageviews from ' . date('d M', strtotime('-7 days')) . ' till ' . date('d M', strtotime('now')) . ' on ' . get_bloginfo('name') . '!');
+}
+add_action( 'tidy_wp_website_analytics_notification', 'tidy_wp_website_analytics_notification' );
+
+// Schedule Cron Job Event
+function tidy_wp_weekly_website_notification_cron_job() {
+	if (!wp_next_scheduled( 'tidy_wp_website_analytics_notification')) {
+		wp_schedule_event(strtotime('next sunday 15 hours'), 'weekly', 'tidy_wp_website_analytics_notification');
+	}
+}
+if (get_option('tidy_wp_website_analytics_notification') == 'true') {
+add_action('wp', 'tidy_wp_weekly_website_notification_cron_job');
+}
+
+}
 
 
 function tidy_wp_update_notification( ) {
@@ -131,25 +160,6 @@ add_action( 'tidy_wp_update_notification', 'tidy_wp_update_notification' );
 
 
 // Schedule Cron Job Event
-function tidy_wp_weekly_woocommerce_sales_notification_cron_job() {
-    if (!wp_next_scheduled( 'tidy_wp_woocommerce_sales_notification')) {
-		wp_schedule_event(strtotime('next sunday 14 hours'), 'weekly', 'tidy_wp_woocommerce_sales_notification');
-	}
-}
-if (get_option('tidy_wp_woocommerce_sales_notification') == 'true' && in_array('woocommerce-admin/woocommerce-admin.php', apply_filters('active_plugins', get_option('active_plugins')))) {
-      add_action('wp', 'tidy_wp_weekly_woocommerce_sales_notification_cron_job');
-
-}
-
-function tidy_wp_weekly_website_notification_cron_job() {
-	if (!wp_next_scheduled( 'tidy_wp_website_analytics_notification')) {
-		wp_schedule_event(strtotime('next sunday 15 hours'), 'weekly', 'tidy_wp_website_analytics_notification');
-	}
-}
-if (get_option('tidy_wp_website_analytics_notification') == 'true') {
-add_action('wp', 'tidy_wp_weekly_website_notification_cron_job');
-}
-
 function tidy_wp_weekly_update_notification_cron_job() {
 	if (!wp_next_scheduled( 'tidy_wp_update_notification')) {
 		wp_schedule_event(strtotime('next sunday 16 hours'), 'weekly', 'tidy_wp_update_notification');
@@ -231,3 +241,4 @@ add_action( 'rest_api_init', function () {
     'callback' => 'notification_summary',
   ) );
 } );
+
