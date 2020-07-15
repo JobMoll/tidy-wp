@@ -27,8 +27,8 @@ return $addWebsiteToAccount;
 
 if (strpos($_SERVER["REQUEST_URI"], '/wp-admin/admin.php?page=tidy-wp') !== false && ($_SERVER['REQUEST_METHOD'] == 'POST')) {
     if (isset($_POST['tidy_wp_username1']) && isset($_POST['tidy_wp_password1']) && isset($_POST['tidy_wp_userRole1'])) {
-    update_option( 'tidy_wp_website_username1', encrypt_and_decrypt( sanitize_text_field($_POST['tidy_wp_username1']), 'e' ), 'no' );
-    update_option( 'tidy_wp_website_password1', encrypt_and_decrypt( sanitize_text_field($_POST['tidy_wp_password1']), 'e' ), 'no' );
+    update_option( 'tidy_wp_website_username1', tidy_wp_encrypt_and_decrypt( sanitize_text_field($_POST['tidy_wp_username1']), 'e' ), 'no' );
+    update_option( 'tidy_wp_website_password1', tidy_wp_encrypt_and_decrypt( sanitize_text_field($_POST['tidy_wp_password1']), 'e' ), 'no' );
     update_option( 'tidy_wp_website_userRole1', sanitize_text_field($_POST['tidy_wp_userRole1']), 'no' );
         
     websiteToServer(get_option( 'tidy_wp_website_username1'), get_option( 'tidy_wp_website_password1'), '1');
@@ -36,9 +36,9 @@ if (strpos($_SERVER["REQUEST_URI"], '/wp-admin/admin.php?page=tidy-wp') !== fals
     
     if (isset($_POST['tidy_wp_username2']) &&
         isset($_POST['tidy_wp_userRole2']) &&
-        isset($_POST['tidy_wp_password2']) && sanitize_text_field($_POST['tidy_wp_username2']) != encrypt_and_decrypt( get_option( 'tidy_wp_website_username1'),'d')) {
-    update_option( 'tidy_wp_website_username2', encrypt_and_decrypt( sanitize_text_field($_POST['tidy_wp_username2']), 'e' ), 'no' );
-    update_option( 'tidy_wp_website_password2', encrypt_and_decrypt( sanitize_text_field($_POST['tidy_wp_password2']), 'e' ), 'no' );
+        isset($_POST['tidy_wp_password2']) && sanitize_text_field($_POST['tidy_wp_username2']) != tidy_wp_encrypt_and_decrypt( get_option( 'tidy_wp_website_username1'),'d')) {
+    update_option( 'tidy_wp_website_username2', tidy_wp_encrypt_and_decrypt( sanitize_text_field($_POST['tidy_wp_username2']), 'e' ), 'no' );
+    update_option( 'tidy_wp_website_password2', tidy_wp_encrypt_and_decrypt( sanitize_text_field($_POST['tidy_wp_password2']), 'e' ), 'no' );
     update_option( 'tidy_wp_website_userRole2', sanitize_text_field($_POST['tidy_wp_userRole2']), 'no' );
     
     websiteToServer(get_option( 'tidy_wp_website_username2'), get_option( 'tidy_wp_website_password2'), '2');
@@ -51,7 +51,7 @@ if (strpos($_SERVER["REQUEST_URI"], '/wp-admin/admin.php?page=tidy-wp') !== fals
 
 function websiteToServer($username, $password, $accountNumber) {
 // generate cookie for user
-$jsonRequest = wp_remote_get('https://tidywp.com/56hd835Hd8q12ksf/user/generate_auth_cookie/?username=' . encrypt_and_decrypt($username, 'd') . '&password=' . encrypt_and_decrypt($password, 'd'));
+$jsonRequest = wp_remote_get('https://tidywp.com/56hd835Hd8q12ksf/user/generate_auth_cookie/?username=' . tidy_wp_encrypt_and_decrypt($username, 'd') . '&password=' . tidy_wp_encrypt_and_decrypt($password, 'd'));
 
 $addWebsiteToAccount = generateWebsiteDetails($accountNumber);
 
@@ -98,7 +98,7 @@ header("refresh: 0; url = " . get_bloginfo('url') . "/wp-admin/admin.php?page=ti
 
 function removeWebsiteStringFromServer($username, $password, $accountNumber) {
 // generate cookie for user
-$jsonRequest = wp_remote_get('https://tidywp.com/56hd835Hd8q12ksf/user/generate_auth_cookie/?username=' . encrypt_and_decrypt( $username, 'd' ) . '&password=' . encrypt_and_decrypt( $password, 'd' ));
+$jsonRequest = wp_remote_get('https://tidywp.com/56hd835Hd8q12ksf/user/generate_auth_cookie/?username=' . tidy_wp_encrypt_and_decrypt( $username, 'd' ) . '&password=' . tidy_wp_encrypt_and_decrypt( $password, 'd' ));
 
 $removeThisWebsiteString = generateWebsiteDetails($accountNumber);
 
@@ -140,8 +140,8 @@ function resetTokenAndPath() {
     removeWebsiteStringFromServer(get_option( 'tidy_wp_website_username2'), get_option( 'tidy_wp_website_password2'), 2);
   }
   
-  update_option( 'tidy_wp_secret_path', generateRandomString(64), 'no' );
-  update_option( 'tidy_wp_secret_token', generateRandomString(64), 'no' );
+  update_option( 'tidy_wp_secret_path', tidy_wp_generate_random_string(64), 'no' );
+  update_option( 'tidy_wp_secret_token', tidy_wp_generate_random_string(64), 'no' );
   
   if (get_option( 'tidy_wp_website_username1') != '' && get_option( 'tidy_wp_website_password1') != '') {
   websiteToServer(get_option( 'tidy_wp_website_username1'), get_option( 'tidy_wp_website_password1'), '1');
@@ -196,7 +196,7 @@ if (isset($_SESSION['wrongLoginMessage']))
     echo '<p>' . get_bloginfo( 'wpurl' ) . '</p>';
 ?>
 <a href="admin.php?page=tidy-wp&removeWebsite=1">
- <button class="tidy-wp-button">Remove website from <?php echo encrypt_and_decrypt( get_option( 'tidy_wp_website_username1'),'d') ?>'s account</button>
+ <button class="tidy-wp-button">Remove website from <?php echo tidy_wp_encrypt_and_decrypt( get_option( 'tidy_wp_website_username1'),'d') ?>'s account</button>
  </a>
  <?php
 }
@@ -224,7 +224,7 @@ if (isset($_SESSION['wrongLoginMessage']))
 ?>
 <br>
 <a href="admin.php?page=tidy-wp&removeWebsite=2">
- <button style="margin-top: 20px;"  class="tidy-wp-button">Remove website from <?php echo encrypt_and_decrypt( get_option( 'tidy_wp_website_username2'),'d') ?>'s account</button>
+ <button style="margin-top: 20px;"  class="tidy-wp-button">Remove website from <?php echo tidy_wp_encrypt_and_decrypt( get_option( 'tidy_wp_website_username2'),'d') ?>'s account</button>
  </a>
 <?php
 }   if (get_option( 'tidy_wp_website_username1') != '' || get_option( 'tidy_wp_website_username2') != '') {

@@ -2,10 +2,10 @@
 
 function sendNotification($notificationTitle, $notificationMessage) {
 $url = 'https://tidywp.com/wp-json/tidy-wp-admin/send_notification';
-$data = array('tidy_wp_username1' => encrypt_and_decrypt(get_option('tidy_wp_website_username1'), 'd'), 'tidy_wp_password1' => encrypt_and_decrypt(get_option('tidy_wp_website_password1'), 'd'), 'notification_title' => $notificationTitle, 'notification_message' => $notificationMessage);
+$data = array('tidy_wp_username1' => tidy_wp_encrypt_and_decrypt(get_option('tidy_wp_website_username1'), 'd'), 'tidy_wp_password1' => tidy_wp_encrypt_and_decrypt(get_option('tidy_wp_website_password1'), 'd'), 'notification_title' => $notificationTitle, 'notification_message' => $notificationMessage);
 
 if (!empty(get_option('tidy_wp_website_username2')) && !empty(get_option('tidy_wp_website_password2'))) {
-$data2 = array('tidy_wp_username2' => encrypt_and_decrypt(get_option('tidy_wp_website_username2'), 'd'), 'tidy_wp_password2' => encrypt_and_decrypt(get_option('tidy_wp_website_password2'), 'd'));
+$data2 = array('tidy_wp_username2' => tidy_wp_encrypt_and_decrypt(get_option('tidy_wp_website_username2'), 'd'), 'tidy_wp_password2' => tidy_wp_encrypt_and_decrypt(get_option('tidy_wp_website_password2'), 'd'));
 
 $data = $data + $data2;
 }

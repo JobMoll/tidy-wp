@@ -85,7 +85,7 @@ include 'includes/app-feature-classes/class-duplicate-pages-and-posts.php';
 $secretToken = get_option('tidy_wp_secret_token');
 $usernameArray = array(get_option('tidy_wp_website_username1'), get_option('tidy_wp_website_username2'));
 
-function generateRandomString($length) {
+function tidy_wp_generate_random_string($length) {
     $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
     $charactersLength = strlen($characters);
     $randomString = '';
@@ -94,17 +94,6 @@ function generateRandomString($length) {
     }
     return $randomString;
 }
-
-function generateRandomNumber($length) {
-    $characters = '0123456789';
-    $charactersLength = strlen($characters);
-    $randomString = '';
-    for ($i = 0; $i < $length; $i++) {
-        $randomString .= $characters[rand(0, $charactersLength - 1)];
-    }
-    return $randomString;
-}
-
 
 
 // add plugin page to sidebar menu
@@ -131,26 +120,26 @@ function tidy_wp_add_admin_menu(  ) {
 }
 if (strpos($_SERVER["REQUEST_URI"], 'wp-admin/admin.php?page=tidy-wp') !== false) {
     
-function load_custom_wp_admin_style() {
+function tidy_wp_load_custom_wp_admin_style() {
 wp_enqueue_style( 'custom_wp_admin_css', plugins_url('/backend-assets/css/plugin-page-style.css', __FILE__) );
 }
-add_action( 'admin_enqueue_scripts', 'load_custom_wp_admin_style' );
+add_action( 'admin_enqueue_scripts', 'tidy_wp_load_custom_wp_admin_style' );
 }
 include 'plugin-pages/tidywp-main-page.php';
 include 'plugin-pages/tidywp-addon-page.php';
 }
 
-function pair_with_app_link( $links ) {
+function tidy_wp_pair_with_app_link( $links ) {
 	$links = array_merge( array(
 		'<a href="' . esc_url( admin_url( '/admin.php?page=tidy-wp' ) ) . '">' . __( 'Connect with the app', 'textdomain' ) . '</a>'
 	), $links );
 	return $links;
 }
-add_action( 'plugin_action_links_' . plugin_basename( __FILE__ ), 'pair_with_app_link' );
+add_action( 'plugin_action_links_' . plugin_basename( __FILE__ ), 'tidy_wp_pair_with_app_link' );
 
 
 // encryption to be used
-function encrypt_and_decrypt( $string, $action = 'e' ) {
+function tidy_wp_encrypt_and_decrypt( $string, $action = 'e' ) {
     $secret_key = get_option('tidy_wp_encrypt_key');
     $secret_iv = get_option('tidy_wp_encrypt_iv');
  

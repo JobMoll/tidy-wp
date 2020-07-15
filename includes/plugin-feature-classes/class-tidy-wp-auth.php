@@ -3,7 +3,7 @@
 function tidyWPAuth($http_token) {
    if (intval(get_option('tidy_wp_brute_force_check')) <= 20) {
 	$arrayHeaderHTTP = explode(',', $http_token);
-     if (($arrayHeaderHTTP[0] == $GLOBALS['secretToken']) && (in_array(encrypt_and_decrypt($arrayHeaderHTTP[1], 'e' ), $GLOBALS['usernameArray']))) {
+     if (($arrayHeaderHTTP[0] == $GLOBALS['secretToken']) && (in_array(tidy_wp_encrypt_and_decrypt($arrayHeaderHTTP[1], 'e' ), $GLOBALS['usernameArray']))) {
          
          if (strtotime(get_option('tidy_wp_license_key_last_checked')) <= strtotime('-12 hours') && get_option('tidy_wp_license_key_valid') == 'true' && get_option('tidy_wp_license_key_valid') != '') {
              include 'class-license-check.php';

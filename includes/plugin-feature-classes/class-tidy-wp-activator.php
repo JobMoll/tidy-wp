@@ -29,14 +29,14 @@ class Tidy_Wp_Activator {
 	 */
 	public static function activate() {
     // secret path
-    add_option( 'tidy_wp_secret_path', generateRandomString(64), '', 'no' );
+    add_option( 'tidy_wp_secret_path', tidy_wp_generate_random_string(64), '', 'no' );
     
     // secret token
-    add_option( 'tidy_wp_secret_token', generateRandomString(64), '', 'no' );
+    add_option( 'tidy_wp_secret_token', tidy_wp_generate_random_string(64), '', 'no' );
 
     // encryption keys
-    add_option( 'tidy_wp_encrypt_key', generateRandomString(64), '', 'no' );
-    add_option( 'tidy_wp_encrypt_iv', generateRandomString(64), '', 'no' );
+    add_option( 'tidy_wp_encrypt_key', tidy_wp_generate_random_string(64), '', 'no' );
+    add_option( 'tidy_wp_encrypt_iv', tidy_wp_generate_random_string(64), '', 'no' );
     
     // maintaince mode
     add_option( 'tidy_wp_maintaince_mode', 'false', '', 'no' );
