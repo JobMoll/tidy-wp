@@ -11,7 +11,7 @@ $domainURL = get_bloginfo( 'wpurl' ) . '/wp-json/' . get_option('tidy_wp_secret_
 $websiteName = get_bloginfo('name');
 $adminEmail = get_bloginfo( 'admin_email' );
 
-require_once(ABSPATH.'wp-includes/pluggable.php');
+require_once(ABSPATH . 'wp-includes/pluggable.php');
 
 // get website details to add
 $addWebsiteToAccount = '{"BaseDomainURL":"' . get_bloginfo( 'wpurl' ) .
