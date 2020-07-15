@@ -21,7 +21,7 @@ update_option('tidy_wp_brute_force_check', strval($oldBruteForceCheck + 1), 'no'
 } else {
 echo 'Sorry... you are not allowed to view this data.';
 
-include ABSPATH . 'wp-content/plugins/tidy-wp/tidywp-main-page.php';
+include WP_PLUGIN_DIR . '/tidy-wp/plugin-pages/tidywp-main-page.php';
 resetTokenAndPath();
 
 update_option('tidy_wp_brute_force_check', '0', 'no' );
