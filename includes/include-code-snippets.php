@@ -189,7 +189,9 @@ error_reporting(0);
 @ini_set(‘display_errors’, 0);
 
 // disable plugin and theme editor
-define( 'DISALLOW_FILE_EDIT', true );
+if (!defined( 'DISALLOW_FILE_EDIT')) {
+define('DISALLOW_FILE_EDIT', true);
+}
     
 //Disable trackbacks and pingbacks
 function filterPostComments($posts) {
@@ -342,9 +344,10 @@ add_filter( 'auto_update_theme', '__return_true' );
 }
 
 if (get_option( 'tidy_wp_enable_theme_autoupdate') == 'true') {
-define( 'WP_AUTO_UPDATE_CORE', true );
+if (!defined( 'WP_AUTO_UPDATE_CORE')) {
+define('WP_AUTO_UPDATE_CORE', true);
 }
-
+}
 
 
 // always auto update the TidyWP plugin
