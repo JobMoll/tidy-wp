@@ -184,10 +184,6 @@ if (strpos($_SERVER['HTTP_X_FORWARDED_PROTO'], 'https') !== false) {
        $_SERVER['HTTPS']='on';
 }
 
-// DisablePHPErrorReporting
-error_reporting(0);
-@ini_set(‘display_errors’, 0);
-
 // disable plugin and theme editor
 if (!defined( 'DISALLOW_FILE_EDIT')) {
 define('DISALLOW_FILE_EDIT', true);
