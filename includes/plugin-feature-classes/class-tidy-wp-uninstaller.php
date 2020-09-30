@@ -29,16 +29,12 @@ class Tidy_Wp_Uninstaller {
 	 *
 	 * @since    1.0.0
 	 */
-	public static function unistall() {
+	public static function uninstall() {
     // secret path
     delete_option('tidy_wp_secret_path');  
     
     // secret token
     delete_option('tidy_wp_secret_token');  
-     
-    // encryption keys
-    delete_option('tidy_wp_encrypt_key');  
-    delete_option('tidy_wp_encrypt_iv');  
     
     // maintaince mode
     delete_option('tidy_wp_maintaince_mode');  
@@ -53,41 +49,19 @@ class Tidy_Wp_Uninstaller {
     delete_option('tidy_wp_custom_website_snackbar_show_duration_in_sec');
     
     // exclude plugins from auto update
-    delete_option( 'tidy_wp_exclude_plugin_from_autoupdate');
+    delete_option('tidy_wp_exclude_plugin_from_autoupdate');
     
     // autop update
-    delete_option( 'tidy_wp_enable_plugin_autoupdate');
-    delete_option( 'tidy_wp_enable_theme_autoupdate');
-    delete_option( 'tidy_wp_enable_core_autoupdate');
+    delete_option('tidy_wp_enable_plugin_autoupdate');
+    delete_option('tidy_wp_enable_theme_autoupdate');
+    delete_option('tidy_wp_enable_core_autoupdate');
     
     // custom wordpress login and wp-admin
-    delete_option( 'tidy_wp_hide_login');
-    delete_option( 'tidy_wp_smart_security');
-    
-    // license system
-    deactivate_license_key();
-    delete_option( 'tidy_wp_license_key');
-    delete_option( 'tidy_wp_license_key_valid');
-    delete_option( 'tidy_wp_license_key_last_checked');
-    
-    // tidywp login details
-    delete_option( 'tidy_wp_website_username1');
-    delete_option( 'tidy_wp_website_password1');
-    delete_option( 'tidy_wp_website_userRole1');
-    delete_option( 'tidy_wp_website_username2');
-    delete_option( 'tidy_wp_website_password2');
-    delete_option( 'tidy_wp_website_userRole2');
-        
-    // redirect url settings
-    delete_option('tidy_wp_redirect_website_url');
-    delete_option('tidy_wp_redirect_type');
-    
-    // anti brute force check
-    delete_option('tidy_wp_brute_force_check');
-    
+    delete_option('tidy_wp_hide_login');
+    delete_option('tidy_wp_smart_security');
+
     // addons
     delete_option('tidy_wp_addons_snackbar');
-    delete_option('tidy_wp_addons_user_roles');
     
     // notifications
     delete_option('tidy_wp_woocommerce_sales_notification');

@@ -14,7 +14,7 @@ function tidy_wp_addon_page() {
 </h1>
 
 <hr>
-<p style="margin-bottom: 15px;">You can enable / disable Tidy WP addons right here! </br> To use the pro addons you need to submit a valid license key <a href="<?php get_bloginfo('wpurl') ?>/wp-admin/admin.php?page=tidy-wp-license">right here.</a></p>
+<p style="margin-bottom: 15px;">You can enable / disable Tidy WP addons right here! <br> To use the pro addons you need to submit a valid license key <a href="<?php get_bloginfo('wpurl') ?>/wp-admin/admin.php?page=tidy-wp-license">right here.</a></p>
 
 <div class="pluginsAvailable">
 <!--snackbar addon-->

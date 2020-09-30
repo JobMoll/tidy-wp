@@ -16,11 +16,14 @@
 
 // cleanup database items
 
-function cleanup_database($data) {
+function tidy_wp_cleanup_database(WP_REST_Request $request) {
 
-include str_replace('app', 'plugin', plugin_dir_path(__FILE__)) . 'class-tidy-wp-auth.php';
-if (isset($_SERVER['HTTP_TOKEN'])) {
-$apiAuthOK = tidyWPAuth($_SERVER['HTTP_TOKEN']);
+require_once TIDY_WP_PLUGIN_DIR . 'includes/plugin-feature-classes/class-tidy-wp-auth.php';
+    
+$secretAPIKey = sanitize_text_field($request['secretAPIKey']);
+   
+if (isset($secretAPIKey)) {
+$apiAuthOK = tidy_wp_auth($secretAPIKey);
 } else { 
 $apiAuthOK = false;
 echo 'Sorry... you are not allowed to view this data.';
@@ -29,27 +32,23 @@ if ($apiAuthOK == true) {
     
   global $wpdb;
                 
- if ($data->get_param('comments') == 'true') {
  // delete spam comments
   $wpdb->query($wpdb->prepare("DELETE FROM %1s WHERE comment_approved = 'spam'", $wpdb->comments));
  // delete unapproved comments
    $wpdb->query($wpdb->prepare("DELETE FROM %1s WHERE comment_approved = '0'", $wpdb->comments));
  // delete trash comments
    $wpdb->query($wpdb->prepare("DELETE FROM %1s WHERE comment_approved = 'trash'", $wpdb->comments));
- }
+     
  
-
- if ($data->get_param('posts') == 'true') {
  // delete post revisions
   $wpdb->query($wpdb->prepare("DELETE FROM %1s WHERE post_type = 'revision'", $wpdb->posts));
  // delete auto draft
    $wpdb->query($wpdb->prepare("DELETE FROM %1s WHERE post_status = 'auto-draft'", $wpdb->posts));
  // delete all posts in the trash
    $wpdb->query($wpdb->prepare("DELETE FROM %1s WHERE post_status = 'trash'", $wpdb->posts));
- }
+
  
  // delete all orphaned data
- if ($data->get_param('orphaned') == 'true') {
  // Orphaned post meta
   $wpdb->query($wpdb->prepare("DELETE pm FROM %1s pm LEFT JOIN %2s wp ON wp.ID = pm.post_id WHERE wp.ID IS NULL", $wpdb->postmeta, $wpdb->posts));
  // Orphaned relationships
@@ -60,9 +59,8 @@ if ($apiAuthOK == true) {
   $wpdb->query($wpdb->prepare("DELETE FROM %1s WHERE user_id NOT IN (SELECT ID FROM %2s)", $wpdb->usermeta, $wpdb->users));
  //  Orphaned comment meta
   $wpdb->query($wpdb->prepare("DELETE FROM %1s WHERE comment_id NOT IN (SELECT comment_id FROM %2s)", $wpdb->commentmeta, $wpdb->comments));
- }
 
- if ($data->get_param('remaining') == 'true') {
+
  // delete transients
    $wpdb->query($wpdb->prepare("DELETE FROM %1s WHERE `option_name` LIKE ('%\_transient\_%')", $wpdb->options));
  // delete site transients
@@ -73,9 +71,8 @@ if ($apiAuthOK == true) {
    $wpdb->query($wpdb->prepare("DELETE FROM %1s WHERE comment_type = 'trackback'", $wpdb->comments));
  // delete feed cache
   $wpdb->query($wpdb->prepare("DELETE FROM %1s WHERE `option_name` LIKE ('_transient%_feed_%')", $wpdb->options));
- }
+     
     
-   if ($data->get_param('other-improvements') == 'true') {
     // clean up weird characters: https://digwp.com/2011/07/clean-up-weird-characters-in-database/
     $wpdb->query($wpdb->prepare("UPDATE %1s SET post_content = REPLACE(post_content, 'â€œ', '“');", $wpdb->posts));
     $wpdb->query($wpdb->prepare("UPDATE %1s SET post_content = REPLACE(post_content, 'â€', '”');", $wpdb->posts));
@@ -94,19 +91,19 @@ if ($apiAuthOK == true) {
     $wpdb->query($wpdb->prepare("UPDATE %1s SET comment_content = REPLACE(comment_content, 'â€“', '—');", $wpdb->comments));
     $wpdb->query($wpdb->prepare("UPDATE %1s SET comment_content = REPLACE(comment_content, 'â€¢', '-');", $wpdb->comments));
     $wpdb->query($wpdb->prepare("UPDATE %1s SET comment_content = REPLACE(comment_content, 'â€¦', '…');", $wpdb->comments));
-   }
    
    echo 'Finished';
 }
 } 
 
 // add to rest api
-add_action( 'rest_api_init', function () {
-  register_rest_route( get_option('tidy_wp_secret_path'), 'cleanup_database', array(
-    'methods' => 'GET',
-    'callback' => 'cleanup_database',
-  ) );
-} );
+add_action('rest_api_init', function () {
+  register_rest_route(get_option('tidy_wp_secret_path'), 'cleanup-database', array(
+    'methods' => 'POST',
+    'callback' => 'tidy_wp_cleanup_database',
+    'permission_callback' => '__return_true',
+ ));
+});
 
 //  https://tidywp.sparknowmedia.com/wp-json/tidywp/cleanup_database?comments=true&posts=true&orphaned=true&remaining=true&other-improvements=true
 
@@ -114,10 +111,13 @@ add_action( 'rest_api_init', function () {
 
 
 // show count database items
-function show_count_database($data) {
-include str_replace('app', 'plugin', plugin_dir_path(__FILE__)) . 'class-tidy-wp-auth.php';
-if (isset($_SERVER['HTTP_TOKEN'])) {
-$apiAuthOK = tidyWPAuth($_SERVER['HTTP_TOKEN']);
+function tidy_wp_show_count_database(WP_REST_Request $request) {
+require_once TIDY_WP_PLUGIN_DIR . 'includes/plugin-feature-classes/class-tidy-wp-auth.php';
+
+$secretAPIKey = sanitize_text_field($request['secretAPIKey']);
+   
+if (isset($secretAPIKey)) {
+$apiAuthOK = tidy_wp_auth($secretAPIKey);
 } else { 
 $apiAuthOK = false;
 echo 'Sorry... you are not allowed to view this data.';
@@ -173,12 +173,13 @@ if ($apiAuthOK == true) {
 } 
 
 // add to rest api
-add_action( 'rest_api_init', function () {
-  register_rest_route( get_option('tidy_wp_secret_path'), 'show_count_database', array(
-    'methods' => 'GET',
-    'callback' => 'show_count_database',
-  ) );
-} );
+add_action('rest_api_init', function () {
+  register_rest_route(get_option('tidy_wp_secret_path'), 'show-count-database', array(
+    'methods' => 'POST',
+    'callback' => 'tidy_wp_show_count_database',
+    'permission_callback' => '__return_true',
+ ));
+});
 
 // https://tidywp.sparknowmedia.com/wp-json/tidywp/show_count_database?token=123
 

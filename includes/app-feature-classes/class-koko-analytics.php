@@ -5,10 +5,13 @@
 * @author Job Moll
 */
 
-function visitors_pageviews($data) {
-include str_replace('app', 'plugin', plugin_dir_path(__FILE__)) . 'class-tidy-wp-auth.php';
-if (isset($_SERVER['HTTP_TOKEN'])) {
-$apiAuthOK = tidyWPAuth($_SERVER['HTTP_TOKEN']);
+function tidy_wp_visitors_pageviews(WP_REST_Request $request) {
+require_once TIDY_WP_PLUGIN_DIR . 'includes/plugin-feature-classes/class-tidy-wp-auth.php';
+        
+$secretAPIKey = sanitize_text_field($request['secretAPIKey']);
+   
+if (isset($secretAPIKey)) {
+$apiAuthOK = tidy_wp_auth($secretAPIKey);
 } else { 
 $apiAuthOK = false;
 echo 'Sorry... you are not allowed to view this data.';
@@ -24,10 +27,12 @@ if ($apiAuthOK == true) {
     $currentDate = date("Y-m-d");
     
         if (in_array('koko-analytics/koko-analytics.php', apply_filters('active_plugins', get_option('active_plugins')))) {
+    
+    $closestDate = sanitize_text_field($request['finalDateSelected']);
+    $furthestDate = sanitize_text_field($request['inicialDateSelected']);
             
-    if (!empty($data->get_param('inicialDateSelected')) && !empty($data->get_param('finalDateSelected'))) {
-    $closestDate = $data->get_param('finalDateSelected');
-    $furthestDate = $data->get_param('inicialDateSelected');
+    if (!empty($closestDate) && !empty($furthestDate)) {
+   
     
     $closestDateShowInApp  = date($dateFormat, strtotime($closestDate));
     $furthestDateShowInApp = date($dateFormat, strtotime($furthestDate));
@@ -69,7 +74,7 @@ if ((empty($previous)) || (empty($current))) {
     $varName = '0';
 } else {
   $varName = ((($current / $previous) * 100) - 100); 
-  if (substr( $varName, 0, 1 ) !== "-") {
+  if (substr($varName, 0, 1) !== "-") {
    $varName = '+ ' . strval(round($varName, 0));
   } else {
    $varName = substr($varName, 1);
@@ -94,7 +99,7 @@ $percentageTotalPageviews = getPercentages($totalPageviews, $previousTotalPagevi
         'PercentageTotalPageviews' => $percentageTotalPageviews ?: '0',
         'SelectionClosest' => strval($closestDateShowInApp) ?: '0',
         'SelectionFurthest' => strval($furthestDateShowInApp) ?: '0'
-    );
+  );
     
 
 echo '{"Stats": ' . json_encode($dataArr) . '}';
@@ -115,7 +120,7 @@ echo '{"Stats": ' . json_encode($dataArr) . '}';
         'PercentageTotalPageviews' => '0',
         'SelectionClosest' => strval($closestDateShowInApp) ?: '0',
         'SelectionFurthest' => strval($furthestDateShowInApp) ?: '0'
-    );
+  );
     
 
 echo '{"Stats": ' . json_encode($dataArr) . '}';
@@ -130,13 +135,13 @@ echo '{"Stats": ' . json_encode($dataArr) . '}';
 // add to rest api
 add_action('rest_api_init', function()
 {
-    register_rest_route(get_option('tidy_wp_secret_path'), 'visitors_pageviews', array(
-        'methods' => 'GET',
-        'callback' => 'visitors_pageviews'
-    ));
+    register_rest_route(get_option('tidy_wp_secret_path'), 'visitors-pageviews', array(
+        'methods' => 'POST',
+        'callback' => 'tidy_wp_visitors_pageviews',
+    'permission_callback' => '__return_true',
+   ));
 });
 
-// https://tidywp.sparknowmedia.com/wp-json/NNO6ZKvzjdX8eUuJ/visitors_pageviews?finalDateSelected= &inicialDateSelected=
 
 
 
@@ -146,11 +151,13 @@ add_action('rest_api_init', function()
 
 
 
+function tidy_wp_populair_pages(WP_REST_Request $request) {
+require_once TIDY_WP_PLUGIN_DIR . 'includes/plugin-feature-classes/class-tidy-wp-auth.php';
 
-function populair_pages($data) {
-include str_replace('app', 'plugin', plugin_dir_path(__FILE__)) . 'class-tidy-wp-auth.php';
-if (isset($_SERVER['HTTP_TOKEN'])) {
-$apiAuthOK = tidyWPAuth($_SERVER['HTTP_TOKEN']);
+$secretAPIKey = sanitize_text_field($request['secretAPIKey']);
+   
+if (isset($secretAPIKey)) {
+$apiAuthOK = tidy_wp_auth($secretAPIKey);
 } else { 
 $apiAuthOK = false;
 echo 'Sorry... you are not allowed to view this data.';
@@ -161,9 +168,10 @@ if ($apiAuthOK == true) {
     
     $currentDate = date("Y-m-d");  
     
-    if (!empty($data->get_param('inicialDateSelected')) && !empty($data->get_param('finalDateSelected'))) {
-    $closestDate = $data->get_param('finalDateSelected');
-    $furthestDate = $data->get_param('inicialDateSelected');
+    $closestDate = sanitize_text_field($request['finalDateSelected']);
+    $furthestDate = sanitize_text_field($request['inicialDateSelected']);
+      
+    if (!empty($closestDate) && !empty($furthestDate)) {
     
     //previous closest date - 1 day of from furthestdate
     $timestamp2 = strtotime($furthestDate);
@@ -204,7 +212,7 @@ if ($apiAuthOK == true) {
             'Visitors' => $item->visitors,
             'PageName' => $postName,
             'PageSlug' => get_post_permalink($item->id)
-        );
+      );
         
         array_push($top15PostsDone, $data);
     }
@@ -224,13 +232,13 @@ echo json_encode($top15PostsDone);
 // add to rest api
 add_action('rest_api_init', function()
 {
-    register_rest_route(get_option('tidy_wp_secret_path'), 'populair_pages', array(
-        'methods' => 'GET',
-        'callback' => 'populair_pages'
-    ));
+    register_rest_route(get_option('tidy_wp_secret_path'), 'populair-pages', array(
+        'methods' => 'POST',
+        'callback' => 'tidy_wp_populair_pages',
+    'permission_callback' => '__return_true',
+   ));
 });
 
-// https://tidywp.sparknowmedia.com/wp-json/NNO6ZKvzjdX8eUuJ/populair_pages?finalDateSelected= &inicialDateSelected=
 
 
 
@@ -238,10 +246,13 @@ add_action('rest_api_init', function()
 
 
 
-function top_referrers($data) {
-include str_replace('app', 'plugin', plugin_dir_path(__FILE__)) . 'class-tidy-wp-auth.php';
-if (isset($_SERVER['HTTP_TOKEN'])) {
-$apiAuthOK = tidyWPAuth($_SERVER['HTTP_TOKEN']);
+function tidy_wp_top_referrers(WP_REST_Request $request) {
+require_once TIDY_WP_PLUGIN_DIR . 'includes/plugin-feature-classes/class-tidy-wp-auth.php';
+
+$secretAPIKey = sanitize_text_field($request['secretAPIKey']);
+   
+if (isset($secretAPIKey)) {
+$apiAuthOK = tidy_wp_auth($secretAPIKey);
 } else { 
 $apiAuthOK = false;
 echo 'Sorry... you are not allowed to view this data.';
@@ -252,9 +263,10 @@ if ($apiAuthOK == true) {
     
     $currentDate = date("Y-m-d");  
     
-    if (!empty($data->get_param('inicialDateSelected')) && !empty($data->get_param('finalDateSelected'))) {
-    $closestDate = $data->get_param('finalDateSelected');
-    $furthestDate = $data->get_param('inicialDateSelected');
+    $closestDate = sanitize_text_field($request['finalDateSelected']);
+    $furthestDate = sanitize_text_field($request['inicialDateSelected']);
+      
+    if (!empty($closestDate) && !empty($furthestDate)) {
     
     //previous closest date - 1 day of from furthestdate
     $timestamp2 = strtotime($furthestDate);
@@ -291,7 +303,7 @@ if ($apiAuthOK == true) {
             'Visitors' => $item->visitors ?: '0',
             'ReferrerName' => str_replace($cleanReferrerName,"",stripslashes((json_encode($wpdb->get_results($wpdb->prepare("SELECT  `url` FROM `{$wpdb->prefix}koko_analytics_referrer_urls` WHERE id=%s", $item->id)))))) ?: '0',
             'ReferrerURL' => str_replace($cleanReferrerURL,"",stripslashes((json_encode($wpdb->get_results($wpdb->prepare("SELECT  `url` FROM `{$wpdb->prefix}koko_analytics_referrer_urls` WHERE id=%s", $item->id)))))) ?: '0',
-        );
+      );
         
         array_push($top15ReferrersDone, $data);
     }
@@ -306,13 +318,12 @@ echo stripslashes(json_encode($top15ReferrersDone));
 }
 }  
 
-// add to rest api
+
 add_action('rest_api_init', function()
 {
-    register_rest_route(get_option('tidy_wp_secret_path'), 'top_referrers', array(
-        'methods' => 'GET',
-        'callback' => 'top_referrers'
-    ));
+    register_rest_route(get_option('tidy_wp_secret_path'), 'top-referrers', array(
+        'methods' => 'POST',
+        'callback' => 'tidy_wp_top_referrers',
+    'permission_callback' => '__return_true',
+   ));
 });
-
-// https://gemlens.com/wp-json/TR3zcLI8coA8E6LN/top_referrers?finalDateSelected= &inicialDateSelected=

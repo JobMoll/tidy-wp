@@ -29,11 +29,11 @@
  * require_once get_stylesheet_directory() . '/path/to/class-tgm-plugin-activation.php';
  *
  * Plugin:
- * require_once dirname( __FILE__ ) . '/path/to/class-tgm-plugin-activation.php';
+ * require_once dirname(__FILE__) . '/path/to/class-tgm-plugin-activation.php';
  */
-require_once dirname( __FILE__ ) . '/includes/plugin-feature-classes/class-tgm-plugin-recommended.php';
+require_once dirname(__FILE__) . '/includes/plugin-feature-classes/class-tgm-plugin-recommended.php';
 
-add_action( 'tgmpa_register', 'register_required_plugins' );
+add_action('tgmpa_register', 'register_required_plugins');
 
 /**
  * Register the required plugins for this theme.
@@ -47,7 +47,7 @@ add_action( 'tgmpa_register', 'register_required_plugins' );
  * - an array of plugin arrays;
  * - optionally a configuration array.
  * If you are not changing anything in the configuration array, you can remove the array and remove the
- * variable from the function call: `tgmpa( $plugins );`.
+ * variable from the function call: `tgmpa($plugins);`.
  * In that case, the TGMPA default settings will be used.
  *
  * This function is hooked into `tgmpa_register`, which is fired on the WP `init` action on priority 10.
@@ -96,13 +96,13 @@ function register_required_plugins() {
 
 		/*
 		'strings'      => array(
-			'page_title'                      => __( 'Install Required Plugins', 'tidy-wp' ),
-			'menu_title'                      => __( 'Install Plugins', 'tidy-wp' ),
+			'page_title'                      => __('Install Required Plugins', 'tidy-wp'),
+			'menu_title'                      => __('Install Plugins', 'tidy-wp'),
 			/* translators: %s: plugin name. * /
-			'installing'                      => __( 'Installing Plugin: %s', 'tidy-wp' ),
+			'installing'                      => __('Installing Plugin: %s', 'tidy-wp'),
 			/* translators: %s: plugin name. * /
-			'updating'                        => __( 'Updating Plugin: %s', 'tidy-wp' ),
-			'oops'                            => __( 'Something went wrong with the plugin API.', 'tidy-wp' ),
+			'updating'                        => __('Updating Plugin: %s', 'tidy-wp'),
+			'oops'                            => __('Something went wrong with the plugin API.', 'tidy-wp'),
 			'notice_can_install_required'     => _n_noop(
 				/* translators: 1: plugin name(s). * /
 				'This theme requires the following plugin: %1$s.',
@@ -154,23 +154,23 @@ function register_required_plugins() {
 				'Begin activating plugins',
 				'tidy-wp'
 			),
-			'return'                          => __( 'Return to Required Plugins Installer', 'tidy-wp' ),
-			'plugin_activated'                => __( 'Plugin activated successfully.', 'tidy-wp' ),
-			'activated_successfully'          => __( 'The following plugin was activated successfully:', 'tidy-wp' ),
+			'return'                          => __('Return to Required Plugins Installer', 'tidy-wp'),
+			'plugin_activated'                => __('Plugin activated successfully.', 'tidy-wp'),
+			'activated_successfully'          => __('The following plugin was activated successfully:', 'tidy-wp'),
 			/* translators: 1: plugin name. * /
-			'plugin_already_active'           => __( 'No action taken. Plugin %1$s was already active.', 'tidy-wp' ),
+			'plugin_already_active'           => __('No action taken. Plugin %1$s was already active.', 'tidy-wp'),
 			/* translators: 1: plugin name. * /
-			'plugin_needs_higher_version'     => __( 'Plugin not activated. A higher version of %s is needed for this theme. Please update the plugin.', 'tidy-wp' ),
+			'plugin_needs_higher_version'     => __('Plugin not activated. A higher version of %s is needed for this theme. Please update the plugin.', 'tidy-wp'),
 			/* translators: 1: dashboard link. * /
-			'complete'                        => __( 'All plugins installed and activated successfully. %1$s', 'tidy-wp' ),
-			'dismiss'                         => __( 'Dismiss this notice', 'tidy-wp' ),
-			'notice_cannot_install_activate'  => __( 'There are one or more required or recommended plugins to install, update or activate.', 'tidy-wp' ),
-			'contact_admin'                   => __( 'Please contact the administrator of this site for help.', 'tidy-wp' ),
+			'complete'                        => __('All plugins installed and activated successfully. %1$s', 'tidy-wp'),
+			'dismiss'                         => __('Dismiss this notice', 'tidy-wp'),
+			'notice_cannot_install_activate'  => __('There are one or more required or recommended plugins to install, update or activate.', 'tidy-wp'),
+			'contact_admin'                   => __('Please contact the administrator of this site for help.', 'tidy-wp'),
 
 			'nag_type'                        => '', // Determines admin notice type - can only be one of the typical WP notice classes, such as 'updated', 'update-nag', 'notice-warning', 'notice-info' or 'error'. Some of which may not work as expected in older WP versions.
 		),
 		*/
 	));
 
-	tgmpa( $plugins, $config );
+	tgmpa($plugins, $config);
 }

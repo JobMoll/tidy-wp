@@ -31,10 +31,10 @@ if (get_option('tidy_wp_smart_security') == 'true') {
 function no_wordpress_errors(){
   return 'Something is wrong!';
 }
-add_filter( 'login_errors', 'no_wordpress_errors' );
+add_filter('login_errors', 'no_wordpress_errors');
 
 // thanks to https://coderwall.com/p/dc2bbg/limit-login-attemps
-if ( ! class_exists( 'Limit_Login_Attempts' ) ) {
+if (! class_exists('Limit_Login_Attempts')) {
     class Limit_Login_Attempts {
 
         var $failed_login_limit = 3;                    //Number of authentification accepted
@@ -42,23 +42,23 @@ if ( ! class_exists( 'Limit_Login_Attempts' ) ) {
         var $transient_name     = 'attempted_login';    //Transient used
 
         public function __construct() {
-            add_filter( 'authenticate', array( $this, 'check_attempted_login' ), 30, 3 );
-            add_action( 'wp_login_failed', array( $this, 'login_failed' ), 10, 1 );
+            add_filter('authenticate', array($this, 'check_attempted_login'), 30, 3);
+            add_action('wp_login_failed', array($this, 'login_failed'), 10, 1);
         }
 
         /**
          * Lock login attempts of failed login limit is reached
          */
-        public function check_attempted_login( $user, $username, $password ) {
-            if ( get_transient( $this->transient_name ) ) {
-                $datas = get_transient( $this->transient_name );
+        public function check_attempted_login($user, $username, $password) {
+            if (get_transient($this->transient_name)) {
+                $datas = get_transient($this->transient_name);
 
-                if ( $datas['tried'] >= $this->failed_login_limit ) {
-                    $until = get_option( '_transient_timeout_' . $this->transient_name );
-                    $time = $this->when( $until );
+                if ($datas['tried'] >= $this->failed_login_limit) {
+                    $until = get_option('_transient_timeout_' . $this->transient_name);
+                    $time = $this->when($until);
 
                     //Display error message to the user when limit is reached
-                    return new WP_Error( 'too_many_tried', sprintf( __( '<strong>ERROR</strong>: You have reached authentification limit, you will be able to try again in %1$s.' ) , $time ) );
+                    return new WP_Error('too_many_tried', sprintf(__('<strong>ERROR</strong>: You have reached authentification limit, you will be able to try again in %1$s.') , $time));
                 }
             }
 
@@ -69,18 +69,18 @@ if ( ! class_exists( 'Limit_Login_Attempts' ) ) {
         /**
          * Add transient
          */
-        public function login_failed( $username ) {
-            if ( get_transient( $this->transient_name ) ) {
-                $datas = get_transient( $this->transient_name );
+        public function login_failed($username) {
+            if (get_transient($this->transient_name)) {
+                $datas = get_transient($this->transient_name);
                 $datas['tried']++;
 
-                if ( $datas['tried'] <= $this->failed_login_limit )
-                    set_transient( $this->transient_name, $datas , $this->lockout_duration );
+                if ($datas['tried'] <= $this->failed_login_limit)
+                    set_transient($this->transient_name, $datas , $this->lockout_duration);
             } else {
                 $datas = array(
                     'tried'     => 1
-                );
-                set_transient( $this->transient_name, $datas , $this->lockout_duration );
+              );
+                set_transient($this->transient_name, $datas , $this->lockout_duration);
             }
         }
 
@@ -90,32 +90,32 @@ if ( ! class_exists( 'Limit_Login_Attempts' ) ) {
          * @param  int      $time   Date as Unix timestamp
          * @return string           Return string
          */
-        private function when( $time ) {
-            if ( ! $time )
+        private function when($time) {
+            if (! $time)
                 return;
 
             $right_now = time();
 
-            $diff = abs( $right_now - $time );
+            $diff = abs($right_now - $time);
 
             $second = 1;
             $minute = $second * 60;
             $hour = $minute * 60;
             $day = $hour * 24;
 
-            if ( $diff < $minute )
-                return floor( $diff / $second ) . ' secondes';
+            if ($diff < $minute)
+                return floor($diff / $second) . ' secondes';
 
-            if ( $diff < $minute * 2 )
+            if ($diff < $minute * 2)
                 return "about 1 minute ago";
 
-            if ( $diff < $hour )
-                return floor( $diff / $minute ) . ' minutes';
+            if ($diff < $hour)
+                return floor($diff / $minute) . ' minutes';
 
-            if ( $diff < $hour * 2 )
+            if ($diff < $hour * 2)
                 return 'about 1 hour';
 
-            return floor( $diff / $hour ) . ' hours';
+            return floor($diff / $hour) . ' hours';
         }
     }
 }
@@ -147,34 +147,34 @@ function remove_wordpress_version_number() {
 return '';
 }
 add_filter('the_generator', 'remove_wordpress_version_number');
-function remove_version_from_scripts( $src ) {
-    if ( strpos( $src, 'ver=' . get_bloginfo( 'version' ) ) )
-        $src = remove_query_arg( 'ver', $src );
+function remove_version_from_scripts($src) {
+    if (strpos($src, 'ver=' . get_bloginfo('version')))
+        $src = remove_query_arg('ver', $src);
     return $src;
 }
-add_filter( 'style_loader_src', 'remove_version_from_scripts');
-add_filter( 'script_loader_src', 'remove_version_from_scripts');
+add_filter('style_loader_src', 'remove_version_from_scripts');
+add_filter('script_loader_src', 'remove_version_from_scripts');
 remove_action('wp_head', 'wp_generator');
 
 
 // HTTPResponseSecurity
 function add_security_headers() {
     // Enforce the use of HTTPS
-    header( "Strict-Transport-Security: max-age=31536000; includeSubDomains; preload" );
+    header("Strict-Transport-Security: max-age=31536000; includeSubDomains; preload");
 
     // Prevent Clickjacking
-    header( "X-Frame-Options: DENY" );
+    header("X-Frame-Options: DENY");
 
     // Block Access If XSS Attack Is Suspected
-    header( "X-XSS-Protection: 1; mode=block" );
+    header("X-XSS-Protection: 1; mode=block");
 
     // Prevent MIME-Type Sniffing
-    header( "X-Content-Type-Options: nosniff" );
+    header("X-Content-Type-Options: nosniff");
 
     // Referrer Policy
-    header( "Referrer-Policy: strict-origin-when-cross-origin" );
+    header("Referrer-Policy: strict-origin-when-cross-origin");
 }
-add_action( 'send_headers', 'add_security_headers', 1 );
+add_action('send_headers', 'add_security_headers', 1);
 
 
 // force ssl
@@ -185,7 +185,7 @@ if (strpos($_SERVER['HTTP_X_FORWARDED_PROTO'], 'https') !== false) {
 }
 
 // disable plugin and theme editor
-if (!defined( 'DISALLOW_FILE_EDIT')) {
+if (!defined('DISALLOW_FILE_EDIT')) {
 define('DISALLOW_FILE_EDIT', true);
 }
     
@@ -228,34 +228,34 @@ function shapeSpace_check_enum($redirect, $request) {
     
 //
 // Disable use XML-RPC
-add_filter( 'xmlrpc_enabled', '__return_false' );
-remove_action( 'wp_head', 'rsd_link' );
-remove_action( 'wp_head', 'wlwmanifest_link' );
+add_filter('xmlrpc_enabled', '__return_false');
+remove_action('wp_head', 'rsd_link');
+remove_action('wp_head', 'wlwmanifest_link');
     
 // Disable X-Pingback to header
-add_filter( 'wp_headers', 'disable_x_pingback' );
-function disable_x_pingback( $headers ) {
-    unset( $headers['X-Pingback'] );
+add_filter('wp_headers', 'disable_x_pingback');
+function disable_x_pingback($headers) {
+    unset($headers['X-Pingback']);
 
 return $headers;
 }
 
 // Disable Emojicons tinymce
 function disable_wp_emojicons() {
-    remove_action( 'admin_print_styles', 'print_emoji_styles' );
-    remove_action( 'wp_head', 'print_emoji_detection_script', 7 );
-    remove_action( 'admin_print_scripts', 'print_emoji_detection_script' );
-    remove_action( 'wp_print_styles', 'print_emoji_styles' );
-    remove_filter( 'wp_mail', 'wp_staticize_emoji_for_email' );
-    remove_filter( 'the_content_feed', 'wp_staticize_emoji' );
-    remove_filter( 'comment_text_rss', 'wp_staticize_emoji' );
-    add_filter( 'tiny_mce_plugins', 'disable_emojicons_tinymce' );
-    add_filter( 'emoji_svg_url', '__return_false' );
+    remove_action('admin_print_styles', 'print_emoji_styles');
+    remove_action('wp_head', 'print_emoji_detection_script', 7);
+    remove_action('admin_print_scripts', 'print_emoji_detection_script');
+    remove_action('wp_print_styles', 'print_emoji_styles');
+    remove_filter('wp_mail', 'wp_staticize_emoji_for_email');
+    remove_filter('the_content_feed', 'wp_staticize_emoji');
+    remove_filter('comment_text_rss', 'wp_staticize_emoji');
+    add_filter('tiny_mce_plugins', 'disable_emojicons_tinymce');
+    add_filter('emoji_svg_url', '__return_false');
 }
-add_action( 'init', 'disable_wp_emojicons' );
+add_action('init', 'disable_wp_emojicons');
 
-function disable_emojicons_tinymce( $plugins ) {
-    return is_array( $plugins ) ? array_diff( $plugins, array( 'wpemoji' ) ) : array();
+function disable_emojicons_tinymce($plugins) {
+    return is_array($plugins) ? array_diff($plugins, array('wpemoji')) : array();
 }
 
 // Disable the message - JQMIGRATE: Migrate is installed, version 1.4.1
@@ -270,9 +270,9 @@ add_filter('rest_enabled', '__return_false');
 add_filter('rest_jsonp_enabled', '__return_false');
 add_filter('json_enabled', '__return_false');
     
-remove_action( 'xmlrpc_rsd_apis', 'rest_output_rsd' );
-remove_action( 'wp_head', 'rest_output_link_wp_head', 10 );
-remove_action( 'template_redirect', 'rest_output_link_header', 11 );
+remove_action('xmlrpc_rsd_apis', 'rest_output_rsd');
+remove_action('wp_head', 'rest_output_link_wp_head', 10);
+remove_action('template_redirect', 'rest_output_link_header', 11);
 }
 
 
@@ -282,11 +282,11 @@ if (get_option('tidy_wp_hide_login') != 'false') {
 function redirect_to_nonexistent_page(){
      $new_login = get_option('tidy_wp_hide_login');
     if(strpos($_SERVER['REQUEST_URI'], $new_login) === false){
-                wp_safe_redirect( home_url( 'no-access' ), 302 );
+                wp_safe_redirect(home_url('no-access'), 302);
       exit();
     }
  }
-add_action( 'login_head', 'redirect_to_nonexistent_page');
+add_action('login_head', 'redirect_to_nonexistent_page');
 
 function redirect_to_actual_login(){
   $new_login =  get_option('tidy_wp_hide_login');
@@ -296,14 +296,14 @@ function redirect_to_actual_login(){
  
   }
 }
-add_action( 'init', 'redirect_to_actual_login');
+add_action('init', 'redirect_to_actual_login');
 }
 
 
 
 // autoupdate plugins or not and exclude some
 
-if (get_option( 'tidy_wp_enable_plugin_autoupdate') == 'true') {
+if (get_option('tidy_wp_enable_plugin_autoupdate') == 'true') {
 function filter_autoupdate_plugins($update, $plugin)
 {
     $pluginsNotToUpdate = [];
@@ -328,19 +328,19 @@ function filter_autoupdate_plugins($update, $plugin)
 
     return false;
 }
-add_filter( 'auto_update_plugin', 'filter_autoupdate_plugins' ,20  /* priority  */,2 /* argument count passed to filter function  */);
+add_filter('auto_update_plugin', 'filter_autoupdate_plugins' ,20  /* priority  */,2 /* argument count passed to filter function  */);
 }
 
 
 
 // autoupdate themes and core
 
-if (get_option( 'tidy_wp_enable_theme_autoupdate') == 'true') {
-add_filter( 'auto_update_theme', '__return_true' );
+if (get_option('tidy_wp_enable_theme_autoupdate') == 'true') {
+add_filter('auto_update_theme', '__return_true');
 }
 
-if (get_option( 'tidy_wp_enable_theme_autoupdate') == 'true') {
-if (!defined( 'WP_AUTO_UPDATE_CORE')) {
+if (get_option('tidy_wp_enable_theme_autoupdate') == 'true') {
+if (!defined('WP_AUTO_UPDATE_CORE')) {
 define('WP_AUTO_UPDATE_CORE', true);
 }
 }
@@ -348,38 +348,12 @@ define('WP_AUTO_UPDATE_CORE', true);
 
 // always auto update the TidyWP plugin
 
-function include_plugins_from_auto_update( $update, $item ) {
-    return (in_array( $item->plugin, array(
+function include_plugins_from_auto_update($update, $item) {
+    return (in_array($item->plugin, array(
         'tidy-wp/tidywp.php',
-    ) ) );
+   )));
 }
-add_filter( 'auto_update_plugin', 'include_plugins_from_auto_update', 10, 2 );
-
-
-
-// redirection
-
-// 301 redirect
-if (get_option('tidy_wp_redirect_website_url') != '' && get_option('tidy_wp_redirect_type') == '301') {
-function redirect_301(){
-if ( ! is_admin() ) {
-    wp_redirect( get_option('tidy_wp_redirect_website_url') . $_SERVER['REQUEST_URI'], 301, get_bloginfo('name') . ' - Tidy WP');
-    exit;
-}
- }
-add_action( 'login_head', 'redirect_301');
-}
-
-// 302 redirect
-if (get_option('tidy_wp_redirect_website_url') != '' && get_option('tidy_wp_redirect_type') == '302') {
-function redirect_302(){
-if ( ! is_admin() ) {
-    wp_redirect( get_option('tidy_wp_redirect_website_url') . $_SERVER['REQUEST_URI'], 302, get_bloginfo('name') . ' - Tidy WP');
-    exit;
-}
- }
-add_action( 'login_head', 'redirect_302');
-}
+add_filter('auto_update_plugin', 'include_plugins_from_auto_update', 10, 2);
 
 
 
@@ -390,13 +364,13 @@ if(!isset($_COOKIE['tidyWPSnackbarCookie'])) {
 function tidy_wp_snackbar_load_scripts($hook) {
 
     // create my own version codes
-    $tidy_wp_snackbar_js_ver  = date("ymd-Gis", filemtime( plugin_dir_path( __DIR__ ) . 'front-end-assets/js/snackbar.min.js' ));
-    $tidy_wp_snackbar_css_ver = date("ymd-Gis", filemtime( plugin_dir_path( __DIR__ ) . 'front-end-assets/css/snackbar.min.css' ));
+    $tidy_wp_snackbar_js_ver  = date("ymd-Gis", filemtime(plugin_dir_path(__DIR__) . 'front-end-assets/js/snackbar.min.js'));
+    $tidy_wp_snackbar_css_ver = date("ymd-Gis", filemtime(plugin_dir_path(__DIR__) . 'front-end-assets/css/snackbar.min.css'));
      
     //
-    wp_enqueue_script( 'custom_js', plugins_url( 'front-end-assets/js/snackbar.min.js', __DIR__ ), array(), $tidy_wp_snackbar_js_ver );
-    wp_register_style( 'my_css',    plugins_url( 'front-end-assets/css/snackbar.min.css',    __DIR__ ), false,   $tidy_wp_snackbar_css_ver );
-    wp_enqueue_style ( 'my_css' );
+    wp_enqueue_script('custom_js', plugins_url('front-end-assets/js/snackbar.min.js', __DIR__), array(), $tidy_wp_snackbar_js_ver);
+    wp_register_style('my_css',    plugins_url('front-end-assets/css/snackbar.min.css',    __DIR__), false,   $tidy_wp_snackbar_css_ver);
+    wp_enqueue_style ('my_css');
  
 }
 add_action('wp_enqueue_scripts', 'tidy_wp_snackbar_load_scripts');
@@ -454,7 +428,7 @@ if (tidyWPSnackbarCookie) {
 </script>
 <?php
 }
-add_action( 'wp_footer', 'tidy_wp_add_onload' );
+add_action('wp_footer', 'tidy_wp_add_onload');
 }
 }
 
@@ -481,7 +455,7 @@ function tidy_wp_backend_notice() {
     </div>
   <?php
 }
-add_action( 'admin_notices', 'tidy_wp_backend_notice' );
+add_action('admin_notices', 'tidy_wp_backend_notice');
 }
 }
 
@@ -492,24 +466,24 @@ add_action( 'admin_notices', 'tidy_wp_backend_notice' );
 if (get_option('tidy_wp_duplicate_pages_and_posts') == 'true') {
 function tidy_wp_duplicate_post_as_draft(){
   global $wpdb;
-  if (! ( isset( $_GET['post']) || isset( $_POST['post'])  || ( isset($_REQUEST['action']) && 'tidy_wp_duplicate_post_as_draft' == $_REQUEST['action'] ) ) ) {
+  if (! (isset($_GET['post']) || isset($_POST['post'])  || (isset($_REQUEST['action']) && 'tidy_wp_duplicate_post_as_draft' == $_REQUEST['action']))) {
     wp_die('No post to duplicate has been supplied!');
   }
  
   /*
    * Nonce verification
    */
-  if ( !isset( $_GET['duplicate_nonce'] ) || !wp_verify_nonce( $_GET['duplicate_nonce'], basename( __FILE__ ) ) )
+  if (!isset($_GET['duplicate_nonce']) || !wp_verify_nonce($_GET['duplicate_nonce'], basename(__FILE__)))
     return;
  
   /*
    * get the original post id
    */
-  $post_id = (isset($_GET['post']) ? absint( $_GET['post'] ) : absint( $_POST['post'] ) );
+  $post_id = (isset($_GET['post']) ? absint($_GET['post']) : absint($_POST['post']));
   /*
    * and all the original post data then
    */
-  $post = get_post( $post_id );
+  $post = get_post($post_id);
  
   /*
    * if you don't want current user to be the new post author,
@@ -521,7 +495,7 @@ function tidy_wp_duplicate_post_as_draft(){
   /*
    * if post data exists, create the post duplicate
    */
-  if (isset( $post ) && $post != null) {
+  if (isset($post) && $post != null) {
  
     /*
      * new post data array
@@ -540,12 +514,12 @@ function tidy_wp_duplicate_post_as_draft(){
       'post_type'      => $post->post_type,
       'to_ping'        => $post->to_ping,
       'menu_order'     => $post->menu_order
-    );
+  );
  
     /*
      * insert the post by wp_insert_post() function
      */
-    $new_post_id = wp_insert_post( $args );
+    $new_post_id = wp_insert_post($args);
  
     /*
      * get all current post terms ad set them to the new post draft
@@ -564,7 +538,7 @@ function tidy_wp_duplicate_post_as_draft(){
       $sql_query = "INSERT INTO $wpdb->postmeta (post_id, meta_key, meta_value) ";
       foreach ($post_meta_infos as $meta_info) {
         $meta_key = $meta_info->meta_key;
-        if( $meta_key == '_wp_old_slug' ) continue;
+        if($meta_key == '_wp_old_slug') continue;
         $meta_value = addslashes($meta_info->meta_value);
         $sql_query_sel[]= "SELECT $new_post_id, '$meta_key', '$meta_value'";
       }
@@ -576,24 +550,24 @@ function tidy_wp_duplicate_post_as_draft(){
     /*
      * finally, redirect to the edit post screen for the new draft
      */
-    wp_redirect( admin_url( 'post.php?action=edit&post=' . $new_post_id ) );
+    wp_redirect(admin_url('post.php?action=edit&post=' . $new_post_id));
     exit;
   } else {
     wp_die('Post creation failed, could not find original post: ' . $post_id);
   }
 }
-add_action( 'admin_action_tidy_wp_duplicate_post_as_draft', 'tidy_wp_duplicate_post_as_draft' );
+add_action('admin_action_tidy_wp_duplicate_post_as_draft', 'tidy_wp_duplicate_post_as_draft');
  
 /*
  * Add the duplicate link to action list for post_row_actions
  */
-function tidy_wp_duplicate_post_link( $actions, $post ) {
+function tidy_wp_duplicate_post_link($actions, $post) {
   if (current_user_can('edit_posts')) {
-    $actions['duplicate'] = '<a href="' . wp_nonce_url('admin.php?action=tidy_wp_duplicate_post_as_draft&post=' . $post->ID, basename(__FILE__), 'duplicate_nonce' ) . '" title="Duplicate this item" rel="permalink">Duplicate</a>';
+    $actions['duplicate'] = '<a href="' . wp_nonce_url('admin.php?action=tidy_wp_duplicate_post_as_draft&post=' . $post->ID, basename(__FILE__), 'duplicate_nonce') . '" title="Duplicate this item" rel="permalink">Duplicate</a>';
   }
   return $actions;
 }
  
-add_filter( 'post_row_actions', 'tidy_wp_duplicate_post_link', 10, 2 );
+add_filter('post_row_actions', 'tidy_wp_duplicate_post_link', 10, 2);
 add_filter('page_row_actions', 'tidy_wp_duplicate_post_link', 10, 2);
 }

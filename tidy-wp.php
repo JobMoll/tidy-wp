@@ -7,13 +7,14 @@ Description: A clean & easy way to manage multiple Wordpress websites! This plug
 
 When changing the version here also change it here below in the define variable
 Version: 0.0.8
-
+Requires at least: 4.4.0
+Tested up to: 5.5.1
 Requires PHP: 7.0
-Author:            Mollup
-Author URI:        https://mollup.nl/
+Author: Mollup
+Author URI: https://mollup.nl/
 License: GPL-3.0
 License URI: https://www.gnu.org/licenses/gpl-3.0.txt
-Text Domain:       tidy-wp
+Text Domain: tidy-wp
 
 @package tidy-wp
 @license GPL-3.0+
@@ -33,25 +34,26 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 **/
 
-if ( ! defined( 'WPINC' ) ) {
+if (! defined('WPINC')) {
 	die;
 }
 
 define('TIDY_WP_CURRENT_PLUGIN_VERSION', '0.0.8');
-
+define('TIDY_WP_PLUGIN_DIR', plugin_dir_path( __FILE__));
+    
 function activate_tidy_wp() {
-	require_once plugin_dir_path( __FILE__ ) . 'includes/plugin-feature-classes/class-tidy-wp-activator.php';
+	require_once plugin_dir_path(__FILE__) . 'includes/plugin-feature-classes/class-tidy-wp-activator.php';
 	Tidy_Wp_Activator::activate();
 }
 
 function deactivator_tidy_wp() {
-	require_once plugin_dir_path( __FILE__ ) . 'includes/plugin-feature-classes/class-tidy-wp-deactivator.php';
+	require_once plugin_dir_path(__FILE__) . 'includes/plugin-feature-classes/class-tidy-wp-deactivator.php';
 	Tidy_Wp_Deactivator::deactivate();
 }
 
 function uninstall_tidy_wp() {
-	require_once plugin_dir_path( __FILE__ ) . 'includes/plugin-feature-classes/class-tidy-wp-uninstaller.php';
-	Tidy_Wp_Uninstaller::uninstall();
+	require_once plugin_dir_path(__FILE__) . 'includes/plugin-feature-classes/class-tidy-wp-uninstaller.php';
+    Tidy_Wp_Uninstaller::uninstall();
 }
 
 register_activation_hook(__FILE__, 'activate_tidy_wp');
@@ -62,7 +64,7 @@ register_uninstall_hook(__FILE__, 'uninstall_tidy_wp');
 // include the code snippets
 include 'includes/include-code-snippets.php';
 include 'includes/app-feature-classes/class-notification-helper.php';
-require_once  __DIR__ . '/tidywp-recommended-plugins-helper.php';
+require_once  __DIR__ . '/tidy-wp-recommended-plugins-helper.php';
 
 // include all the endpoints
 include 'includes/app-feature-classes/class-remote-updates.php';
@@ -83,7 +85,6 @@ include 'includes/app-feature-classes/class-duplicate-pages-and-posts.php';
 
 // secretToken key and path
 $secretToken = get_option('tidy_wp_secret_token');
-$usernameArray = array(get_option('tidy_wp_website_username1'), get_option('tidy_wp_website_username2'));
 
 function tidy_wp_generate_random_string($length) {
     $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -98,16 +99,16 @@ function tidy_wp_generate_random_string($length) {
 
 // add plugin page to sidebar menu
 if (strpos($_SERVER["REQUEST_URI"], 'wp-admin') !== false) {
-add_action( 'admin_menu', 'tidy_wp_add_admin_menu' );
-function tidy_wp_add_admin_menu(  ) { 
-	add_menu_page( 
+add_action('admin_menu', 'tidy_wp_add_admin_menu');
+function tidy_wp_add_admin_menu() { 
+	add_menu_page(
 	'Tidy WP', 
 	'Tidy WP', 
 	'manage_options', 
 	'tidy-wp', 
 	'tidy_wp_main_page', 
 	// add the tidy wp logo
-	plugin_dir_url( __FILE__ ) . '/backend-assets/images/TidyWP-Icon.png' 
+	plugin_dir_url(__FILE__) . '/backend-assets/images/TidyWP-Icon.png' 
 	);
 	add_submenu_page(
     'tidy-wp',       // parent slug
@@ -121,39 +122,18 @@ function tidy_wp_add_admin_menu(  ) {
 if (strpos($_SERVER["REQUEST_URI"], 'wp-admin/admin.php?page=tidy-wp') !== false) {
     
 function tidy_wp_load_custom_wp_admin_style() {
-wp_enqueue_style( 'custom_wp_admin_css', plugins_url('/backend-assets/css/plugin-page-style.css', __FILE__) );
+wp_enqueue_style('custom_wp_admin_css', plugins_url('/backend-assets/css/plugin-page-style.css', __FILE__));
 }
-add_action( 'admin_enqueue_scripts', 'tidy_wp_load_custom_wp_admin_style' );
+add_action('admin_enqueue_scripts', 'tidy_wp_load_custom_wp_admin_style');
 }
-include 'plugin-pages/tidywp-main-page.php';
-include 'plugin-pages/tidywp-addon-page.php';
+include 'plugin-pages/tidy-wp-main-page.php';
+include 'plugin-pages/tidy-wp-addon-page.php';
 }
 
-function tidy_wp_pair_with_app_link( $links ) {
-	$links = array_merge( array(
-		'<a href="' . esc_url( admin_url( '/admin.php?page=tidy-wp' ) ) . '">' . __( 'Connect with the app', 'textdomain' ) . '</a>'
-	), $links );
+function tidy_wp_pair_with_app_link($links) {
+	$links = array_merge(array(
+		'<a href="' . esc_url(admin_url('/admin.php?page=tidy-wp')) . '">' . __('Connect with the app', 'textdomain') . '</a>'
+	), $links);
 	return $links;
 }
-add_action( 'plugin_action_links_' . plugin_basename( __FILE__ ), 'tidy_wp_pair_with_app_link' );
-
-
-// encryption to be used
-function tidy_wp_encrypt_and_decrypt( $string, $action = 'e' ) {
-    $secret_key = get_option('tidy_wp_encrypt_key');
-    $secret_iv = get_option('tidy_wp_encrypt_iv');
- 
-    $output = false;
-    $encrypt_method = "AES-256-CBC";
-    $key = hash( 'sha256', $secret_key );
-    $iv = substr( hash( 'sha256', $secret_iv ), 0, 16 );
- 
-    if( $action == 'e' ) {
-        $output = base64_encode( openssl_encrypt( $string, $encrypt_method, $key, 0, $iv ) );
-    }
-    else if( $action == 'd' ){
-        $output = openssl_decrypt( base64_decode( $string ), $encrypt_method, $key, 0, $iv );
-    }
- 
-    return $output;
-}
+add_action('plugin_action_links_' . plugin_basename(__FILE__), 'tidy_wp_pair_with_app_link');

@@ -5,27 +5,30 @@
     * @author Job Moll
     */
     
-function hide_wp_login_admin($data) {
-include str_replace('app', 'plugin', plugin_dir_path(__FILE__)) . 'class-tidy-wp-auth.php';
-if (isset($_SERVER['HTTP_TOKEN'])) {
-$apiAuthOK = tidyWPAuth($_SERVER['HTTP_TOKEN']);
+function tidy_wp_hide_wp_login_admin(WP_REST_Request $request) {
+require_once TIDY_WP_PLUGIN_DIR . 'includes/plugin-feature-classes/class-tidy-wp-auth.php';
+
+$secretAPIKey = sanitize_text_field($request['secretAPIKey']);
+   
+if (isset($secretAPIKey)) {
+$apiAuthOK = tidy_wp_auth($secretAPIKey);
 } else { 
 $apiAuthOK = false;
 echo 'Sorry... you are not allowed to view this data.';
 }
 if ($apiAuthOK == true) {
         
-        if ($data->get_param('secret-auth') == 'true') {
-            update_option( 'tidy_wp_hide_login', $data->get_param('new-auth'), 'no' );
+        if (sanitize_text_field($request['secret_auth']) == 'true') {
+            update_option('tidy_wp_hide_login', sanitize_text_field($request['new_auth']), 'no');
             echo get_option('tidy_wp_hide_login');
         } 
         
-   if ($data->get_param('secret-auth') == 'false') {
-            update_option( 'tidy_wp_hide_login', 'false', 'no' );
+   if (sanitize_text_field($request['secret_auth']) == 'false') {
+            update_option('tidy_wp_hide_login', 'false', 'no');
             echo 'false';
         }
        
-   if ($data->get_param('show') == 'true') {
+   if (sanitize_text_field($request['show']) == 'true') {
                     if (get_option('tidy_wp_hide_login') == 'false') {
                          $EnabledOrDisabled = 'false';
                     } else {
@@ -37,12 +40,13 @@ if ($apiAuthOK == true) {
 }
 
 // add to rest api
-add_action( 'rest_api_init', function () {
-  register_rest_route( get_option('tidy_wp_secret_path'), 'hide_wp_login_admin', array(
-    'methods' => 'GET',
-    'callback' => 'hide_wp_login_admin',
-  ) );
-} );
+add_action('rest_api_init', function () {
+  register_rest_route(get_option('tidy_wp_secret_path'), 'hide-wp-login-admin', array(
+    'methods' => 'POST',
+    'callback' => 'tidy_wp_hide_wp_login_admin',
+    'permission_callback' => '__return_true',
+ ));
+});
 
 
 

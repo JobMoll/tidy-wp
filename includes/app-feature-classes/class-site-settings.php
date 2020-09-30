@@ -1,50 +1,44 @@
 <?php
 
-function site_settings($data) {
-include str_replace('app', 'plugin', plugin_dir_path(__FILE__)) . 'class-tidy-wp-auth.php';
-if (isset($_SERVER['HTTP_TOKEN'])) {
-$apiAuthOK = tidyWPAuth($_SERVER['HTTP_TOKEN']);
+function tidy_wp_site_settings(WP_REST_Request $request) {
+require_once TIDY_WP_PLUGIN_DIR . 'includes/plugin-feature-classes/class-tidy-wp-auth.php';
+
+$secretAPIKey = sanitize_text_field($request['secretAPIKey']);
+   
+if (isset($secretAPIKey)) {
+$apiAuthOK = tidy_wp_auth($secretAPIKey);
 } else { 
 $apiAuthOK = false;
 echo 'Sorry... you are not allowed to view this data.';
 }
 if ($apiAuthOK == true) {
         
-        if ($data->get_param('siteTitle') != '') {
-            update_option('blogname', $data->get_param('siteTitle'), 'yes' );
+        $site_title = sanitize_text_field($request['siteTitle']);
+        if ($site_title != '') {
+            update_option('blogname', $site_title, 'yes');
         } 
-        if ($data->get_param('tagline') != '') {
-            update_option('blogdescription', $data->get_param('tagline'), 'yes' );
+    
+        $tagline = sanitize_text_field($request['tagline']);
+        if ($tagline != '') {
+            update_option('blogdescription', $tagline, 'yes');
         }
         
         // value 0 is disabled --- 1 is enabled
-        if ($data->get_param('usersCanRegister') != '') {
-            update_option('users_can_register', $data->get_param('usersCanRegister'), 'yes' );
+        $user_can_register = sanitize_text_field($request['usersCanRegister']);
+        if ($user_can_register != '') {
+            update_option('users_can_register', $user_can_register, 'yes');
         }
         
         // value 0 is search engine visibility on --- 1 is off
-       if ($data->get_param('blogPublic') != '') {
-            update_option('blog_public', $data->get_param('blogPublic'), 'yes' );
+        $blog_public = sanitize_text_field($request['blogPublic']);
+        if ($blog_public != '') {
+            update_option('blog_public', $blog_public, 'yes');
        }
-	
-
-        // send the redirect URL and which redirect type
-        if ($data->get_param('redirectWebsiteURL') != '' && $data->get_param('redirectWebsiteType') != '') {
-            update_option('tidy_wp_redirect_website_url', $data->get_param('redirectWebsiteURL'), 'no' );
-            update_option('tidy_wp_redirect_type', $data->get_param('redirectWebsiteType'), 'no' );
-        } 
-        // set to true to empty the option
-        if ($data->get_param('redirectWebsiteURLDisable') != '') {
-            update_option('tidy_wp_redirect_website_url', '', 'no' );
-            update_option('tidy_wp_redirect_type', '', 'no' );
-        }
 
 
 echo '{"SiteTitle":"' . get_option('blogname') . '", ';
 echo '"Tagline":"' . get_option('blogdescription') . '", ';
 echo '"UsersCanRegister":"' . get_option('users_can_register') . '", ';
-echo '"RedirectWebsiteURL":"' . get_option('tidy_wp_redirect_website_url') . '", ';
-echo '"RedirectWebsiteType":"' . get_option('tidy_wp_redirect_type') . '", ';
 echo '"BlogPublic":"' . get_option('blog_public') . '"}';
 
    
@@ -52,9 +46,10 @@ echo '"BlogPublic":"' . get_option('blog_public') . '"}';
 }  
  
 // add to rest api
-add_action( 'rest_api_init', function () {
-  register_rest_route( get_option('tidy_wp_secret_path'), 'site_settings', array(
-    'methods' => 'GET',
-    'callback' => 'site_settings',
-  ) );
-} );
+add_action('rest_api_init', function () {
+  register_rest_route(get_option('tidy_wp_secret_path'), 'site-settings', array(
+    'methods' => 'POST',
+    'callback' => 'tidy_wp_site_settings',
+    'permission_callback' => '__return_true',
+ ));
+});

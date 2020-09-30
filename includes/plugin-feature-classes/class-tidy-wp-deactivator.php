@@ -30,10 +30,6 @@ class Tidy_Wp_Deactivator {
 	 * @since    1.0.0
 	 */
 	public static function deactivate() {
-    // log users out
-	removeWebsite(1);
-    removeWebsite(2);
-		
     // cron jobs
     wp_clear_scheduled_hook('tidy_wp_website_analytics_notification');
     update_option('tidy_wp_website_analytics_notification', 'false');
