@@ -12,7 +12,7 @@ $secretAPIKey = sanitize_text_field($request['secretAPIKey']);
    
 if (isset($secretAPIKey)) {
 $apiAuthOK = tidy_wp_auth($secretAPIKey);
-} else {
+} else { 
 $apiAuthOK = false;
 echo 'Sorry... you are not allowed to view this data.';
 }
@@ -32,7 +32,7 @@ if ($apiAuthOK == true) {
     
     $totalSales = $wpdb->get_var($wpdb->prepare("SELECT SUM(total_sales) FROM `{$wpdb->prefix}wc_order_stats` WHERE status = 'wc-completed' AND `date_created` >= %s AND `date_created` <= %s AND `tax_total` > '0'", $furthestDateWoo, $closestDateWoo));
 
-    $totalOrders = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM `{$wpdb->prefix}wc_order_stats` WHERE status = 'wc-completed' AND `date_created` >= %s AND `date_created` <= %s AND `tax_total` > '0'", $furthestDateWoo, $closestDateWoo));
+	$totalOrders = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM `{$wpdb->prefix}wc_order_stats` WHERE status = 'wc-completed' AND `date_created` >= %s AND `date_created` <= %s AND `tax_total` > '0'", $furthestDateWoo, $closestDateWoo));
 
 if (get_option('woocommerce_currency') == 'EUR') {
     $cashSign = '€';
@@ -51,16 +51,16 @@ if (function_exists('get_core_updates')) {
    if (! empty($update_wordpress) && ! in_array($update_wordpress[0]->response, array('development', 'latest'))) {
        $counts['wordpress'] = 1 . '", ';
      } else {
-       $counts['wordpress'] = 0 . '", ';
+	   $counts['wordpress'] = 0 . '", ';
    }
  }
  
 if (wp_get_translation_updates()) {
-     $counts['translations'] = 1 . '", ';
+	 $counts['translations'] = 1 . '", ';
     } else {
-     $counts['translations'] = 0 . '", ';
+	 $counts['translations'] = 0 . '", ';
 }
-    
+	
 $totalUpdates = '0';
 if ($plugin_updates_empty == false) {
 $totalUpdates = $totalUpdates + $counts['plugins'] = count($update_plugins->response);
@@ -74,7 +74,23 @@ $totalUpdates = $totalUpdates + $counts['wordpress'];
 if ($translations_updates_empty == false) {
 $totalUpdates = $totalUpdates + $counts['translations'];
 }
-    
+
+$get_issues = get_transient( 'health-check-site-status-result' );
+$issue_counts = array();
+ 
+ if ( false !== $get_issues ) {
+        $issue_counts = json_decode( $get_issues, true );
+    }
+ 
+    if ( ! is_array( $issue_counts ) || ! $issue_counts ) {
+        $issue_counts = array(
+            'good'        => 0,
+            'recommended' => 0,
+            'critical'    => 0,
+        );
+    }
+$healthCheckIssues = $issue_counts['critical'] + $issue_counts['recommended'];
+	
     $dataArr = array(
         'CurrencySymbol' => $cashSign ?: '',
         'TotalSales' => strval(round($totalSales, 2)) ?: '0',
@@ -82,12 +98,12 @@ $totalUpdates = $totalUpdates + $counts['translations'];
         'TotalPageviews' => strval(round($totalPageviews, 2)) ?: '0',
         'TotalVisitors' => strval(round($totalVisitors, 2)) ?: '0',
         'TotalUpdates' => strval($totalUpdates) ?: '0',
-        'LatestPluginVersion' => TIDY_WP_CURRENT_PLUGIN_VERSION ?? '0.0.1',
+        'HealthCheckIssues' => strval($healthCheckIssues) ?? '0',
   );
     
 echo json_encode($dataArr);
 }
-}
+} 
 
 add_action('rest_api_init', function()
 {

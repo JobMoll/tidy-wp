@@ -26,10 +26,11 @@ $addWebsiteToAccount = array(
 "secretAPIKey" => get_option('tidy_wp_secret_token'),
 );
 
-    
+
    ?>
+		
    <h3 class="licenseKeyH3">Scan the QR code.</h3>
-<img src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=<?php echo http_build_query($addWebsiteToAccount); ?>" title="Scan this QR code in the Tidy WP app" style="background: #fff; padding: 25px;"/>
+<img src='https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=<?php echo json_encode($addWebsiteToAccount); ?>' title="Scan this QR code in the Tidy WP app" style="background: #fff; padding: 25px;"/>
    <?php    
 }
 
