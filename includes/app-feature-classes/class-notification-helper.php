@@ -17,7 +17,6 @@ if ($result === FALSE) { /* Handle error */ }
 }
 
 
-
 // new user registered notification
 add_action('user_register','user_register_tidy_wp_notification');
 function user_register_tidy_wp_notification($user_id){
@@ -29,7 +28,6 @@ if (get_option('tidy_wp_user_register_notification') == 'true') {
 
 
 // woocommerce hooks: https://docs.woocommerce.com/wc-apidocs/hook-docs.html
-
 
 // only push these notifications if woocommerce is installed
 
@@ -197,11 +195,11 @@ if ($apiAuthOK == true) {
         $enabled = sanitize_text_field($request['enabled']);
         $option_name = sanitize_text_field($request['option_name']);
         if ($enabled == 'true') {
-            update_option(sanitize_text_field($option_name, 'true', 'no');
+            update_option(sanitize_text_field($option_name, 'true', 'no'));
         } 
         
         if ($enabled == 'false') {
-            update_option(sanitize_text_field($option_name, 'false', 'no');
+            update_option(sanitize_text_field($option_name, 'false', 'no'));
         }
         
         $cron_job_name = sanitize_text_field($request['cron_job_name']);           

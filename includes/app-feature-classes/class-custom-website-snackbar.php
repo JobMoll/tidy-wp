@@ -18,7 +18,7 @@ echo 'Sorry... you are not allowed to view this data.';
 }
 if ($apiAuthOK == true) {
         
-        $enabled = sanitize_text_field($request['enabled'])
+        $enabled = sanitize_text_field($request['enabled']);
         if ($enabled == 'true') {
             update_option('tidy_wp_custom_website_snackbar_mode', 'true', 'no');
             echo 'true';
@@ -76,7 +76,6 @@ if ($apiAuthOK == true) {
 }
 } 
 
-// add to rest api
 add_action('rest_api_init', function () {
   register_rest_route(get_option('tidy_wp_secret_path'), 'custom-website-snackbar', array(
     'methods' => 'POST',
