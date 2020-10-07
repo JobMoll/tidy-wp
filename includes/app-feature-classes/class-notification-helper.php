@@ -1,8 +1,8 @@
 <?php
 
-function tidy_wp_send_notifcation($notificationTitle, $notificationMessage) {
+function tidy_wp_send_notification($notificationTitle, $notificationMessage) {
 $url = 'https://tidywp.com/wp-json/tidy-wp-admin/send_notification';
-$data = array('notification_title' => $notificationTitle, 'notification_message' => $notificationMessage);
+$data = array('notification_title' => $notificationTitle, 'notification_message' => $notificationMessage, 'domain' => get_bloginfo('wpurl'), 'secret_api_key' => get_option('tidy_wp_secret_token'));
 
 $options = array(
     'http' => array(
@@ -22,7 +22,7 @@ add_action('user_register','user_register_tidy_wp_notification');
 function user_register_tidy_wp_notification($user_id){
 if (get_option('tidy_wp_user_register_notification') == 'true') {
   $user = get_user_by('id', $user_id);
-  tidy_wp_send_notifcation('New user has been registered!', 'Jeej! A new user called ' . $user->user_login . ' has created an account on your website ' . get_bloginfo('name') . '!');
+  tidy_wp_send_notification('New user has been registered!', 'Jeej! A new user called ' . $user->user_login . ' has created an account on your website ' . get_bloginfo('name') . '!');
 }
 }
 
@@ -37,7 +37,7 @@ if(in_array('woocommerce-admin/woocommerce-admin.php', apply_filters('active_plu
 add_action('woocommerce_no_stock','woocommerce_no_stock_tidy_wp_notification');
 function woocommerce_no_stock_tidy_wp_notification($product){
 if (get_option('tidy_wp_woocommerce_no_stock_notification') == 'true') {
-  tidy_wp_send_notifcation('Product is out of stock...', 'Just letting you know that the product ' . get_the_title($product->get_id()) . ' is out of stock on ' . get_bloginfo('name') . '...');
+  tidy_wp_send_notification('Product is out of stock...', 'Just letting you know that the product ' . get_the_title($product->get_id()) . ' is out of stock on ' . get_bloginfo('name') . '...');
 }
 }
 
@@ -45,7 +45,7 @@ if (get_option('tidy_wp_woocommerce_no_stock_notification') == 'true') {
 add_action('woocommerce_low_stock','woocommerce_low_stock_tidy_wp_notification');
 function woocommerce_low_stock_tidy_wp_notification($product){
 if (get_option('tidy_wp_woocommerce_low_stock_notification') == 'true') {
-  tidy_wp_send_notifcation('Product is low on stock...', 'A swift announcement. The product ' . get_the_title($product->get_id()) . ' is almost sold out on' . get_bloginfo('name') . '.');
+  tidy_wp_send_notification('Product is low on stock...', 'A swift announcement. The product ' . get_the_title($product->get_id()) . ' is almost sold out on' . get_bloginfo('name') . '.');
 }
 }
 
@@ -53,7 +53,7 @@ if (get_option('tidy_wp_woocommerce_low_stock_notification') == 'true') {
 add_action('woocommerce_new_order', 'woocommerce_new_order_tidy_wp_notification');
 function woocommerce_new_order_tidy_wp_notification($order_id){
 if (get_option('tidy_wp_woocommerce_new_order_notification') == 'true') {
-  tidy_wp_send_notifcation('You have a new order!', 'Yess! You have received a new order with the id ' . $order_id . ' on ' . get_bloginfo('name') . '!');
+  tidy_wp_send_notification('You have a new order!', 'Yess! You have received a new order with the id ' . $order_id . ' on ' . get_bloginfo('name') . '!');
 }
 }
 
@@ -66,7 +66,7 @@ if (get_option('woocommerce_currency') == 'EUR') {
 } else {
     $cashSign = '';
 }
-tidy_wp_send_notifcation('Sales from the last 7 days.', 'You have received ' . 
+tidy_wp_send_notification('Sales from the last 7 days.', 'You have received ' . 
 $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM `{$wpdb->prefix}wc_order_stats` WHERE status = 'wc-completed' AND `date_created` >= %s AND `date_created` <= %s AND `tax_total` > '0'", date('Y-m-d', strtotime('-7 days')), date("Y-m-d", strtotime("now") . ' 00:00:00'))) . ' order(s) with a total value of ' . 
 $cashSign . round($wpdb->get_var($wpdb->prepare("SELECT SUM(total_sales) FROM `{$wpdb->prefix}wc_order_stats` WHERE status = 'wc-completed' AND `date_created` >= %s AND `date_created` <= %s AND `tax_total` > '0'", date('Y-m-d', strtotime('-7 days') . ' 00:00:00'), date("Y-m-d", strtotime("now")))), 2) . ' from ' . date('d M', strtotime('-7 days')) . ' till ' . date('d M', strtotime('now')) . ' on ' . get_bloginfo('name') . '!');
 }
@@ -91,7 +91,7 @@ if(in_array('koko-analytics/koko-analytics.php', apply_filters('active_plugins',
 // Scheduled Action Hook
 function tidy_wp_website_analytics_notification() {
 global $wpdb;
-tidy_wp_send_notifcation('Visitor & pageviews last 7 days.', 'You have received ' . 
+tidy_wp_send_notification('Visitor & pageviews last 7 days.', 'You have received ' . 
 $wpdb->get_var($wpdb->prepare("SELECT SUM(visitors) FROM `{$wpdb->prefix}koko_analytics_site_stats` WHERE `date` >= %s AND `date` <= %s", date('Y-m-d', strtotime('-7 days')), date("Y-m-d", strtotime("now")))) . ' visitors & ' . 
 $wpdb->get_var($wpdb->prepare("SELECT SUM(pageviews) FROM `{$wpdb->prefix}koko_analytics_site_stats` WHERE `date` >= %s AND `date` <= %s", date('Y-m-d', strtotime('-7 days')), date("Y-m-d", strtotime("now")))) . ' pageviews from ' . date('d M', strtotime('-7 days')) . ' till ' . date('d M', strtotime('now')) . ' on ' . get_bloginfo('name') . '!');
 }
@@ -141,7 +141,7 @@ $counts['wordpress'] = '0';
    }
     }
 
-tidy_wp_send_notifcation('Plugin & Theme updates summary.', 'You have ' . 
+tidy_wp_send_notification('Plugin & Theme updates summary.', 'You have ' . 
 $counts['plugins'] . ' plugin update(s), ' . 
 $counts['themes'] . ' theme update(s) & ' . 
 $counts['wordpress'] . ' core update(s) on ' . get_bloginfo('name') . '!');
@@ -188,7 +188,10 @@ if (isset($secretAPIKey)) {
 $apiAuthOK = tidy_wp_auth($secretAPIKey);
 } else { 
 $apiAuthOK = false;
-echo 'Sorry... you are not allowed to view this data.';
+header("HTTP/1.1 401 Unauthorized");
+$errorMessage = array('status' => 'error', 'message' => 'This access key is invalid or revoked');
+echo json_encode($errorMessage);
+exit; 
 }
 if ($apiAuthOK == true) {
 

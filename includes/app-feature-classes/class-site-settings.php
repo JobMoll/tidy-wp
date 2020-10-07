@@ -9,19 +9,22 @@ if (isset($secretAPIKey)) {
 $apiAuthOK = tidy_wp_auth($secretAPIKey);
 } else { 
 $apiAuthOK = false;
-echo 'Sorry... you are not allowed to view this data.';
+header("HTTP/1.1 401 Unauthorized");
+$errorMessage = array('status' => 'error', 'message' => 'This access key is invalid or revoked');
+echo json_encode($errorMessage);
+exit; 
 }
 if ($apiAuthOK == true) {
         
-        $site_title = sanitize_text_field($request['siteTitle']);
-        if ($site_title != '') {
-            update_option('blogname', $site_title, 'yes');
-        } 
+//         $site_title = sanitize_text_field($request['siteTitle']);
+//         if ($site_title != '') {
+//             update_option('blogname', $site_title, 'yes');
+//         } 
     
-        $tagline = sanitize_text_field($request['tagline']);
-        if ($tagline != '') {
-            update_option('blogdescription', $tagline, 'yes');
-        }
+//         $tagline = sanitize_text_field($request['tagline']);
+//         if ($tagline != '') {
+//             update_option('blogdescription', $tagline, 'yes');
+//         }
         
         // value 0 is disabled --- 1 is enabled
         $user_can_register = sanitize_text_field($request['usersCanRegister']);
@@ -35,13 +38,14 @@ if ($apiAuthOK == true) {
             update_option('blog_public', $blog_public, 'yes');
        }
 
-
-echo '{"SiteTitle":"' . get_option('blogname') . '", ';
-echo '"Tagline":"' . get_option('blogdescription') . '", ';
-echo '"UsersCanRegister":"' . get_option('users_can_register') . '", ';
-echo '"BlogPublic":"' . get_option('blog_public') . '"}';
-
-   
+	$arrayData = array(
+	"SiteTitle" => get_option('blogname'),
+	"Tagline" => get_option('blogdescription'),
+	"UsersCanRegister" => get_option('users_can_register'),
+	"BlogPublic" => get_option('blog_public'),
+	);
+	
+	echo json_encode($arrayData);
 }
 }  
  

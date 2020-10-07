@@ -92,7 +92,7 @@ if ($apiAuthOK == true) {
     $wpdb->query($wpdb->prepare("UPDATE %1s SET comment_content = REPLACE(comment_content, 'â€¢', '-');", $wpdb->comments));
     $wpdb->query($wpdb->prepare("UPDATE %1s SET comment_content = REPLACE(comment_content, 'â€¦', '…');", $wpdb->comments));
    
-   echo 'Finished';
+   echo 'true';
 }
 } 
 

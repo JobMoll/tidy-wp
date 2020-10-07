@@ -14,32 +14,39 @@ if (isset($secretAPIKey)) {
 $apiAuthOK = tidy_wp_auth($secretAPIKey);
 } else { 
 $apiAuthOK = false;
-echo 'Sorry... you are not allowed to view this data.';
+header("HTTP/1.1 401 Unauthorized");
+$errorMessage = array('status' => 'error', 'message' => 'This access key is invalid or revoked');
+echo json_encode($errorMessage);
+exit;
 }
 if ($apiAuthOK == true) {
         
-        if (sanitize_text_field($request['secret_auth']) == 'true') {
+   if (sanitize_text_field($request['secret_auth']) == 'true') {
             update_option('tidy_wp_hide_login', sanitize_text_field($request['new_auth']), 'no');
-            echo get_option('tidy_wp_hide_login');
-        } 
+            echo 'true';
+   } 
         
    if (sanitize_text_field($request['secret_auth']) == 'false') {
             update_option('tidy_wp_hide_login', 'false', 'no');
             echo 'false';
-        }
+   }
        
    if (sanitize_text_field($request['show']) == 'true') {
-                    if (get_option('tidy_wp_hide_login') == 'false') {
-                         $EnabledOrDisabled = 'false';
-                    } else {
-                         $EnabledOrDisabled = 'true';
-                    }
-            echo '{"NewLoginLink":"/wp-login.php?' . get_option('tidy_wp_hide_login') . '", "Enabled":"' . $EnabledOrDisabled . '"}';
+            if (get_option('tidy_wp_hide_login') == 'false') {
+               $EnabledOrDisabled = 'false';
+            } else {
+               $EnabledOrDisabled = 'true';
+            }
+	   
+	   $dataArray = array(
+		   'NewLoginLink' => '/wp-login.php?' . get_option('tidy_wp_hide_login'),
+		   'Enabled' => $EnabledOrDisabled,
+			);
+            echo json_encode($dataArray);
         }
      }
 }
 
-// add to rest api
 add_action('rest_api_init', function () {
   register_rest_route(get_option('tidy_wp_secret_path'), 'hide-wp-login-admin', array(
     'methods' => 'POST',

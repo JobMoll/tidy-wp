@@ -14,7 +14,10 @@ if (isset($secretAPIKey)) {
 $apiAuthOK = tidy_wp_auth($secretAPIKey);
 } else { 
 $apiAuthOK = false;
-echo 'Sorry... you are not allowed to view this data.';
+header("HTTP/1.1 401 Unauthorized");
+$errorMessage = array('status' => 'error', 'message' => 'This access key is invalid or revoked');
+echo json_encode($errorMessage);
+exit;
 }
 if ($apiAuthOK == true) {
     
@@ -99,6 +102,7 @@ $healthCheckIssues = $issue_counts['critical'] + $issue_counts['recommended'];
         'TotalVisitors' => strval(round($totalVisitors, 2)) ?: '0',
         'TotalUpdates' => strval($totalUpdates) ?: '0',
         'HealthCheckIssues' => strval($healthCheckIssues) ?? '0',
+		'CurrentTidyWPVersion' => str_replace(".", "", strval(TIDY_WP_CURRENT_PLUGIN_VERSION)) ?? '0.0.1'
   );
     
 echo json_encode($dataArr);
