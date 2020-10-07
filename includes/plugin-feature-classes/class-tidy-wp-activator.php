@@ -69,7 +69,8 @@ class Tidy_Wp_Activator {
     add_option('tidy_wp_website_analytics_notification', 'true', '', 'no');
     add_option('tidy_wp_user_register_notification', 'true', '', 'no');
     add_option('tidy_wp_update_notification', 'true', '', 'no');
-    
+    add_option('tidy_wp_new_form_submission_notification', 'true', '', 'no');
+		
     // backend notice
     add_option('tidy_wp_backend_notice', 'false', '', 'no');
     add_option('tidy_wp_backend_notice_dismissible', 'true', '', 'no');

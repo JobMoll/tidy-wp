@@ -71,7 +71,8 @@ class Tidy_Wp_Uninstaller {
     delete_option('tidy_wp_website_analytics_notification');
     delete_option('tidy_wp_user_register_notification');
     delete_option('tidy_wp_update_notification');
-    
+    delete_option('tidy_wp_new_form_submission_notification');
+	
     // backend notice
     delete_option('tidy_wp_backend_notice');
     delete_option('tidy_wp_backend_notice_dismissible');

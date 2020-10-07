@@ -1,7 +1,7 @@
 <?php
 
 function tidy_wp_send_notification($notificationTitle, $notificationMessage) {
-$url = 'https://tidywp.com/wp-json/tidy-wp-admin/send_notification';
+$url = 'https://tidywp.com/wp-json/tidy-wp-admin/send-notification';
 $data = array('notification_title' => $notificationTitle, 'notification_message' => $notificationMessage, 'domain' => get_bloginfo('wpurl'), 'secret_api_key' => get_option('tidy_wp_secret_token'));
 
 $options = array(
@@ -26,6 +26,15 @@ if (get_option('tidy_wp_user_register_notification') == 'true') {
 }
 }
 
+add_action('wpforms_process_complete', 'new_form_submission_tidy_wp_notification', 10, 4);
+add_action('ninja_forms_after_submission', 'new_form_submission_tidy_wp_notification');
+add_action('gform_after_submission', 'new_form_submission_tidy_wp_notification', 10, 2);
+add_action('wpcf7_mail_sent', 'new_form_submission_tidy_wp_notification', 10, 1); 
+function new_form_submission_tidy_wp_notification(){
+if (get_option('tidy_wp_new_form_submission_notification') == 'true') {
+  tidy_wp_send_notification('New form submission!', 'You have a new form submission on your website ' . get_bloginfo('name') . '!');
+}
+}
 
 // woocommerce hooks: https://docs.woocommerce.com/wc-apidocs/hook-docs.html
 
@@ -197,15 +206,16 @@ if ($apiAuthOK == true) {
 
         $enabled = sanitize_text_field($request['enabled']);
         $option_name = sanitize_text_field($request['option_name']);
-        if ($enabled == 'true') {
-            update_option(sanitize_text_field($option_name, 'true', 'no'));
+        $cron_job_name = sanitize_text_field($request['cron_job_name']);   
+	
+        if ($enabled == 'true' && empty($cron_job_name)) {
+            update_option($option_name, 'true', 'no');
         } 
         
-        if ($enabled == 'false') {
-            update_option(sanitize_text_field($option_name, 'false', 'no'));
+        if ($enabled == 'false' && empty($cron_job_name)) {
+            update_option($option_name, 'false', 'no');
         }
         
-        $cron_job_name = sanitize_text_field($request['cron_job_name']);           
         if ($enabled == 'true' && ($cron_job_name == 'tidy_wp_weekly_update_notification_cron_job' || $cron_job_name == 'tidy_wp_weekly_website_notification_cron_job'  || $cron_job_name == 'tidy_wp_weekly_woocommerce_sales_notification_cron_job')) {
             add_action('wp', $cron_job_name);
             update_option($option_name, 'true', 'no');
@@ -225,7 +235,8 @@ if ($apiAuthOK == true) {
             'WoocommeceNoStockNotification' => get_option('tidy_wp_woocommerce_no_stock_notification'),
             'KokoWebsiteAnalyticsNotification' => get_option('tidy_wp_website_analytics_notification'), 
             'WordpressUserRegisterNotification' => get_option('tidy_wp_user_register_notification'),
-            'WordpressUpdatesNotification' => get_option('tidy_wp_update_notification')
+            'WordpressUpdatesNotification' => get_option('tidy_wp_update_notification'),
+			'NewFormSubmissionNotification' => get_option('tidy_wp_new_form_submission_notification'),	
               );
             
             echo json_encode($showNotificationSummary);
@@ -234,7 +245,6 @@ if ($apiAuthOK == true) {
 }
 } 
 
-// add to rest api
 add_action('rest_api_init', function () {
   register_rest_route(get_option('tidy_wp_secret_path'), 'notification-summary', array(
     'methods' => 'POST',

@@ -30,7 +30,7 @@ if ($apiAuthOK == true) {
 
         
     $closestDate = sanitize_text_field($request['finalDateSelected']);
-    $furthestDate = sanitize_text_field($request['inicialDateSelected']) . ' 00:00:00';;
+    $furthestDate = sanitize_text_field($request['inicialDateSelected']);
       
     if (!empty($closestDate) && !empty($furthestDate)) {
     $closestDate = $closestDate . ' ' . $currentTime; 
