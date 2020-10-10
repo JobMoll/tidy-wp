@@ -40,7 +40,7 @@ if (get_option('tidy_wp_new_form_submission_notification') == 'true') {
 
 // only push these notifications if woocommerce is installed
 
-if(in_array('woocommerce-admin/woocommerce-admin.php', apply_filters('active_plugins', get_option('active_plugins')))){ 
+if (in_array('woocommerce-admin/woocommerce-admin.php', apply_filters('active_plugins', get_option('active_plugins')))) { 
 
 // woocommerce no stock notification
 add_action('woocommerce_no_stock','woocommerce_no_stock_tidy_wp_notification');
@@ -75,9 +75,15 @@ if (get_option('woocommerce_currency') == 'EUR') {
 } else {
     $cashSign = '';
 }
-tidy_wp_send_notification('Sales from the last 7 days.', 'You have received ' . 
-$wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM `{$wpdb->prefix}wc_order_stats` WHERE status = 'wc-completed' AND `date_created` >= %s AND `date_created` <= %s AND `tax_total` > '0'", date('Y-m-d', strtotime('-7 days')), date("Y-m-d", strtotime("now") . ' 00:00:00'))) . ' order(s) with a total value of ' . 
-$cashSign . round($wpdb->get_var($wpdb->prepare("SELECT SUM(total_sales) FROM `{$wpdb->prefix}wc_order_stats` WHERE status = 'wc-completed' AND `date_created` >= %s AND `date_created` <= %s AND `tax_total` > '0'", date('Y-m-d', strtotime('-7 days') . ' 00:00:00'), date("Y-m-d", strtotime("now")))), 2) . ' from ' . date('d M', strtotime('-7 days')) . ' till ' . date('d M', strtotime('now')) . ' on ' . get_bloginfo('name') . '!');
+	
+$ordersTotal = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM `{$wpdb->prefix}wc_order_stats` WHERE status = 'wc-completed' AND `date_created` >= %s AND `date_created` <= %s AND `tax_total` > '0'", date('Y-m-d', strtotime('-7 days')), date("Y-m-d", strtotime("now") . ' 00:00:00')));
+$ordersTotalValue = round($wpdb->get_var($wpdb->prepare("SELECT SUM(total_sales) FROM `{$wpdb->prefix}wc_order_stats` WHERE status = 'wc-completed' AND `date_created` >= %s AND `date_created` <= %s AND `tax_total` > '0'", date('Y-m-d', strtotime('-7 days') . ' 00:00:00'), date("Y-m-d", strtotime("now")))), 2);	
+	
+if (intval($ordersTotal) >= 1) {	
+tidy_wp_send_notification('Sales from the last 7 days.', 'You have received ' . $ordersTotal
+ . ' order(s) with a total value of ' . 
+$cashSign . $ordersTotalValue . ' from ' . date('d M', strtotime('-7 days')) . ' till ' . date('d M', strtotime('now')) . ' on ' . get_bloginfo('name') . '!');
+}
 }
 add_action('tidy_wp_woocommerce_sales_notification', 'tidy_wp_woocommerce_sales_notification');
 
@@ -100,9 +106,13 @@ if(in_array('koko-analytics/koko-analytics.php', apply_filters('active_plugins',
 // Scheduled Action Hook
 function tidy_wp_website_analytics_notification() {
 global $wpdb;
-tidy_wp_send_notification('Visitor & pageviews last 7 days.', 'You have received ' . 
-$wpdb->get_var($wpdb->prepare("SELECT SUM(visitors) FROM `{$wpdb->prefix}koko_analytics_site_stats` WHERE `date` >= %s AND `date` <= %s", date('Y-m-d', strtotime('-7 days')), date("Y-m-d", strtotime("now")))) . ' visitors & ' . 
-$wpdb->get_var($wpdb->prepare("SELECT SUM(pageviews) FROM `{$wpdb->prefix}koko_analytics_site_stats` WHERE `date` >= %s AND `date` <= %s", date('Y-m-d', strtotime('-7 days')), date("Y-m-d", strtotime("now")))) . ' pageviews from ' . date('d M', strtotime('-7 days')) . ' till ' . date('d M', strtotime('now')) . ' on ' . get_bloginfo('name') . '!');
+	
+$visitors = $wpdb->get_var($wpdb->prepare("SELECT SUM(visitors) FROM `{$wpdb->prefix}koko_analytics_site_stats` WHERE `date` >= %s AND `date` <= %s", date('Y-m-d', strtotime('-7 days')), date("Y-m-d", strtotime("now"))));
+$pageviews = $wpdb->get_var($wpdb->prepare("SELECT SUM(pageviews) FROM `{$wpdb->prefix}koko_analytics_site_stats` WHERE `date` >= %s AND `date` <= %s", date('Y-m-d', strtotime('-7 days')), date("Y-m-d", strtotime("now"))));
+
+if (intval($visitors) >= 1 || intval($pageviews) >= 1) {		
+tidy_wp_send_notification('Visitor & pageviews last 7 days.', 'You have received ' . $visitors . ' visitors & ' . $pageviews . ' pageviews from ' . date('d M', strtotime('-7 days')) . ' till ' . date('d M', strtotime('now')) . ' on ' . get_bloginfo('name') . '!');
+}
 }
 add_action('tidy_wp_website_analytics_notification', 'tidy_wp_website_analytics_notification');
 
@@ -150,10 +160,12 @@ $counts['wordpress'] = '0';
    }
     }
 
+if (intval($counts['plugins']) >= 1 || intval($counts['themes']) >= 1 || intval($counts['wordpress']) >= 1) {		
 tidy_wp_send_notification('Plugin & Theme updates summary.', 'You have ' . 
 $counts['plugins'] . ' plugin update(s), ' . 
 $counts['themes'] . ' theme update(s) & ' . 
 $counts['wordpress'] . ' core update(s) on ' . get_bloginfo('name') . '!');
+}
 }
 add_action('tidy_wp_update_notification', 'tidy_wp_update_notification');
 
