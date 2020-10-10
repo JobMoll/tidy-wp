@@ -40,7 +40,10 @@ if (isset($secretAPIKey)) {
 $apiAuthOK = tidy_wp_auth($secretAPIKey);
 } else { 
 $apiAuthOK = false;
-echo 'Sorry... you are not allowed to view this data.';
+header("HTTP/1.1 401 Unauthorized");
+$errorMessage = array('status' => 'error', 'message' => 'This access key is invalid or revoked');
+echo json_encode($errorMessage);
+exit; 
 }
 if ($apiAuthOK == true) {
        
@@ -76,5 +79,3 @@ add_action('rest_api_init', function () {
     'permission_callback' => '__return_true',
  ));
 });
-
-// https://tidywp.sparknowmedia.com/wp-json/MkmU2WcL8vhD2U7N/publish_new_post

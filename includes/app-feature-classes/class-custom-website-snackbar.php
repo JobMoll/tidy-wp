@@ -14,7 +14,10 @@ if (isset($secretAPIKey)) {
 $apiAuthOK = tidy_wp_auth($secretAPIKey);
 } else { 
 $apiAuthOK = false;
-echo 'Sorry... you are not allowed to view this data.';
+header("HTTP/1.1 401 Unauthorized");
+$errorMessage = array('status' => 'error', 'message' => 'This access key is invalid or revoked');
+echo json_encode($errorMessage);
+exit;
 }
 if ($apiAuthOK == true) {
         
@@ -29,32 +32,32 @@ if ($apiAuthOK == true) {
         }
     
         $text = sanitize_text_field($request['text']);
-        if ($text !== null) {
+        if (!empty($text)) {
             update_option('tidy_wp_custom_website_snackbar_text', $text, 'no');
         }
     
         $action_text = sanitize_text_field($request['action_text']);
-        if ($action_text !== null) {
+        if (!empty($action_text)) {
             update_option('tidy_wp_custom_website_snackbar_action_text', $action_text, 'no');
         }
     
         $position = sanitize_text_field($request['position']);
-        if ($position !== null) {
+        if (!empty($position)) {
             update_option('tidy_wp_custom_website_snackbar_position', $position, 'no');
         }
     
         $theme = sanitize_text_field($request['theme']);
-        if ($theme !== null) {
+        if (!empty($theme)) {
             update_option('tidy_wp_custom_website_snackbar_theme', $theme, 'no');
         }
         
         $cookie_duration = sanitize_text_field($request['cookie_duration']);
-        if ($cookie_duration !== null) {
+        if (!empty($cookie_duration)) {
             update_option('tidy_wp_custom_website_snackbar_cookie_duration', $cookie_duration, 'no');
         }
         
         $show_duration_in_sec = sanitize_text_field($request['show_duration_in_sec']);
-        if ($show_duration_in_sec !== null) {
+        if (!empty($show_duration_in_sec)) {
             update_option('tidy_wp_custom_website_snackbar_show_duration_in_sec', $show_duration_in_sec, 'no');
         }
         

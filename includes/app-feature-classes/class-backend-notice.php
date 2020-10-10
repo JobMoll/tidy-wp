@@ -14,12 +14,12 @@ if (isset($secretAPIKey)) {
 $apiAuthOK = tidy_wp_auth($secretAPIKey);
 } else { 
 $apiAuthOK = false;
-echo 'Sorry... you are not allowed to view this data.';
+header("HTTP/1.1 401 Unauthorized");
+$errorMessage = array('status' => 'error', 'message' => 'This access key is invalid or revoked');
+echo json_encode($errorMessage);
+exit; 
 }
-if ($apiAuthOK == true) {
-        
- 
-    add_option('tidy_wp_backend_notice_content', '', '', 'no');
+if ($apiAuthOK == true) { 
     
         $enabled = sanitize_text_field($request['enabled']);
         if ($enabled == 'true') {
@@ -39,20 +39,19 @@ if ($apiAuthOK == true) {
        
         // notice-success, notice-error, notice-warning, notice-info
         $type = sanitize_text_field($request['type']);
-        if ($type !== null) {
+        if (!empty($type)) {
             update_option('tidy_wp_backend_notice_type', $type, 'no');
         }
         
         $header = sanitize_text_field($request['header']);
-        if ($header !== null) {
+        if (!empty($header)) {
             update_option('tidy_wp_backend_notice_header_text', $header, 'no');
         }
         
         $content = sanitize_text_field($request['content']);
-        if ($content !== null) {
+        if (!empty($content)) {
             update_option('tidy_wp_backend_notice_content', $content, 'no');
         }
-        
         
         
         if (sanitize_text_field($request['show']) == 'true') {
@@ -71,7 +70,6 @@ if ($apiAuthOK == true) {
 }
 } 
 
-// add to rest api
 add_action('rest_api_init', function () {
   register_rest_route(get_option('tidy_wp_secret_path'), 'backend-notice', array(
     'methods' => 'POST',
