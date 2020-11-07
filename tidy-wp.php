@@ -64,7 +64,6 @@ register_uninstall_hook(__FILE__, 'uninstall_tidy_wp');
 // include the code snippets
 include 'includes/include-code-snippets.php';
 include 'includes/app-feature-classes/class-notification-helper.php';
-require_once  __DIR__ . '/tidy-wp-recommended-plugins-helper.php';
 
 // include all the endpoints
 include 'includes/app-feature-classes/class-remote-updates.php';
@@ -74,7 +73,6 @@ include 'includes/app-feature-classes/class-custom-website-snackbar.php';
 include 'includes/app-feature-classes/class-custom-login-url.php';
 include 'includes/app-feature-classes/class-smart-security.php';
 include 'includes/app-feature-classes/class-woocommerce.php';
-include 'includes/app-feature-classes/class-koko-analytics.php';
 include 'includes/app-feature-classes/class-website-summary.php';
 include 'includes/app-feature-classes/class-publish-new-post.php';
 include 'includes/app-feature-classes/class-site-settings.php';
