@@ -7,8 +7,8 @@ Description: A clean & easy way to manage multiple Wordpress websites! This plug
 
 When changing the version here also change it here below in the define variable
 Version: 0.0.8
-Requires at least: 4.4.0
-Tested up to: 5.5.1
+Requires at least: 5.5.3
+Tested up to: 5.5.3
 Requires PHP: 7.0
 Author: Mollup
 Author URI: https://mollup.nl/

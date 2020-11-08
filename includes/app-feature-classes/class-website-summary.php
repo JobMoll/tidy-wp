@@ -20,19 +20,11 @@ echo json_encode($errorMessage);
 exit;
 }
 if ($apiAuthOK == true) {
-    
-    $closestDate  = date("Y-m-d", strtotime("last day of this month"));
-    $furthestDate = date("Y-m-d", strtotime("first day of this month"));
-      
     $closestDateWoo = date("Y-m-d", strtotime("last day of this month")) . ' 23:59:59';
     $furthestDateWoo = date("Y-m-d", strtotime("first day of this month")) . ' 00:00:00';
     
     global $wpdb;
-    
-    $totalVisitors = $wpdb->get_var($wpdb->prepare("SELECT SUM(visitors) FROM `{$wpdb->prefix}koko_analytics_site_stats` WHERE `date` >= %s AND `date` <= %s", $furthestDate, $closestDate));
-        
-    $totalPageviews = $wpdb->get_var($wpdb->prepare("SELECT SUM(pageviews) FROM `{$wpdb->prefix}koko_analytics_site_stats` WHERE `date` >= %s AND `date` <= %s", $furthestDate, $closestDate));
-    
+
     $totalSales = $wpdb->get_var($wpdb->prepare("SELECT SUM(total_sales) FROM `{$wpdb->prefix}wc_order_stats` WHERE status = 'wc-completed' AND `date_created` >= %s AND `date_created` <= %s AND `tax_total` > '0'", $furthestDateWoo, $closestDateWoo));
 
 	$totalOrders = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM `{$wpdb->prefix}wc_order_stats` WHERE status = 'wc-completed' AND `date_created` >= %s AND `date_created` <= %s AND `tax_total` > '0'", $furthestDateWoo, $closestDateWoo));
@@ -98,8 +90,6 @@ $healthCheckIssues = $issue_counts['critical'] + $issue_counts['recommended'];
         'CurrencySymbol' => $cashSign ?: '',
         'TotalSales' => strval(round($totalSales, 2)) ?: '0',
         'TotalOrders' => strval(round($totalOrders)) ?: '0',
-        'TotalPageviews' => strval(round($totalPageviews, 2)) ?: '0',
-        'TotalVisitors' => strval(round($totalVisitors, 2)) ?: '0',
         'TotalUpdates' => strval($totalUpdates) ?: '0',
         'HealthCheckIssues' => strval($healthCheckIssues) ?? '0',
 		'CurrentTidyWPVersion' => str_replace(".", "", strval(TIDY_WP_CURRENT_PLUGIN_VERSION)) ?? '0.0.1'
