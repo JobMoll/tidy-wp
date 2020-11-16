@@ -29,7 +29,7 @@ if (get_option('tidy_wp_user_register_notification') == 'true') {
 add_action('wpforms_process_complete', 'new_form_submission_tidy_wp_notification', 10, 4);
 add_action('ninja_forms_after_submission', 'new_form_submission_tidy_wp_notification');
 add_action('gform_after_submission', 'new_form_submission_tidy_wp_notification', 10, 2);
-add_action('wpcf7_mail_sent', 'new_form_submission_tidy_wp_notification', 10, 1); 
+add_action('wpcf7_mail_sent', 'new_form_submission_tidy_wp_notification', 10, 1);
 function new_form_submission_tidy_wp_notification(){
 if (get_option('tidy_wp_new_form_submission_notification') == 'true') {
   tidy_wp_send_notification('New form submission!', 'You have a new form submission on your website ' . get_bloginfo('name') . '!');
@@ -40,7 +40,7 @@ if (get_option('tidy_wp_new_form_submission_notification') == 'true') {
 
 // only push these notifications if woocommerce is installed
 
-if (in_array('woocommerce-admin/woocommerce-admin.php', apply_filters('active_plugins', get_option('active_plugins')))) { 
+if (in_array('woocommerce-admin/woocommerce-admin.php', apply_filters('active_plugins', get_option('active_plugins')))) {
 
 // woocommerce no stock notification
 add_action('woocommerce_no_stock','woocommerce_no_stock_tidy_wp_notification');
@@ -75,13 +75,13 @@ if (get_option('woocommerce_currency') == 'EUR') {
 } else {
     $cashSign = '';
 }
-	
+    
 $ordersTotal = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM `{$wpdb->prefix}wc_order_stats` WHERE status = 'wc-completed' AND `date_created` >= %s AND `date_created` <= %s AND `tax_total` > '0'", date('Y-m-d', strtotime('-7 days')), date("Y-m-d", strtotime("now") . ' 00:00:00')));
-$ordersTotalValue = round($wpdb->get_var($wpdb->prepare("SELECT SUM(total_sales) FROM `{$wpdb->prefix}wc_order_stats` WHERE status = 'wc-completed' AND `date_created` >= %s AND `date_created` <= %s AND `tax_total` > '0'", date('Y-m-d', strtotime('-7 days') . ' 00:00:00'), date("Y-m-d", strtotime("now")))), 2);	
-	
-if (intval($ordersTotal) >= 1) {	
+$ordersTotalValue = round($wpdb->get_var($wpdb->prepare("SELECT SUM(total_sales) FROM `{$wpdb->prefix}wc_order_stats` WHERE status = 'wc-completed' AND `date_created` >= %s AND `date_created` <= %s AND `tax_total` > '0'", date('Y-m-d', strtotime('-7 days') . ' 00:00:00'), date("Y-m-d", strtotime("now")))), 2);
+    
+if (intval($ordersTotal) >= 1) {
 tidy_wp_send_notification('Sales from the last 7 days.', 'You have received ' . $ordersTotal
- . ' order(s) with a total value of ' . 
+ . ' order(s) with a total value of ' .
 $cashSign . $ordersTotalValue . ' from ' . date('d M', strtotime('-7 days')) . ' till ' . date('d M', strtotime('now')) . ' on ' . get_bloginfo('name') . '!');
 }
 }
@@ -90,8 +90,8 @@ add_action('tidy_wp_woocommerce_sales_notification', 'tidy_wp_woocommerce_sales_
 // Schedule Cron Job Event
 function tidy_wp_weekly_woocommerce_sales_notification_cron_job() {
     if (!wp_next_scheduled('tidy_wp_woocommerce_sales_notification')) {
-		wp_schedule_event(strtotime('next sunday 14 hours'), 'weekly', 'tidy_wp_woocommerce_sales_notification');
-	}
+        wp_schedule_event(strtotime('next sunday 14 hours'), 'weekly', 'tidy_wp_woocommerce_sales_notification');
+    }
 }
 if (get_option('tidy_wp_woocommerce_sales_notification') == 'true' && in_array('woocommerce-admin/woocommerce-admin.php', apply_filters('active_plugins', get_option('active_plugins')))) {
       add_action('wp', 'tidy_wp_weekly_woocommerce_sales_notification_cron_job');
@@ -100,17 +100,17 @@ if (get_option('tidy_wp_woocommerce_sales_notification') == 'true' && in_array('
 }
 
 // only push these notifications if Koko analytics is installed
-if(in_array('koko-analytics/koko-analytics.php', apply_filters('active_plugins', get_option('active_plugins')))){ 
+if(in_array('koko-analytics/koko-analytics.php', apply_filters('active_plugins', get_option('active_plugins')))){
     
 // visitors and pageviews last 7 days
 // Scheduled Action Hook
 function tidy_wp_website_analytics_notification() {
 global $wpdb;
-	
+    
 $visitors = $wpdb->get_var($wpdb->prepare("SELECT SUM(visitors) FROM `{$wpdb->prefix}koko_analytics_site_stats` WHERE `date` >= %s AND `date` <= %s", date('Y-m-d', strtotime('-7 days')), date("Y-m-d", strtotime("now"))));
 $pageviews = $wpdb->get_var($wpdb->prepare("SELECT SUM(pageviews) FROM `{$wpdb->prefix}koko_analytics_site_stats` WHERE `date` >= %s AND `date` <= %s", date('Y-m-d', strtotime('-7 days')), date("Y-m-d", strtotime("now"))));
 
-if (intval($visitors) >= 1 || intval($pageviews) >= 1) {		
+if (intval($visitors) >= 1 || intval($pageviews) >= 1) {
 tidy_wp_send_notification('Visitor & pageviews last 7 days.', 'You have received ' . $visitors . ' visitors & ' . $pageviews . ' pageviews from ' . date('d M', strtotime('-7 days')) . ' till ' . date('d M', strtotime('now')) . ' on ' . get_bloginfo('name') . '!');
 }
 }
@@ -118,9 +118,9 @@ add_action('tidy_wp_website_analytics_notification', 'tidy_wp_website_analytics_
 
 // Schedule Cron Job Event
 function tidy_wp_weekly_website_notification_cron_job() {
-	if (!wp_next_scheduled('tidy_wp_website_analytics_notification')) {
-		wp_schedule_event(strtotime('next sunday 15 hours'), 'weekly', 'tidy_wp_website_analytics_notification');
-	}
+    if (!wp_next_scheduled('tidy_wp_website_analytics_notification')) {
+        wp_schedule_event(strtotime('next sunday 15 hours'), 'weekly', 'tidy_wp_website_analytics_notification');
+    }
 }
 if (get_option('tidy_wp_website_analytics_notification') == 'true') {
 add_action('wp', 'tidy_wp_weekly_website_notification_cron_job');
@@ -160,10 +160,10 @@ $counts['wordpress'] = '0';
    }
     }
 
-if (intval($counts['plugins']) >= 1 || intval($counts['themes']) >= 1 || intval($counts['wordpress']) >= 1) {		
-tidy_wp_send_notification('Plugin & Theme updates summary.', 'You have ' . 
-$counts['plugins'] . ' plugin update(s), ' . 
-$counts['themes'] . ' theme update(s) & ' . 
+if (intval($counts['plugins']) >= 1 || intval($counts['themes']) >= 1 || intval($counts['wordpress']) >= 1) {
+tidy_wp_send_notification('Plugin & Theme updates summary.', 'You have ' .
+$counts['plugins'] . ' plugin update(s), ' .
+$counts['themes'] . ' theme update(s) & ' .
 $counts['wordpress'] . ' core update(s) on ' . get_bloginfo('name') . '!');
 }
 }
@@ -173,9 +173,9 @@ add_action('tidy_wp_update_notification', 'tidy_wp_update_notification');
 
 // Schedule Cron Job Event
 function tidy_wp_weekly_update_notification_cron_job() {
-	if (!wp_next_scheduled('tidy_wp_update_notification')) {
-		wp_schedule_event(strtotime('next sunday 16 hours'), 'weekly', 'tidy_wp_update_notification');
-	}
+    if (!wp_next_scheduled('tidy_wp_update_notification')) {
+        wp_schedule_event(strtotime('next sunday 16 hours'), 'weekly', 'tidy_wp_update_notification');
+    }
 }
 if (get_option('tidy_wp_update_notification') == 'true') {
 add_action('wp', 'tidy_wp_weekly_update_notification_cron_job');
@@ -185,18 +185,75 @@ add_action('wp', 'tidy_wp_weekly_update_notification_cron_job');
 
 // Custom Cron Recurrences
 function tidy_wp_weekly_cron_job_recurrence($schedules) {
-	$schedules['weekly'] = array(
-		'display' => __('Once Weekly', 'textdomain'),
-		'interval' => 604800,
-	);
-	return $schedules;
+    $schedules['weekly'] = array(
+        'display' => __('Once Weekly', 'textdomain'),
+        'interval' => 604800,
+    );
+    return $schedules;
 }
 add_filter('cron_schedules', 'tidy_wp_weekly_cron_job_recurrence');
 
 
+// notification on wp mail error
+function tidy_wp_notification_on_wp_mail_failed($wp_error) {
+if (get_option('tidy_wp_on_wp_mail_failed_notification') == 'true') {
+    tidy_wp_send_notification('WP Mail error!', 'Something went wrong on ' . get_bloginfo('name') . ' when the website tried to send an email! More info: ' . $response->get_error_message());
+}
+}
+add_action('wp_mail_failed', 'tidy_wp_notification_on_wp_mail_failed', 10, 1);
 
 
 
+
+// notification on php shutdown
+function tidy_wp_notification_on_php_error() {
+$warningNotificationActive = get_option('tidy_wp_on_php_error_warning_notification');
+$fatalNotificationActive = get_option('tidy_wp_on_php_error_fatal_notification');
+
+if ($warningNotificationActive == 'true' || $fatalNotificationActive == 'true') {
+$last_error_data = error_get_last();
+                
+    if (is_null($last_error_data)) {
+            return;
+        }
+
+    // excluded 8, 2048, 4096, 8192, 16384, 32767
+
+    $errorDataTypesWorthChecking = array();
+    if ($warningNotificationActive == 'true') {
+    // fatal errors
+    $errorDataTypesWorthChecking = array(1, 16, 64, 256, 1024);
+    }
+    
+    if (empty($errorDataTypesWorthChecking)) {
+    // warning errors
+    $errorDataTypesWorthChecking = array(2, 4, 32, 128, 512);
+    } else {
+    // combine warning errors and fatal errors
+    $errorDataTypesWorthChecking = array_merge($errorDataTypesWorthChecking, array(2, 4, 32, 128, 512));
+    }
+ 
+    $errorDataType = $last_error_data['type'];
+    if (in_array($errorDataType, $errorDataTypesWorthChecking)) {
+            
+        $hash = md5($last_error_data['message']);
+        $transient = get_transient('tidy_wp_' . $hash);
+        
+        if (!empty($transient)) {
+             return;
+            } else {
+            // set transient so it will only send once every 20 minutes
+            set_transient('tidy_wp_' . $hash, true, 1200);
+            
+            //  send notification
+            tidy_wp_send_notification('Error detected!', 'We have detected an error on your site ' . get_bloginfo('name') . '! The error is as follows: ' . $last_error_data['message'] . ' -- ' . $last_error_data['file'] . ' - ' . $last_error_data['line']);
+            }
+    }
+  }
+}
+
+register_shutdown_function('tidy_wp_notification_on_php_error');
+    
 
 
 
@@ -207,22 +264,22 @@ $secretAPIKey = sanitize_text_field($request['secretAPIKey']);
    
 if (isset($secretAPIKey)) {
 $apiAuthOK = tidy_wp_auth($secretAPIKey);
-} else { 
+} else {
 $apiAuthOK = false;
 header("HTTP/1.1 401 Unauthorized");
 $errorMessage = array('status' => 'error', 'message' => 'This access key is invalid or revoked');
 echo json_encode($errorMessage);
-exit; 
+exit;
 }
 if ($apiAuthOK == true) {
 
         $enabled = sanitize_text_field($request['enabled']);
         $option_name = sanitize_text_field($request['option_name']);
-        $cron_job_name = sanitize_text_field($request['cron_job_name']);   
-	
+        $cron_job_name = sanitize_text_field($request['cron_job_name']);
+    
         if ($enabled == 'true' && empty($cron_job_name)) {
             update_option($option_name, 'true', 'no');
-        } 
+        }
         
         if ($enabled == 'false' && empty($cron_job_name)) {
             update_option($option_name, 'false', 'no');
@@ -241,21 +298,21 @@ if ($apiAuthOK == true) {
         
         if (sanitize_text_field($request['show']) == 'true') {
             $showNotificationSummary = array(
-            'WoocommeceSalesNotification' => get_option('tidy_wp_woocommerce_sales_notification'),  
-            'WoocommeceNewOrderNotification' => get_option('tidy_wp_woocommerce_new_order_notification'), 
-            'WoocommeceLowStockNotification' => get_option('tidy_wp_woocommerce_low_stock_notification'), 
+            'WoocommeceSalesNotification' => get_option('tidy_wp_woocommerce_sales_notification'),
+            'WoocommeceNewOrderNotification' => get_option('tidy_wp_woocommerce_new_order_notification'),
+            'WoocommeceLowStockNotification' => get_option('tidy_wp_woocommerce_low_stock_notification'),
             'WoocommeceNoStockNotification' => get_option('tidy_wp_woocommerce_no_stock_notification'),
-            'KokoWebsiteAnalyticsNotification' => get_option('tidy_wp_website_analytics_notification'), 
+            'KokoWebsiteAnalyticsNotification' => get_option('tidy_wp_website_analytics_notification'),
             'WordpressUserRegisterNotification' => get_option('tidy_wp_user_register_notification'),
             'WordpressUpdatesNotification' => get_option('tidy_wp_update_notification'),
-			'NewFormSubmissionNotification' => get_option('tidy_wp_new_form_submission_notification'),	
+            'NewFormSubmissionNotification' => get_option('tidy_wp_new_form_submission_notification'),
               );
             
             echo json_encode($showNotificationSummary);
         }
         
 }
-} 
+}
 
 add_action('rest_api_init', function () {
   register_rest_route(get_option('tidy_wp_secret_path'), 'notification-summary', array(
@@ -264,4 +321,3 @@ add_action('rest_api_init', function () {
     'permission_callback' => '__return_true',
  ));
 });
-
