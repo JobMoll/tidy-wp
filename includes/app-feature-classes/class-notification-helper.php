@@ -2,7 +2,13 @@
 
 function tidy_wp_send_notification($notificationTitle, $notificationMessage) {
 $url = 'https://tidywp.com/wp-json/tidy-wp-admin/send-notification';
-$data = array('notification_title' => $notificationTitle, 'notification_message' => $notificationMessage, 'domain' => get_bloginfo('wpurl'), 'secret_api_key' => get_option('tidy_wp_secret_token'));
+    $data = array(
+        'notification_title' => $notificationTitle,
+        'notification_message' => $notificationMessage,
+        'domain' => get_bloginfo('wpurl'),
+        'secret_api_key' => get_option('tidy_wp_secret_token'),
+        'notification_send_date' => current_time(get_option('time_format') . ' - ' . get_option('date_format')),
+    );
 
 $options = array(
     'http' => array(
