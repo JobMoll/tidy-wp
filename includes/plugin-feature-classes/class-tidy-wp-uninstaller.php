@@ -75,7 +75,8 @@ class Tidy_Wp_Uninstaller {
     delete_option('tidy_wp_on_wp_mail_failed_notification');
     delete_option('tidy_wp_on_php_error_warning_notification');
     delete_option('tidy_wp_on_php_error_fatal_notification');
-        
+    delete_option('tidy_wp_ssl_certificate_validation_notification');
+		
     // backend notice
     delete_option('tidy_wp_backend_notice');
     delete_option('tidy_wp_backend_notice_dismissible');

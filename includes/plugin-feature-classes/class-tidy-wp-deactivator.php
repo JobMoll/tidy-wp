@@ -39,6 +39,9 @@ class Tidy_Wp_Deactivator {
     
     wp_clear_scheduled_hook('tidy_wp_update_notification');
     update_option('tidy_wp_update_notification', 'false');
+	
+    wp_clear_scheduled_hook('tidy_wp_ssl_certificate_validation_notification');
+    update_option('tidy_wp_ssl_certificate_validation_notification', 'false');
 	}
 
 }

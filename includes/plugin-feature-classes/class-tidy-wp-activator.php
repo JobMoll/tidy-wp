@@ -67,13 +67,15 @@ class Tidy_Wp_Activator {
     add_option('tidy_wp_woocommerce_low_stock_notification', 'true', '', 'no');
     add_option('tidy_wp_woocommerce_no_stock_notification', 'true', '', 'no');
     add_option('tidy_wp_website_analytics_notification', 'true', '', 'no');
-    add_option('tidy_wp_user_register_notification', 'true', '', 'no');
+    add_option('tidy_wp_user_register_notification', 'false', '', 'no');
     add_option('tidy_wp_update_notification', 'true', '', 'no');
     add_option('tidy_wp_new_form_submission_notification', 'true', '', 'no');
     add_option('tidy_wp_on_wp_mail_failed_notification', 'true', '', 'no');
-    add_option('tidy_wp_on_php_error_warning_notification', 'true', '', 'no');
+    add_option('tidy_wp_on_php_error_warning_notification', 'false', '', 'no');
     add_option('tidy_wp_on_php_error_fatal_notification', 'true', '', 'no');
-        
+    add_option('tidy_wp_ssl_certificate_validation_notification', 'true', '', 'no');  
+		
+			
     // backend notice
     add_option('tidy_wp_backend_notice', 'false', '', 'no');
     add_option('tidy_wp_backend_notice_dismissible', 'true', '', 'no');
